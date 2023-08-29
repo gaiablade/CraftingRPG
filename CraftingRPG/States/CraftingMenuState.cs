@@ -1,4 +1,5 @@
-﻿using CraftingRPG.Enums;
+﻿using CraftingRPG.Entities;
+using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
@@ -11,9 +12,6 @@ namespace CraftingRPG.States;
 
 public class CraftingMenuState : IState
 {
-    private ToState toState = ToState.NoChange;
-    public ToState GetToState() => toState;
-
     private IDictionary<RecipeId, IRecipe> Recipes;
     private int Cursor = 0;
 
@@ -23,6 +21,7 @@ public class CraftingMenuState : IState
             .Recipes
             .OrderBy(x => x.Value.GetId())
             .ToDictionary(x => x.Key, x => x.Value);
+        GameManager.AddKeyIfNotExists(Keys.LeftControl);
     }
 
     public void Render()
@@ -127,6 +126,11 @@ public class CraftingMenuState : IState
         else if (GameManager.FramesKeysHeld[Keys.Up] == 1)
         {
             Cursor = CustomMath.WrapAround(Cursor - 1, 0, Recipes.Count - 1);
+        }
+
+        if (GameManager.FramesKeysHeld[Keys.LeftControl] == 1)
+        {
+            StateManager.Instance.PopState();
         }
     }
 }

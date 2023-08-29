@@ -16,9 +16,6 @@ namespace CraftingRPG.States;
 
 public class OverworldState : IState
 {
-    private ToState toState;
-    public ToState GetToState() => toState;
-
     private PlayerInstance Player;
     private List<IEnemyInstance> Enemies;
     private List<IInstance> MapObjects;
@@ -38,15 +35,13 @@ public class OverworldState : IState
             new EnemyInstance<GreenSlime>(new(), new Vector2(700, 100))
         };
 
-        MapObjects = new List<IInstance>
+        MapObjects = new();
+        for (int i = 0; i < 10; i++)
         {
-            new MapObjectInstance<Crate>(new Vector2(32, 200)),
-            new MapObjectInstance<Crate>(new Vector2(64, 200)),
-            new MapObjectInstance<Crate>(new Vector2(96, 200)),
-            new MapObjectInstance<Crate>(new Vector2(128, 200)),
-            new MapObjectInstance<Crate>(new Vector2(0, 200)),
-            new MapObjectInstance<Crate>(new Vector2(160, 200)),
-        };
+            MapObjects.Add(new MapObjectInstance<Crate>(new Vector2(
+                Random.Shared.Next() % GameManager.Resolution.X,
+                Random.Shared.Next() % GameManager.Resolution.Y)));
+        }
     }
 
     public void Render()
@@ -150,14 +145,11 @@ public class OverworldState : IState
         otherInstances.AddRange(Enemies);
         otherInstances.AddRange(MapObjects);
 
-        var colliding = false;
         foreach (var instance in otherInstances)
         {
             var otherColBox = instance.GetCollisionBox();
             while (otherColBox.Intersects(Player.GetCollisionBox()))
             {
-                colliding = true;
-                Debug.WriteLine($"Colliding? {colliding}, Movement: ({MovementVector.X}, {MovementVector.Y})");
                 Player.Position.X -= MovementVector.X;
                 Player.Position.Y -= MovementVector.Y;
             }
@@ -166,7 +158,7 @@ public class OverworldState : IState
 
         if (GameManager.FramesKeysHeld[Keys.Enter] == 1)
         {
-            toState = ToState.CraftingMenu;
+            StateManager.Instance.PushState<CraftingMenuState>(true);
         }
     }
 }

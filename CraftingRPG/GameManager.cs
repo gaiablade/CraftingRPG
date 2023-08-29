@@ -2,7 +2,6 @@
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Items;
-using CraftingRPG.Recipes;
 using CraftingRPG.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -30,7 +29,7 @@ namespace CraftingRPG
         public static PlayerInfo PlayerInfo { get; private set; }
         public static Dictionary<ItemId, IItem> ItemInfo { get; private set; }
 
-        private IState CurrentState;
+        public static StateManager StateManager { get; private set; } = StateManager.Instance;
 
         public GameManager()
         {
@@ -67,8 +66,7 @@ namespace CraftingRPG
 
             PlayerInfo = new PlayerInfo();
             FramesKeysHeld = new Dictionary<Keys, int>();
-            CurrentState = new MainMenuState();
-            //CurrentState = new MapEditorState();
+            StateManager.PushState<MainMenuState>(true);
 
             base.Initialize();
         }
@@ -103,11 +101,8 @@ namespace CraftingRPG
                 }
             }
 
-            CurrentState.Update();
-            if (CurrentState.GetToState() != ToState.NoChange)
-            {
-                HandleStateChange();
-            }
+            StateManager.ProcessStateRequests();
+            StateManager.CurrentState.Update();
 
             base.Update(gameTime);
         }
@@ -119,33 +114,11 @@ namespace CraftingRPG
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             SpriteBatch.Begin();
 
-            CurrentState.Render();
+            StateManager.CurrentState.Render();
 
             SpriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        private void HandleStateChange()
-        {
-            var toState = CurrentState.GetToState();
-            switch (toState)
-            {
-                case ToState.MainMenu:
-                    CurrentState = new MainMenuState();
-                    break;
-                case ToState.Intro:
-                    CurrentState = new IntroState();
-                    break;
-                case ToState.Overworld:
-                    CurrentState = new OverworldState();
-                    break;
-                case ToState.CraftingMenu:
-                    CurrentState = new CraftingMenuState();
-                    break;
-                default:
-                    break;
-            }
         }
 
         public static void AddKeyIfNotExists(Keys key)

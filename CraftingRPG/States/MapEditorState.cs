@@ -12,8 +12,6 @@ namespace CraftingRPG.States;
 
 public class MapEditorState : IState
 {
-    public ToState GetToState() => ToState.NoChange;
-
     private Point Position = Point.Zero;
     private Point Dimensions;
     private int CurrentTile = 0;
