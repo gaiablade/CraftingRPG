@@ -3,6 +3,7 @@ using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Items;
 using CraftingRPG.Recipes;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
 namespace CraftingRPG.Enemies;
@@ -20,4 +21,6 @@ public class GreenSlime : IEnemy
     public string GetName() => "Green Slime";
 
     public int GetSpriteSheetIndex() => 1;
+
+    public Rectangle GetCollisionBox() => new Rectangle(0, 16, 32, 16);
 }

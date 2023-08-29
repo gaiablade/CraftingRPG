@@ -10,7 +10,7 @@ public class PlayerInstance : IInstance
 
     #region Movement
     public const float MovementSpeed = 3.5F;
-    public Point Position = new Point();
+    public Vector2 Position = new Vector2();
     public int FacingDirection = Direction.Down;
     #endregion
 
@@ -19,11 +19,13 @@ public class PlayerInstance : IInstance
         Info = info;
     }
 
-    public Point GetPosition() => Position;
+    public Vector2 GetPosition() => Position;
 
-    public int GetDepth() => Position.Y + 64;
+    public float GetDepth() => Position.Y + 64;
 
     public Vector2 GetSize() => new Vector2(32, 64);
 
     public int GetSpriteSheetIndex() => SpriteIndex.Player1;
+
+    public Rectangle GetCollisionBox() => new Rectangle((int)Position.X, (int)Position.Y + 32 + 16, 32, 16);
 }

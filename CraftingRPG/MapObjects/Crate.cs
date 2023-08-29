@@ -9,4 +9,5 @@ public class Crate : IMapObject
     public Point GetSize() => new Point(32, 32);
 
     public int GetSpriteSheetIndex() => SpriteIndex.Crate;
+    public Rectangle GetCollisionBox() => new Rectangle(0, 16, 32, 16);
 }
