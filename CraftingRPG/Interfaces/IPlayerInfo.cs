@@ -1,6 +1,6 @@
 ﻿namespace CraftingRPG.Interfaces;
 
-internal interface IPlayer
+internal interface IPlayerInfo
 {
     protected string ToString() => "[IPlayer Default]";
 }

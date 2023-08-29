@@ -25,8 +25,9 @@ namespace CraftingRPG
         public static SpriteFont Fnt20 { get; private set; }
         public static Texture2D SpriteSheet { get; private set; }
         public static Texture2D TileSet { get; private set; }
+        public static Texture2D Pixel { get; private set; }
         public static Point Resolution { get; private set; }
-        public static Player Player { get; private set; }
+        public static PlayerInfo PlayerInfo { get; private set; }
         public static Dictionary<ItemId, IItem> ItemInfo { get; private set; }
 
         private IState CurrentState;
@@ -49,6 +50,9 @@ namespace CraftingRPG
             _graphics.PreferredBackBufferHeight = Resolution.Y;
             _graphics.ApplyChanges();
 
+            Pixel = new Texture2D(GraphicsDevice, 1, 1);
+            Pixel.SetData(new[] { Color.White });
+
             ItemInfo = new Dictionary<ItemId, IItem>
             {
                 { ItemId.EmptyBottle, new EmptyBottleItem() },
@@ -61,7 +65,7 @@ namespace CraftingRPG
                 { ItemId.IronHelmet, new IronHelmetItem() },
             };
 
-            Player = new Player();
+            PlayerInfo = new PlayerInfo();
             FramesKeysHeld = new Dictionary<Keys, int>();
             CurrentState = new MainMenuState();
             //CurrentState = new MapEditorState();

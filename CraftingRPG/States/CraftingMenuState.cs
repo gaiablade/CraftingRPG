@@ -19,7 +19,7 @@ public class CraftingMenuState : IState
 
     public CraftingMenuState()
     {
-        Recipes = GameManager.Player.RecipeBook
+        Recipes = GameManager.PlayerInfo.RecipeBook
             .Recipes
             .OrderBy(x => x.Value.GetId())
             .ToDictionary(x => x.Key, x => x.Value);
@@ -58,7 +58,7 @@ public class CraftingMenuState : IState
         {
             var itemInfo = GameManager.ItemInfo[itemId];
             var ingredientSprite = itemInfo.GetSpriteSheetIndex();
-            var playersItemCount = GameManager.Player.Inventory[itemId];
+            var playersItemCount = GameManager.PlayerInfo.Inventory[itemId];
             var color = playersItemCount >= requiredQty ? Color.White : Color.DarkGray;
             var itemsReq = $"{itemInfo.GetName()} x{requiredQty}";
             var itemsReqSize = GameManager.Fnt12.MeasureString(itemsReq);
@@ -106,7 +106,7 @@ public class CraftingMenuState : IState
 
     private bool CanRecipeBeCrafted(IRecipe recipe)
     {
-        var inventory = GameManager.Player.Inventory;
+        var inventory = GameManager.PlayerInfo.Inventory;
         var ingredientList = recipe.GetIngredients();
 
         foreach (var (itemId, requiredQty) in ingredientList)

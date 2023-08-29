@@ -15,4 +15,7 @@ public static class SpriteIndex
     public const int IronChunk = 10;
     public const int IronSword = 11;
     public const int Cursor = 12;
+    public const int Player1 = 13;
+    public const int Player2 = 14;
+    public const int Crate = 15;
 }

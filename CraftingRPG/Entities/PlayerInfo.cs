@@ -1,21 +1,17 @@
-﻿using CraftingRPG.Enums;
+﻿using CraftingRPG.Constants;
+using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Recipes;
 using Microsoft.Xna.Framework;
 
 namespace CraftingRPG.Entities;
 
-public class Player : IPlayer
+public class PlayerInfo : IPlayerInfo
 {
     public RecipeBook RecipeBook { get; private set; } = new();
     public Inventory Inventory { get; private set; } = new();
 
-    #region Movement
-    public const int MovementSpeed = 5;
-    public Point Position = new Point();
-    #endregion
-
-    public Player()
+    public PlayerInfo()
     {
         RecipeBook.AddRecipe(new SmallHealthPotionRecipe());
         RecipeBook.AddRecipe(new MediumHealthPotionRecipe());

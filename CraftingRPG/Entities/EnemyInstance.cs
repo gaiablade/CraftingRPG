@@ -1,10 +1,5 @@
 ﻿using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CraftingRPG.Entities;
 
@@ -21,4 +16,10 @@ public class EnemyInstance<T> : IEnemyInstance where T : IEnemy
 
     public IEnemy GetEnemy() => Enemy;
     public Point GetPosition() => Position;
+
+    public int GetDepth() => Position.Y + 32;
+
+    public Vector2 GetSize() => new Vector2(32, 32);
+
+    public int GetSpriteSheetIndex() => Enemy.GetSpriteSheetIndex();
 }
