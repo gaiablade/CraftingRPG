@@ -140,21 +140,7 @@ public class OverworldState : IState
             Player.Position.Y += MovementVector.Y * PlayerInstance.MovementSpeed;
         }
 
-        // check for collisions
-        var otherInstances = new List<IInstance>();
-        otherInstances.AddRange(Enemies);
-        otherInstances.AddRange(MapObjects);
-
-        foreach (var instance in otherInstances)
-        {
-            var otherColBox = instance.GetCollisionBox();
-            while (otherColBox.Intersects(Player.GetCollisionBox()))
-            {
-                Player.Position.X -= MovementVector.X;
-                Player.Position.Y -= MovementVector.Y;
-            }
-        }
-
+        DetectAndHandleCollisions();
 
         if (GameManager.FramesKeysHeld[Keys.C] == 1)
         {
@@ -163,6 +149,30 @@ public class OverworldState : IState
         else if (GameManager.FramesKeysHeld[Keys.I] == 1)
         {
             StateManager.Instance.PushState<InventoryState>(true);
+        }
+    }
+
+    private void DetectForAndHandleCollisions()
+    {
+        // TODO: eventually we would want to check for collisions on all objects that have moved on a given frame.
+        var otherInstances = new List<IInstance>();
+        otherInstances.AddRange(Enemies);
+        otherInstances.AddRange(MapObjects);
+
+        // If player's movement vector is zero, default to pushing them right
+        if (MovementVector == Vector2.Zero)
+        {
+            MovementVector = new Vector2(1, 0);
+        }
+        
+        foreach (var instance in otherInstances)
+        {
+            var otherColBox = instance.GetCollisionBox();
+            while (otherColBox.Intersects(Player.GetCollisionBox()))
+            {
+                Player.Position.X -= MovementVector.X;
+                Player.Position.Y -= MovementVector.Y;
+            }
         }
     }
 }
