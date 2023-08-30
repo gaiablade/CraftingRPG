@@ -23,7 +23,7 @@ public class OverworldState : IState
 
     public OverworldState()
     {
-        GameManager.AddKeysIfNotExists(Keys.Left, Keys.Right, Keys.Up, Keys.Down, Keys.Z, Keys.X);
+        GameManager.AddKeysIfNotExists(Keys.Left, Keys.Right, Keys.Up, Keys.Down, Keys.Z, Keys.X, Keys.C, Keys.I);
 
         Player = new PlayerInstance(GameManager.PlayerInfo);
         Player.Position = new Vector2(100, 100);
@@ -156,9 +156,13 @@ public class OverworldState : IState
         }
 
 
-        if (GameManager.FramesKeysHeld[Keys.Enter] == 1)
+        if (GameManager.FramesKeysHeld[Keys.C] == 1)
         {
             StateManager.Instance.PushState<CraftingMenuState>(true);
+        }
+        else if (GameManager.FramesKeysHeld[Keys.I] == 1)
+        {
+            StateManager.Instance.PushState<InventoryState>(true);
         }
     }
 }
