@@ -152,7 +152,7 @@ public class OverworldState : IState
         }
     }
 
-    private void DetectForAndHandleCollisions()
+    private void DetectAndHandleCollisions()
     {
         // TODO: eventually we would want to check for collisions on all objects that have moved on a given frame.
         var otherInstances = new List<IInstance>();
