@@ -46,6 +46,7 @@ public class InventoryState : IState
         DrawEquipment();
         DrawItems();
 
+        // DEBUG: Draw a separator in the center of the screen
         GameManager.SpriteBatch.Draw(GameManager.Pixel,
             new Rectangle(GameManager.Resolution.X / 2, 0, 1, GameManager.Resolution.Y),
             Color.Black);
@@ -116,6 +117,7 @@ public class InventoryState : IState
                 "x" + qty.ToString(),
                 new Vector2(gridX + 16 + col * ItemWidthAndGap, GridTop + row * ItemHeightAndGap),
                 Color.White);
+                
             col++;
             if (col == NumberOfColumns)
             {
@@ -130,8 +132,10 @@ public class InventoryState : IState
 
     public void DrawCursor(int gridX)
     {
+        var cursorX = gridX + 16 + Cursor.X * ItemWidthAndGap;
+        var cursorY = GridTop + Cursor.Y * ItemHeightAndGap;
         GameManager.SpriteBatch.Draw(GameManager.SpriteSheet,
-            new Rectangle(gridX + 16 + Cursor.X * ItemWidthAndGap, GridTop + Cursor.Y * ItemHeightAndGap, 32, 32),
+            new Rectangle(cursorX, cursorY, 32, 32),
             new Rectangle(0, SpriteIndex.Cursor * 32, 32, 32),
             Color.White);
     }
@@ -139,9 +143,9 @@ public class InventoryState : IState
     public void DrawSelectedItemName()
     {
         var cursorFlat = Cursor.Y * NumberOfColumns + Cursor.X;
-        var selectedItem = Inventory.Items.Keys.ToList()[cursorFlat];
-        var itemInfo = GameManager.ItemInfo[selectedItem];
-        var itemName = itemInfo.GetName() + " x" + Inventory[selectedItem];
+        var (itemId, qty) = Inventory.Items.ElementAt(cursorFlat);
+        var itemInfo = GameManager.ItemInfo[itemId];
+        var itemName = itemInfo.GetName() + " x" + qty;
         var itemNameSize = GameManager.Fnt12.MeasureString(itemName);
         GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
             itemName,
@@ -178,8 +182,8 @@ public class InventoryState : IState
 
     private void NormalizeCursor()
     {
-        var numberOfRows = Inventory.Items.Count / NumberOfColumns + 1;
-        while (Cursor.Y >= numberOfRows)
+        var numRows = Inventory.Items.Count / NumberOfColumns + 1;
+        while (Cursor.Y >= numRows)
         {
             Cursor.Y--;
         }
@@ -188,7 +192,7 @@ public class InventoryState : IState
             Cursor.Y = 0;
         }
         // If on last row and Cursor.X greater than number of columns in row, set to last
-        if (Cursor.Y == numberOfRows - 1)
+        if (Cursor.Y == numRows - 1)
         {
             var lastRowColumns = Inventory.Items.Count % NumberOfColumns;
             if (Cursor.X > lastRowColumns - 1)
