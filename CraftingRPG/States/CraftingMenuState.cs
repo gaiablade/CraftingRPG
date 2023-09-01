@@ -1,4 +1,5 @@
-﻿using CraftingRPG.Enums;
+﻿using CraftingRPG.Entities;
+using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
@@ -11,18 +12,16 @@ namespace CraftingRPG.States;
 
 public class CraftingMenuState : IState
 {
-    private ToState toState = ToState.NoChange;
-    public ToState GetToState() => toState;
-
     private IDictionary<RecipeId, IRecipe> Recipes;
     private int Cursor = 0;
 
     public CraftingMenuState()
     {
-        Recipes = GameManager.Player.RecipeBook
+        Recipes = GameManager.PlayerInfo.RecipeBook
             .Recipes
             .OrderBy(x => x.Value.GetId())
             .ToDictionary(x => x.Key, x => x.Value);
+        GameManager.AddKeyIfNotExists(Keys.LeftControl);
     }
 
     public void Render()
@@ -58,7 +57,7 @@ public class CraftingMenuState : IState
         {
             var itemInfo = GameManager.ItemInfo[itemId];
             var ingredientSprite = itemInfo.GetSpriteSheetIndex();
-            var playersItemCount = GameManager.Player.Inventory[itemId];
+            var playersItemCount = GameManager.PlayerInfo.Inventory[itemId];
             var color = playersItemCount >= requiredQty ? Color.White : Color.DarkGray;
             var itemsReq = $"{itemInfo.GetName()} x{requiredQty}";
             var itemsReqSize = GameManager.Fnt12.MeasureString(itemsReq);
@@ -106,7 +105,7 @@ public class CraftingMenuState : IState
 
     private bool CanRecipeBeCrafted(IRecipe recipe)
     {
-        var inventory = GameManager.Player.Inventory;
+        var inventory = GameManager.PlayerInfo.Inventory;
         var ingredientList = recipe.GetIngredients();
 
         foreach (var (itemId, requiredQty) in ingredientList)
@@ -127,6 +126,11 @@ public class CraftingMenuState : IState
         else if (GameManager.FramesKeysHeld[Keys.Up] == 1)
         {
             Cursor = CustomMath.WrapAround(Cursor - 1, 0, Recipes.Count - 1);
+        }
+
+        if (GameManager.FramesKeysHeld[Keys.LeftControl] == 1)
+        {
+            StateManager.Instance.PopState();
         }
     }
 }

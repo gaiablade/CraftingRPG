@@ -7,7 +7,7 @@ public class ItemDrop<T> : IDroppable where T : IItem, new()
     public void OnObtain()
     {
         var item = new T();
-        var player = GameManager.Player;
+        var player = GameManager.PlayerInfo;
 
         player.Inventory[item.GetId()]++;
     }

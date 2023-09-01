@@ -9,7 +9,7 @@ namespace CraftingRPG.Entities;
 
 public class Inventory
 {
-    private Dictionary<ItemId, int> Items = new();
+    public Dictionary<ItemId, int> Items = new();
 
     public int this[ItemId Id] 
     {

@@ -25,11 +25,12 @@ namespace CraftingRPG
         public static SpriteFont Fnt20 { get; private set; }
         public static Texture2D SpriteSheet { get; private set; }
         public static Texture2D TileSet { get; private set; }
+        public static Texture2D Pixel { get; private set; }
         public static Point Resolution { get; private set; }
-        public static Player Player { get; private set; }
+        public static PlayerInfo PlayerInfo { get; private set; }
         public static Dictionary<ItemId, IItem> ItemInfo { get; private set; }
 
-        private IState CurrentState;
+        public static StateManager StateManager { get; private set; } = StateManager.Instance;
 
         public GameManager()
         {
@@ -49,6 +50,9 @@ namespace CraftingRPG
             _graphics.PreferredBackBufferHeight = Resolution.Y;
             _graphics.ApplyChanges();
 
+            Pixel = new Texture2D(GraphicsDevice, 1, 1);
+            Pixel.SetData(new[] { Color.White });
+
             ItemInfo = new Dictionary<ItemId, IItem>
             {
                 { ItemId.EmptyBottle, new EmptyBottleItem() },
@@ -64,10 +68,9 @@ namespace CraftingRPG
                 { ItemId.MageBracelet, new MageBraceletItem() },
             };
 
-            Player = new Player();
+            PlayerInfo = new PlayerInfo();
             FramesKeysHeld = new Dictionary<Keys, int>();
-            //CurrentState = new MainMenuState();
-            CurrentState = new MapEditorState();
+            StateManager.PushState<MainMenuState>(true);
 
             base.Initialize();
         }
@@ -102,11 +105,8 @@ namespace CraftingRPG
                 }
             }
 
-            CurrentState.Update();
-            if (CurrentState.GetToState() != ToState.NoChange)
-            {
-                HandleStateChange();
-            }
+            StateManager.ProcessStateRequests();
+            StateManager.CurrentState.Update();
 
             base.Update(gameTime);
         }
@@ -118,33 +118,11 @@ namespace CraftingRPG
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             SpriteBatch.Begin();
 
-            CurrentState.Render();
+            StateManager.CurrentState.Render();
 
             SpriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        private void HandleStateChange()
-        {
-            var toState = CurrentState.GetToState();
-            switch (toState)
-            {
-                case ToState.MainMenu:
-                    CurrentState = new MainMenuState();
-                    break;
-                case ToState.Intro:
-                    CurrentState = new IntroState();
-                    break;
-                case ToState.Overworld:
-                    CurrentState = new OverworldState();
-                    break;
-                case ToState.CraftingMenu:
-                    CurrentState = new CraftingMenuState();
-                    break;
-                default:
-                    break;
-            }
         }
 
         public static void AddKeyIfNotExists(Keys key)

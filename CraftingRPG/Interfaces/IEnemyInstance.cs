@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace CraftingRPG.Interfaces;
 
-public interface IEnemyInstance
+public interface IEnemyInstance : IInstance
 {
-    public IEnemy GetEnemy();
-    public Point GetPosition();
+    public IEnemy GetEnemy();    
 }

@@ -1,4 +1,5 @@
-﻿using CraftingRPG.Enums;
+﻿using CraftingRPG.Entities;
+using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -7,10 +8,6 @@ namespace CraftingRPG.States;
 
 public class MainMenuState : IState
 {
-    private ToState toState = ToState.NoChange;
-
-    public ToState GetToState() => toState;
-
     public MainMenuState()
     {
         if (GameManager.FramesKeysHeld.ContainsKey(Keys.Enter))
@@ -44,7 +41,7 @@ public class MainMenuState : IState
     {
         if (GameManager.FramesKeysHeld[Keys.Enter] == 1)
         {
-            toState = ToState.Intro;
+            StateManager.Instance.PushState<IntroState>();
         }
     }
 }

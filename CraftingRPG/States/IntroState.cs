@@ -1,4 +1,5 @@
-﻿using CraftingRPG.Enums;
+﻿using CraftingRPG.Entities;
+using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -9,9 +10,6 @@ namespace CraftingRPG.States;
 
 public class IntroState : IState
 {
-    private ToState toState = ToState.NoChange;
-    public ToState GetToState() => toState;
-
     private List<string> IntroStoryLines;
 
     public IntroState()
@@ -80,7 +78,7 @@ public class IntroState : IState
     {
         if (GameManager.FramesKeysHeld[Keys.Enter] == 1)
         {
-            toState = ToState.Overworld;
+            StateManager.Instance.PushState<OverworldState>();
         }
     }
 }

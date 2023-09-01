@@ -1,5 +1,4 @@
-﻿using CraftingRPG.Constants;
-using CraftingRPG.Entities;
+﻿using CraftingRPG.Entities;
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Items;

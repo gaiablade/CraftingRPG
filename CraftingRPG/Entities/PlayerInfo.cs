@@ -1,21 +1,19 @@
-﻿using CraftingRPG.Enums;
+﻿using CraftingRPG.Constants;
+using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
+using CraftingRPG.Items;
 using CraftingRPG.Recipes;
 using Microsoft.Xna.Framework;
 
 namespace CraftingRPG.Entities;
 
-public class Player : IPlayer
+public class PlayerInfo : IPlayerInfo
 {
     public RecipeBook RecipeBook { get; private set; } = new();
     public Inventory Inventory { get; private set; } = new();
+    public PlayerEquipment Equipment { get; private set; } = new();
 
-    #region Movement
-    public const int MovementSpeed = 5;
-    public Point Position = new Point();
-    #endregion
-
-    public Player()
+    public PlayerInfo()
     {
         RecipeBook.AddRecipe(new SmallHealthPotionRecipe());
         RecipeBook.AddRecipe(new MediumHealthPotionRecipe());
@@ -25,5 +23,12 @@ public class Player : IPlayer
         Inventory[ItemId.EmptyBottle] = 4;
         Inventory[ItemId.HealingMushroom] = 10;
         Inventory[ItemId.IronChunk] = 15;
+        Inventory[ItemId.IronSword] = 1;
+        Inventory[ItemId.MediumHealthPotion] = 30;
+        Inventory[ItemId.SmallHealthPotion] = 100;
+        Inventory[ItemId.IronHelmet] = 2;
+
+        Equipment.Weapon = new IronSwordItem();
+        Equipment.Helmet = new IronHelmetItem();
     }
 }

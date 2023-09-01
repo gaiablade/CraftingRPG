@@ -1,5 +1,6 @@
 ﻿using CraftingRPG.Entities;
 using CraftingRPG.Enums;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
 namespace CraftingRPG.Interfaces;
@@ -10,4 +11,5 @@ public interface IEnemy
     public string GetName();
     public List<EnemyDrop> GetDropTable();
     public int GetSpriteSheetIndex();
+    public Rectangle GetCollisionBox();
 }
