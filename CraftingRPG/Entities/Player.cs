@@ -20,6 +20,7 @@ public class Player : IPlayer
         RecipeBook.AddRecipe(new SmallHealthPotionRecipe());
         RecipeBook.AddRecipe(new MediumHealthPotionRecipe());
         RecipeBook.AddRecipe(new IronSwordRecipe());
+        RecipeBook.AddRecipe(new MageBraceletRecipe());
 
         Inventory[ItemId.EmptyBottle] = 4;
         Inventory[ItemId.HealingMushroom] = 10;

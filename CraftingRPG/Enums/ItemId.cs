@@ -16,5 +16,8 @@ public enum ItemId
     MediumHealthPotion,
     IronSword,
     IronChunk,
-    IronHelmet
+    IronHelmet,
+    MageBracelet,
+    IronBand,
+    ArcaneFlower
 }

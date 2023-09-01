@@ -6,5 +6,6 @@ public enum RecipeId
     SmallHealthPotion,
     MediumHealthPotion,
     IronSword,
-    IronHelmet
+    IronHelmet,
+    MageBracelet
 }

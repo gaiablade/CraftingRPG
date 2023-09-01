@@ -59,12 +59,15 @@ namespace CraftingRPG
                 { ItemId.IronSword, new IronSwordItem() },
                 { ItemId.IronChunk, new IronChunkItem() },
                 { ItemId.IronHelmet, new IronHelmetItem() },
+                { ItemId.IronBand, new IronBandItem() },
+                { ItemId.ArcaneFlower, new ArcaneFlowerItem() },
+                { ItemId.MageBracelet, new MageBraceletItem() },
             };
 
             Player = new Player();
             FramesKeysHeld = new Dictionary<Keys, int>();
-            CurrentState = new MainMenuState();
-            //CurrentState = new MapEditorState();
+            //CurrentState = new MainMenuState();
+            CurrentState = new MapEditorState();
 
             base.Initialize();
         }
