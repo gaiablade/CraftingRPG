@@ -7,11 +7,13 @@ public class EnemyInstance<T> : IEnemyInstance where T : IEnemy
 {
     public T Enemy { get; set; }
     public Vector2 Position { get; set; }
+    public int CurrentHitPoints { get; set; }
 
     public EnemyInstance(T instance, Vector2 position)
     {
         Enemy = instance;
         Position = position;
+        CurrentHitPoints = Enemy.GetMaxHitPoints();
     }
 
     public IEnemy GetEnemy() => Enemy;
@@ -29,5 +31,15 @@ public class EnemyInstance<T> : IEnemyInstance where T : IEnemy
         return new Rectangle((int)Position.X + localColBox.X, 
             (int)Position.Y + localColBox.Y, 
             localColBox.Width, localColBox.Height);
+    }
+
+    public int GetCurrentHitPoints() => CurrentHitPoints;
+
+    public bool IncurDamage(int damage)
+    {
+        CurrentHitPoints -= damage;
+        if (CurrentHitPoints > 0)
+            return false;
+        return true;
     }
 }

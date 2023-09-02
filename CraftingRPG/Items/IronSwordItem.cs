@@ -5,8 +5,10 @@ using System.Collections.Generic;
 
 namespace CraftingRPG.Items;
 
-public class IronSwordItem : IItem
+public class IronSwordItem : IWeapon
 {
+    public int GetAttackStat() => 20;
+
     public ItemId GetId() => ItemId.IronSword;
 
     public ISet<ItemCategory> GetItemCategories() => new HashSet<ItemCategory>

@@ -12,4 +12,5 @@ public interface IEnemy
     public List<EnemyDrop> GetDropTable();
     public int GetSpriteSheetIndex();
     public Rectangle GetCollisionBox();
+    public int GetMaxHitPoints();
 }

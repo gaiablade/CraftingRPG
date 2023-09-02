@@ -1,7 +1,6 @@
 ﻿using CraftingRPG.Constants;
 using CraftingRPG.Enemies;
 using CraftingRPG.Entities;
-using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using CraftingRPG.MapObjects;
 using CraftingRPG.Utility;
@@ -19,7 +18,12 @@ public class OverworldState : IState
     private PlayerInstance Player;
     private List<IEnemyInstance> Enemies;
     private List<IInstance> MapObjects;
+    private List<IDropInstance> Drops;
     private Vector2 MovementVector;
+    private bool IsAttacking = false;
+    private int AttackFrame = 0;
+    private Rectangle AttackRect;
+    private List<IEnemyInstance> AttackedEnemies = new();
 
     public OverworldState()
     {
@@ -42,6 +46,8 @@ public class OverworldState : IState
                 Random.Shared.Next() % GameManager.Resolution.X,
                 Random.Shared.Next() % GameManager.Resolution.Y)));
         }
+
+        Drops = new();
     }
 
     public void Render()
@@ -49,6 +55,7 @@ public class OverworldState : IState
         var instances = new List<IInstance>();
         instances.AddRange(Enemies);
         instances.AddRange(MapObjects);
+        instances.AddRange(Drops);
         instances.Add(Player);
 
         instances.Sort((x, y) => x.GetDepth().CompareTo(y.GetDepth()));
@@ -93,9 +100,32 @@ public class OverworldState : IState
             origin: new Vector2(16, 16),
             effects: SpriteEffects.None,
             layerDepth: 0);
+
+        if (IsAttacking)
+        {
+            GameManager.SpriteBatch.Draw(GameManager.Pixel,
+                AttackRect,
+                Color.Red);
+        }
     }
 
     public void Update()
+    {
+        DetectAndHandleMovement();
+        DetectAndHandleCollisions();
+        DetectAndHandleAttack();
+
+        if (GameManager.FramesKeysHeld[Keys.C] == 1)
+        {
+            StateManager.Instance.PushState<CraftingMenuState>(true);
+        }
+        else if (GameManager.FramesKeysHeld[Keys.I] == 1)
+        {
+            StateManager.Instance.PushState<InventoryState>(true);
+        }
+    }
+
+    private void DetectAndHandleMovement()
     {
         MovementVector = Vector2.Zero;
         if (GameManager.FramesKeysHeld[Keys.Right] > 0)
@@ -119,36 +149,29 @@ public class OverworldState : IState
         {
             MovementVector = CustomMath.UnitVector(MovementVector);
 
-            if (MovementVector.Y > 0)
+            // If player is attacking, lock their facing direction
+            if (!IsAttacking)
             {
-                Player.FacingDirection = Direction.Down;
-            }
-            else if (MovementVector.Y < 0)
-            {
-                Player.FacingDirection = Direction.Up;
-            }
-            else if (MovementVector.X > 0)
-            {
-                Player.FacingDirection = Direction.Right;
-            }
-            else if (MovementVector.X < 0)
-            {
-                Player.FacingDirection = Direction.Left;
+                if (MovementVector.Y > 0)
+                {
+                    Player.FacingDirection = Direction.Down;
+                }
+                else if (MovementVector.Y < 0)
+                {
+                    Player.FacingDirection = Direction.Up;
+                }
+                else if (MovementVector.X > 0)
+                {
+                    Player.FacingDirection = Direction.Right;
+                }
+                else if (MovementVector.X < 0)
+                {
+                    Player.FacingDirection = Direction.Left;
+                }
             }
 
             Player.Position.X += MovementVector.X * PlayerInstance.MovementSpeed;
             Player.Position.Y += MovementVector.Y * PlayerInstance.MovementSpeed;
-        }
-
-        DetectAndHandleCollisions();
-
-        if (GameManager.FramesKeysHeld[Keys.C] == 1)
-        {
-            StateManager.Instance.PushState<CraftingMenuState>(true);
-        }
-        else if (GameManager.FramesKeysHeld[Keys.I] == 1)
-        {
-            StateManager.Instance.PushState<InventoryState>(true);
         }
     }
 
@@ -174,5 +197,70 @@ public class OverworldState : IState
                 Player.Position.Y -= MovementVector.Y;
             }
         }
+    }
+
+    private void DetectAndHandleAttack()
+    {
+        if (IsAttacking)
+        {
+            // Check if attack collides with any enemies
+            CalculateAttackHitbox();
+            foreach (var inst in Enemies)
+            {
+                if (!AttackedEnemies.Contains(inst) && inst.GetCollisionBox().Intersects(AttackRect))
+                {
+                    var damage = Player.Info.Equipment.Weapon.GetAttackStat();
+                    var isDefeated = inst.IncurDamage(damage);
+                    if (!isDefeated)
+                    {
+                        AttackedEnemies.Add(inst);
+                    }
+                    else
+                    {
+                        // drop items
+                        var dropTable = inst.GetEnemy().GetDropTable();
+                        foreach (var possibleDrop in dropTable)
+                        {
+                            var ran = Random.Shared.Next() % 100;
+                            if (ran < possibleDrop.DropRate)
+                            {
+                                var drop = possibleDrop.Drop;
+                                Debug.WriteLine("Dropped an item.");
+                                Drops.Add(new DropInstance(drop));
+                            }
+                        }
+                    }
+                }
+            }
+            Enemies.RemoveAll(x => x.GetCurrentHitPoints() <= 0);
+
+            AttackFrame++;
+            if (AttackFrame > 30)
+            {
+                IsAttacking = false;
+                AttackFrame = 0;
+                AttackedEnemies.Clear();
+            }
+        }
+        else
+        {
+            if (GameManager.FramesKeysHeld[Keys.Z] == 1)
+            {
+                IsAttacking = true;
+                CalculateAttackHitbox();
+            }
+        }
+    }
+
+    private void CalculateAttackHitbox()
+    {
+        AttackRect = Player.FacingDirection switch
+        {
+            Direction.Left => new Rectangle((int)Player.Position.X - 32, (int)Player.Position.Y + 16, 32, 32),
+            Direction.Right => new Rectangle((int)Player.Position.X + 32, (int)Player.Position.Y + 16, 32, 32),
+            Direction.Up => new Rectangle((int)Player.Position.X, (int)Player.Position.Y - 32, 32, 32),
+            Direction.Down => new Rectangle((int)Player.Position.X, (int)Player.Position.Y + 64, 32, 32),
+            _ => new Rectangle()
+        };
     }
 }
