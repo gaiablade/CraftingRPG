@@ -15,4 +15,6 @@ public class SmallHealthPotionRecipe : IRecipe
         { ItemId.EmptyBottle, 1 },
         { ItemId.HealingMushroom, 2 }
     };
+
+    public string GetName() => "Small Health Potion";
 }

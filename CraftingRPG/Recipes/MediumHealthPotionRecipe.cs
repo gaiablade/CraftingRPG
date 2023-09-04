@@ -20,4 +20,6 @@ public class MediumHealthPotionRecipe : IRecipe
         { ItemId.HealingMushroom, 1 },
         { ItemId.HeartyFlower, 1 }
     };
+
+    public string GetName() => "Medium Health Potion";
 }

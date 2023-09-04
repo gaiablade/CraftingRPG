@@ -25,6 +25,8 @@ public class PlayerInstance : IInstance
 
     public Vector2 GetSize() => new Vector2(32, 64);
 
+    public Rectangle GetBounds() => new Rectangle((int)Position.X, (int)Position.Y, (int)GetSize().X, (int)GetSize().Y);
+
     public int GetSpriteSheetIndex() => SpriteIndex.Player1;
 
     public Rectangle GetCollisionBox() => new Rectangle((int)Position.X, (int)Position.Y + 32 + 16, 32, 16);

@@ -15,4 +15,6 @@ public class IronHelmetRecipe : IRecipe
     {
         { ItemId.IronChunk, 2 }
     };
+
+    public string GetName() => "Iron Helmet";
 }

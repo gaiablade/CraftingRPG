@@ -13,8 +13,8 @@ public class GreenSlime : IEnemy
 {
     public List<EnemyDrop> GetDropTable() => new List<EnemyDrop>
     {
-        new EnemyDrop(100, new ItemDrop<IronChunkItem>()),
-        new EnemyDrop(10, new RecipeDrop<IronHelmetRecipe>())
+        new EnemyDrop(10, new ItemDrop<IronChunkItem>()),
+        new EnemyDrop(100, new RecipeDrop<IronHelmetRecipe>())
     };
 
     public EnemyId GetId() => EnemyId.GreenSlime;

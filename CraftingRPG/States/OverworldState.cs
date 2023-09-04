@@ -10,6 +10,9 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+
+// I love you
 
 namespace CraftingRPG.States;
 
@@ -24,6 +27,9 @@ public class OverworldState : IState
     private int AttackFrame = 0;
     private Rectangle AttackRect;
     private List<IEnemyInstance> AttackedEnemies = new();
+    private bool IsAboveDrop = false;
+    private List<IDropInstance> DropsBelowPlayer;
+    private bool ActionKeyPressed = false;
 
     public OverworldState()
     {
@@ -59,6 +65,13 @@ public class OverworldState : IState
         instances.Add(Player);
 
         instances.Sort((x, y) => x.GetDepth().CompareTo(y.GetDepth()));
+
+        if (IsAttacking)
+        {
+            GameManager.SpriteBatch.Draw(GameManager.Pixel,
+                AttackRect,
+                Color.Red);
+        }
 
         foreach (var instance in instances)
         {
@@ -101,19 +114,30 @@ public class OverworldState : IState
             effects: SpriteEffects.None,
             layerDepth: 0);
 
-        if (IsAttacking)
+        if (DropsBelowPlayer.Count > 0)
         {
             GameManager.SpriteBatch.Draw(GameManager.Pixel,
-                AttackRect,
-                Color.Red);
+                new Rectangle(0, 0, GameManager.Resolution.X, 50),
+                new Color(0, 0, 0, 150));
+
+            var dropName = DropsBelowPlayer.First().GetDroppable().GetName();
+            var dropNameSize = GameManager.Fnt15.MeasureString(dropName);
+            GameManager.SpriteBatch.DrawString(GameManager.Fnt15,
+                dropName,
+                new Vector2(GameManager.Resolution.X / 2 - dropNameSize.X / 2, 50 / 2 - dropNameSize.Y / 2),
+                Color.White);
         }
     }
 
     public void Update()
     {
+        DetectAndHandleInput();
         DetectAndHandleMovement();
         DetectAndHandleCollisions();
+        DetectAndHandleDropPickupEvent();
         DetectAndHandleAttack();
+
+        IsAboveDrop = IsPlayerAboveDropInstance(out DropsBelowPlayer);
 
         if (GameManager.FramesKeysHeld[Keys.C] == 1)
         {
@@ -123,6 +147,11 @@ public class OverworldState : IState
         {
             StateManager.Instance.PushState<InventoryState>(true);
         }
+    }
+
+    private void DetectAndHandleInput()
+    {
+        ActionKeyPressed = GameManager.FramesKeysHeld[Keys.Z] == 1;
     }
 
     private void DetectAndHandleMovement()
@@ -199,12 +228,25 @@ public class OverworldState : IState
         }
     }
 
+    private void DetectAndHandleDropPickupEvent()
+    {
+        if (ActionKeyPressed && IsAboveDrop)
+        {
+            var drop = DropsBelowPlayer.First();
+            drop.GetDroppable().OnObtain();
+            DropsBelowPlayer.Remove(drop);
+            Drops.Remove(drop);
+            ActionKeyPressed = false;
+        }
+    }
+
     private void DetectAndHandleAttack()
     {
         if (IsAttacking)
         {
             // Check if attack collides with any enemies
             CalculateAttackHitbox();
+
             foreach (var inst in Enemies)
             {
                 if (!AttackedEnemies.Contains(inst) && inst.GetCollisionBox().Intersects(AttackRect))
@@ -217,16 +259,14 @@ public class OverworldState : IState
                     }
                     else
                     {
-                        // drop items
                         var dropTable = inst.GetEnemy().GetDropTable();
                         foreach (var possibleDrop in dropTable)
                         {
                             var ran = Random.Shared.Next() % 100;
                             if (ran < possibleDrop.DropRate)
                             {
-                                var drop = possibleDrop.Drop;
-                                Debug.WriteLine("Dropped an item.");
-                                Drops.Add(new DropInstance(drop));
+                                var dropInstance = new DropInstance(possibleDrop.Drop, inst.GetPosition());
+                                Drops.Add(dropInstance);
                             }
                         }
                     }
@@ -244,10 +284,11 @@ public class OverworldState : IState
         }
         else
         {
-            if (GameManager.FramesKeysHeld[Keys.Z] == 1)
+            if (ActionKeyPressed)
             {
                 IsAttacking = true;
                 CalculateAttackHitbox();
+                ActionKeyPressed = false;
             }
         }
     }
@@ -258,9 +299,28 @@ public class OverworldState : IState
         {
             Direction.Left => new Rectangle((int)Player.Position.X - 32, (int)Player.Position.Y + 16, 32, 32),
             Direction.Right => new Rectangle((int)Player.Position.X + 32, (int)Player.Position.Y + 16, 32, 32),
-            Direction.Up => new Rectangle((int)Player.Position.X, (int)Player.Position.Y - 32, 32, 32),
+            Direction.Up => new Rectangle((int)Player.Position.X, (int)Player.Position.Y, 32, 32),
             Direction.Down => new Rectangle((int)Player.Position.X, (int)Player.Position.Y + 64, 32, 32),
             _ => new Rectangle()
         };
+    }
+
+    private bool IsPlayerAboveDropInstance(out List<IDropInstance> drops)
+    {
+        drops = new List<IDropInstance>();
+
+        var playerBounds = Player.GetBounds();
+
+        foreach (var dropInstance in Drops)
+        {
+            var pos = dropInstance.GetPosition();
+            var dropBounds = new Rectangle((int)pos.X, (int)pos.Y, 32, 32);
+            if (dropBounds.Intersects(playerBounds))
+            {
+                drops.Add(dropInstance);
+            }
+        }
+
+        return drops.Count > 0;
     }
 }

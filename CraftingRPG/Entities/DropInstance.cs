@@ -14,6 +14,12 @@ public class DropInstance : IDropInstance
         Drop = inst;
     }
 
+    public DropInstance(IDroppable inst, Vector2 pos)
+    {
+        Position = pos;
+        Drop = inst;
+    }
+
     public Rectangle GetCollisionBox() => new Rectangle(0, 0, 0, 0);
 
     public float GetDepth() => -1;
@@ -24,5 +30,5 @@ public class DropInstance : IDropInstance
 
     public Vector2 GetSize() => new Vector2(32, 32);
 
-    public int GetSpriteSheetIndex() => SpriteIndex.QuestionMark;
+    public int GetSpriteSheetIndex() => Drop.GetSpriteSheetIndex();
 }

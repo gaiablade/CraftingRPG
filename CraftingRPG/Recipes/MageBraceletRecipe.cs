@@ -15,4 +15,6 @@ public class MageBraceletRecipe : IRecipe
         { ItemId.IronBand, 1 },
         { ItemId.ArcaneFlower, 2 }
     };
+
+    public string GetName() => "Mage Bracelet";
 }
