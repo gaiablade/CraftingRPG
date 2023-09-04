@@ -34,7 +34,8 @@ public class OverworldState : IState
 
     public OverworldState()
     {
-        GameManager.AddKeysIfNotExists(Keys.Left, Keys.Right, Keys.Up, Keys.Down, Keys.Z, Keys.X, Keys.C, Keys.I);
+        GameManager.AddKeysIfNotExists(Keys.Left, Keys.Right, Keys.Up, Keys.Down, Keys.Z, Keys.X, Keys.C, Keys.I,
+            Keys.Q);
 
         Player = new PlayerInstance(GameManager.PlayerInfo);
         Player.Position = new Vector2(100, 100);
@@ -165,6 +166,10 @@ public class OverworldState : IState
         else if (GameManager.FramesKeysHeld[Keys.I] == 1)
         {
             StateManager.Instance.PushState<InventoryState>(true);
+        }
+        else if (GameManager.FramesKeysHeld[Keys.Q] == 1)
+        {
+            StateManager.Instance.PushState<QuestMenuState>(true);
         }
     }
 

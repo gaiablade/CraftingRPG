@@ -1,5 +1,8 @@
-﻿using CraftingRPG.Interfaces;
+﻿using CraftingRPG.Enums;
+using CraftingRPG.Interfaces;
 using CraftingRPG.Items;
+using CraftingRPG.Quests;
+using System.Collections.Generic;
 
 namespace CraftingRPG.Entities;
 
@@ -8,18 +11,15 @@ public class PlayerInfo : IPlayerInfo
     public RecipeBook RecipeBook { get; private set; } = new();
     public Inventory Inventory { get; private set; } = new();
     public PlayerEquipment Equipment { get; private set; } = new();
+    public List<IQuestInstance> Quests { get; private set; } = new();
 
     public PlayerInfo()
     {
-        //Inventory[ItemId.EmptyBottle] = 4;
-        //Inventory[ItemId.HealingMushroom] = 10;
-        //Inventory[ItemId.IronChunk] = 15;
-        //Inventory[ItemId.IronSword] = 1;
-        //Inventory[ItemId.MediumHealthPotion] = 30;
-        //Inventory[ItemId.SmallHealthPotion] = 100;
-        //Inventory[ItemId.IronHelmet] = 2;
-
         Equipment.Weapon = new IronSwordItem();
         Equipment.Helmet = new IronHelmetItem();
+
+        var mushroomQuest = new FetchQuestInstance(new FetchQuestMushrooms());
+        mushroomQuest.AddCollectedItem(ItemId.HealingMushroom, 9);
+        Quests.Add(mushroomQuest);
     }
 }
