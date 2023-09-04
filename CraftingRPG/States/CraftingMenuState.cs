@@ -4,7 +4,6 @@ using CraftingRPG.Interfaces;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,59 +27,63 @@ public class CraftingMenuState : IState
     {
         DrawRecipeList();
 
-        var selection = Recipes.ElementAt(Cursor);
-        var recipe = selection.Value;
-
-        var craftedItem = GameManager.ItemInfo[recipe.GetCraftedItem()];
-        var name = craftedItem.GetName();
-
-        var sprite = craftedItem.GetSpriteSheetIndex();
-        GameManager.SpriteBatch.Draw(GameManager.SpriteSheet, 
-            new Rectangle(GameManager.Resolution.X / 2 + 20, 10, 32, 32), 
-            new Rectangle(0, sprite * 32, 32, 32), 
-            Color.White);
-
-        var nameSize = GameManager.DefaultFont.MeasureString(name);
-        GameManager.SpriteBatch.DrawString(GameManager.DefaultFont, 
-            name, 
-            new Vector2(GameManager.Resolution.X / 2 + 20 + 32, 10 + 16 - nameSize.Y / 2), 
-            Color.White);
-
-        GameManager.SpriteBatch.DrawString(GameManager.DefaultFont,
-            "Ingredients:",
-            new Vector2(GameManager.Resolution.X / 2 + 20, 10 + nameSize.Y + 30),
-            Color.White);
-
-        var ingredients = recipe.GetIngredients();
-        var i = 0;
-        foreach (var (itemId, requiredQty) in ingredients)
+        if (Recipes.Count > 0)
         {
-            var itemInfo = GameManager.ItemInfo[itemId];
-            var ingredientSprite = itemInfo.GetSpriteSheetIndex();
-            var playersItemCount = GameManager.PlayerInfo.Inventory[itemId];
-            var color = playersItemCount >= requiredQty ? Color.White : Color.DarkGray;
-            var itemsReq = $"{itemInfo.GetName()} x{requiredQty}";
-            var itemsReqSize = GameManager.Fnt12.MeasureString(itemsReq);
-            GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
-                itemsReq,
-                new Vector2(GameManager.Resolution.X / 2 + 20, 10 + nameSize.Y + 30 + nameSize.Y + 20 + (10 + nameSize.Y) * i + 16 - nameSize.Y / 2),
-                color);
+
+            var selection = Recipes.ElementAt(Cursor);
+            var recipe = selection.Value;
+
+            var craftedItem = GameManager.ItemInfo[recipe.GetCraftedItem()];
+            var name = craftedItem.GetName();
+
+            var sprite = craftedItem.GetSpriteSheetIndex();
             GameManager.SpriteBatch.Draw(GameManager.SpriteSheet,
-                new Rectangle((int)(GameManager.Resolution.X / 2 + 20 + itemsReqSize.X + 10), (int)(10 + nameSize.Y + 30 + nameSize.Y + 20 + (10 + nameSize.Y) * i), 32, 32),
-                new Rectangle(0, 32 * ingredientSprite, 32, 32),
-                color);
+                new Rectangle(GameManager.Resolution.X / 2 + 20, 10, 32, 32),
+                new Rectangle(0, sprite * 32, 32, 32),
+                Color.White);
 
-            if (playersItemCount > 0)
+            var nameSize = GameManager.DefaultFont.MeasureString(name);
+            GameManager.SpriteBatch.DrawString(GameManager.DefaultFont,
+                name,
+                new Vector2(GameManager.Resolution.X / 2 + 20 + 32, 10 + 16 - nameSize.Y / 2),
+                Color.White);
+
+            GameManager.SpriteBatch.DrawString(GameManager.DefaultFont,
+                "Ingredients:",
+                new Vector2(GameManager.Resolution.X / 2 + 20, 10 + nameSize.Y + 30),
+                Color.White);
+
+            var ingredients = recipe.GetIngredients();
+            var i = 0;
+            foreach (var (itemId, requiredQty) in ingredients)
             {
-                var playersItemCountDisplay = $"({playersItemCount})";
-                var itemCountDisplaySize = GameManager.Fnt12.MeasureString(playersItemCountDisplay);
+                var itemInfo = GameManager.ItemInfo[itemId];
+                var ingredientSprite = itemInfo.GetSpriteSheetIndex();
+                var playersItemCount = GameManager.PlayerInfo.Inventory[itemId];
+                var color = playersItemCount >= requiredQty ? Color.White : Color.DarkGray;
+                var itemsReq = $"{itemInfo.GetName()} x{requiredQty}";
+                var itemsReqSize = GameManager.Fnt12.MeasureString(itemsReq);
                 GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
-                    playersItemCountDisplay,
-                    new Vector2((int)(GameManager.Resolution.X / 2 + 20 + itemsReqSize.X + 10) + 40, 10 + nameSize.Y + 30 + nameSize.Y + 20 + (10 + nameSize.Y) * i + 16 - nameSize.Y / 2),
-                    Color.White);
-            }
+                    itemsReq,
+                    new Vector2(GameManager.Resolution.X / 2 + 20, 10 + nameSize.Y + 30 + nameSize.Y + 20 + (10 + nameSize.Y) * i + 16 - nameSize.Y / 2),
+                    color);
+                GameManager.SpriteBatch.Draw(GameManager.SpriteSheet,
+                    new Rectangle((int)(GameManager.Resolution.X / 2 + 20 + itemsReqSize.X + 10), (int)(10 + nameSize.Y + 30 + nameSize.Y + 20 + (10 + nameSize.Y) * i), 32, 32),
+                    new Rectangle(0, 32 * ingredientSprite, 32, 32),
+                    color);
 
-            i++;
+                if (playersItemCount > 0)
+                {
+                    var playersItemCountDisplay = $"({playersItemCount})";
+                    var itemCountDisplaySize = GameManager.Fnt12.MeasureString(playersItemCountDisplay);
+                    GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
+                        playersItemCountDisplay,
+                        new Vector2((int)(GameManager.Resolution.X / 2 + 20 + itemsReqSize.X + 10) + 40, 10 + nameSize.Y + 30 + nameSize.Y + 20 + (10 + nameSize.Y) * i + 16 - nameSize.Y / 2),
+                        Color.White);
+                }
+
+                i++;
+            }
         }
     }
 

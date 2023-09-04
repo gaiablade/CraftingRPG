@@ -70,7 +70,7 @@ namespace CraftingRPG
 
             PlayerInfo = new PlayerInfo();
             FramesKeysHeld = new Dictionary<Keys, int>();
-            StateManager.PushState<MainMenuState>(true);
+            StateManager.PushState<OverworldState>(true);
 
             base.Initialize();
         }

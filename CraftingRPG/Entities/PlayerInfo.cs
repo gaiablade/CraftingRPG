@@ -15,18 +15,13 @@ public class PlayerInfo : IPlayerInfo
 
     public PlayerInfo()
     {
-        RecipeBook.AddRecipe(new SmallHealthPotionRecipe());
-        RecipeBook.AddRecipe(new MediumHealthPotionRecipe());
-        RecipeBook.AddRecipe(new IronSwordRecipe());
-        RecipeBook.AddRecipe(new MageBraceletRecipe());
-
-        Inventory[ItemId.EmptyBottle] = 4;
-        Inventory[ItemId.HealingMushroom] = 10;
-        Inventory[ItemId.IronChunk] = 15;
-        Inventory[ItemId.IronSword] = 1;
-        Inventory[ItemId.MediumHealthPotion] = 30;
-        Inventory[ItemId.SmallHealthPotion] = 100;
-        Inventory[ItemId.IronHelmet] = 2;
+        //Inventory[ItemId.EmptyBottle] = 4;
+        //Inventory[ItemId.HealingMushroom] = 10;
+        //Inventory[ItemId.IronChunk] = 15;
+        //Inventory[ItemId.IronSword] = 1;
+        //Inventory[ItemId.MediumHealthPotion] = 30;
+        //Inventory[ItemId.SmallHealthPotion] = 100;
+        //Inventory[ItemId.IronHelmet] = 2;
 
         Equipment.Weapon = new IronSwordItem();
         Equipment.Helmet = new IronHelmetItem();

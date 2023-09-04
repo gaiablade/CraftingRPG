@@ -104,30 +104,33 @@ public class InventoryState : IState
             new Rectangle(gridX, GridTop - 16, gridMaxW, 32 + 8 * 32), 
             Color.Red);
 
-        var row = 0;
-        var col = 0;
-        foreach (var (itemId, qty) in Inventory.Items)
+        if (Inventory.Items.Count > 0)
         {
-            var itemInfo = GameManager.ItemInfo[itemId];
-            GameManager.SpriteBatch.Draw(GameManager.SpriteSheet,
-                new Rectangle(gridX + 16 + col * ItemWidthAndGap, GridTop + row * ItemHeightAndGap, 32, 32),
-                new Rectangle(0, itemInfo.GetSpriteSheetIndex() * 32, 32, 32),
-                Color.White);
-            GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
-                "x" + qty.ToString(),
-                new Vector2(gridX + 16 + col * ItemWidthAndGap, GridTop + row * ItemHeightAndGap),
-                Color.White);
-                
-            col++;
-            if (col == NumberOfColumns)
+            var row = 0;
+            var col = 0;
+            foreach (var (itemId, qty) in Inventory.Items)
             {
-                col = 0;
-                row++;
-            }
-        }
+                var itemInfo = GameManager.ItemInfo[itemId];
+                GameManager.SpriteBatch.Draw(GameManager.SpriteSheet,
+                    new Rectangle(gridX + 16 + col * ItemWidthAndGap, GridTop + row * ItemHeightAndGap, 32, 32),
+                    new Rectangle(0, itemInfo.GetSpriteSheetIndex() * 32, 32, 32),
+                    Color.White);
+                GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
+                    "x" + qty.ToString(),
+                    new Vector2(gridX + 16 + col * ItemWidthAndGap, GridTop + row * ItemHeightAndGap),
+                    Color.White);
 
-        DrawCursor(gridX);
-        DrawSelectedItemName();
+                col++;
+                if (col == NumberOfColumns)
+                {
+                    col = 0;
+                    row++;
+                }
+            }
+
+            DrawCursor(gridX);
+            DrawSelectedItemName();
+        }
     }
 
     public void DrawCursor(int gridX)

@@ -30,6 +30,7 @@ public class OverworldState : IState
     private bool IsAboveDrop = false;
     private List<IDropInstance> DropsBelowPlayer;
     private bool ActionKeyPressed = false;
+    private OverworldMap CurrentMap;
 
     public OverworldState()
     {
@@ -37,6 +38,8 @@ public class OverworldState : IState
 
         Player = new PlayerInstance(GameManager.PlayerInfo);
         Player.Position = new Vector2(100, 100);
+
+        CurrentMap = OverworldMap.FromFile("Maps/Map01.json");
 
         Enemies = new List<IEnemyInstance>
         {
@@ -46,13 +49,6 @@ public class OverworldState : IState
         };
 
         MapObjects = new();
-        for (int i = 0; i < 10; i++)
-        {
-            MapObjects.Add(new MapObjectInstance<Crate>(new Vector2(
-                Random.Shared.Next() % GameManager.Resolution.X,
-                Random.Shared.Next() % GameManager.Resolution.Y)));
-        }
-
         Drops = new();
     }
 
@@ -65,6 +61,8 @@ public class OverworldState : IState
         instances.Add(Player);
 
         instances.Sort((x, y) => x.GetDepth().CompareTo(y.GetDepth()));
+
+        DrawMap();
 
         if (IsAttacking)
         {
@@ -126,6 +124,23 @@ public class OverworldState : IState
                 dropName,
                 new Vector2(GameManager.Resolution.X / 2 - dropNameSize.X / 2, 50 / 2 - dropNameSize.Y / 2),
                 Color.White);
+        }
+    }
+
+    private void DrawMap()
+    {
+        for (int y = 0; y < CurrentMap.Height; y++)
+        {
+            for (int x = 0; x < CurrentMap.Width; x++)
+            {
+                if (CurrentMap.Tiles[y][x] != -1)
+                {
+                    GameManager.SpriteBatch.Draw(GameManager.TileSet,
+                        new Rectangle(32 * x, 32 * y, 32, 32),
+                        new Rectangle(0, 32 * CurrentMap.Tiles[y][x], 32, 32),
+                        Color.White);
+                }
+            }
         }
     }
 
@@ -217,6 +232,7 @@ public class OverworldState : IState
             MovementVector = new Vector2(1, 0);
         }
         
+        // Check collision with other instance, e.g. enemies and objects
         foreach (var instance in otherInstances)
         {
             var otherColBox = instance.GetCollisionBox();
@@ -224,6 +240,20 @@ public class OverworldState : IState
             {
                 Player.Position.X -= MovementVector.X;
                 Player.Position.Y -= MovementVector.Y;
+            }
+        }
+        // Check collision with solid map tiles
+        var tiles = GetTilesBelowPlayer();
+        foreach (var tile in tiles)
+        {
+            if (CurrentMap.CollisionMap[tile.Y][tile.X] == 2)
+            {
+                var tileCollisionBox = new Rectangle(tile.X * 32, tile.Y * 32, 32, 32);
+                while (tileCollisionBox.Intersects(Player.GetCollisionBox()))
+                {
+                    Player.Position.X -= MovementVector.X;
+                    Player.Position.Y -= MovementVector.Y;
+                }
             }
         }
     }
@@ -322,5 +352,18 @@ public class OverworldState : IState
         }
 
         return drops.Count > 0;
+    }
+
+    private HashSet<Point> GetTilesBelowPlayer()
+    {
+        var tiles = new HashSet<Point>();
+        var pcb = Player.GetCollisionBox();
+
+        tiles.Add(new(pcb.X / 32, pcb.Y / 32));
+        tiles.Add(new((pcb.X + 32) / 32, pcb.Y / 32));
+        tiles.Add(new(pcb.X / 32, (pcb.Y + 32) / 32));
+        tiles.Add(new((pcb.X + 32) / 32, (pcb.Y + 32) / 32));
+
+        return tiles;
     }
 }
