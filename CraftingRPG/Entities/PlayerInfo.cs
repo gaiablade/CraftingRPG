@@ -20,6 +20,7 @@ public class PlayerInfo : IPlayerInfo
 
         var mushroomQuest = new FetchQuestInstance(new FetchQuestMushrooms());
         mushroomQuest.AddCollectedItem(ItemId.HealingMushroom, 9);
+        mushroomQuest.AddCollectedItem(ItemId.EmptyBottle, 4);
         Quests.Add(mushroomQuest);
     }
 }

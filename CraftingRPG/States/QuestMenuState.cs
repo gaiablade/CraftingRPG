@@ -1,4 +1,5 @@
-﻿using CraftingRPG.Interfaces;
+﻿using CraftingRPG.Entities;
+using CraftingRPG.Interfaces;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -51,7 +52,7 @@ public class QuestMenuState : IState
         var descLines = new List<string>();
 
         var questStatus = questInstance.IsComplete() ? "COMPLETE" : "IN PROGRESS";
-        var color = questStatus == "COMPLETE" ? Color.Green : Color.Yellow;
+        var color = questStatus == "COMPLETE" ? Color.LightGreen : Color.Yellow;
         var questStatusSize = GameManager.Fnt12.MeasureString(questStatus);
         GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
             questStatus,
@@ -81,8 +82,41 @@ public class QuestMenuState : IState
         {
             GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
                 descLines[i],
-                new Vector2(GameManager.Resolution.X / 2 + 25, 10 + HeaderSize.Y + 10 + questStatusSize.Y + 10 + (10 + lineHeight) * i),
+                new Vector2((int)(GameManager.Resolution.X / 2 + 25), (int)(10 + HeaderSize.Y + 10 + questStatusSize.Y + 10 + (10 + lineHeight) * i)),
                 Color.White);
+        }
+
+        var y = 10 + HeaderSize.Y + 10 + questStatusSize.Y + 10 + (10 + lineHeight) * descLines.Count + 10;
+
+        var details = "Details";
+        var detailsSize = GameManager.Fnt12.MeasureString(details);
+        GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
+            details,
+            new Vector2((int)(GameManager.Resolution.X / 2 + GameManager.Resolution.X / 4 - detailsSize.X / 2), y),
+            Color.White);
+        y += detailsSize.Y + 10;
+
+        if (GameManager.PlayerInfo.Quests[Cursor] is FetchQuestInstance fetchQuest)
+        {
+            foreach (var (itemId, qty) in fetchQuest.GetCollectedItems())
+            {
+                var itemInfo = GameManager.ItemInfo[itemId];
+                GameManager.SpriteBatch.Draw(GameManager.SpriteSheet,
+                    new Rectangle(GameManager.Resolution.X / 2 + 10, (int)y, 32, 32),
+                    new Rectangle(0, 32 * itemInfo.GetSpriteSheetIndex(), 32, 32),
+                    Color.White);
+                var itemName = itemInfo.GetName();
+                var quest = fetchQuest.GetFetchQuest();
+                var requestedQty = quest.GetRequiredItems()[itemId];
+                itemName += $" {qty}/{requestedQty}";
+                var itemNameSize = GameManager.Fnt12.MeasureString(itemName);
+                color = qty >= requestedQty ? Color.LightGreen : Color.White;
+                GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
+                    itemName,
+                    new Vector2(GameManager.Resolution.X / 2 + 10 + 32 + 5, (int)y + 16 - itemNameSize.Y / 2),
+                    color);
+                y += 32 + 10;
+            }
         }
     }
 

@@ -12,6 +12,7 @@ public class FetchQuestMushrooms : BaseFetchQuest
 
     public override Dictionary<ItemId, int> GetRequiredItems() => new()
     {
-        { ItemId.HealingMushroom, 10 }
+        { ItemId.HealingMushroom, 10 },
+        { ItemId.EmptyBottle, 5 }
     };
 }

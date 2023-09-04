@@ -23,6 +23,8 @@ public class FetchQuestInstance : IQuestInstance
 
     public IQuest GetQuest() => Instance;
 
+    public BaseFetchQuest GetFetchQuest() => Instance;
+
     public void AddCollectedItem(ItemId itemId, int qty)
     {
         if (CollectedItems.ContainsKey(itemId))
@@ -32,4 +34,6 @@ public class FetchQuestInstance : IQuestInstance
     }
 
     public bool IsComplete() => CollectedItems.All(x => Instance.GetRequiredItems()[x.Key] <= x.Value);
+
+    public Dictionary<ItemId, int> GetCollectedItems() => CollectedItems;
 }
