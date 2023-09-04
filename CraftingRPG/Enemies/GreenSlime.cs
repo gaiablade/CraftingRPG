@@ -13,9 +13,9 @@ public class GreenSlime : IEnemy
 {
     public List<EnemyDrop> GetDropTable() => new List<EnemyDrop>
     {
-        new EnemyDrop(20, new ItemDrop<IronChunkItem>()),
-        new EnemyDrop(50, new RecipeDrop<SmallHealthPotionRecipe>()),
-        new EnemyDrop(10, new ItemDrop<IronBandItem>())
+        new EnemyDrop(30, new ItemDrop<HealingMushroomItem>()),
+        new EnemyDrop(10, new RecipeDrop<SmallHealthPotionRecipe>()),
+        new EnemyDrop(20, new ItemDrop<EmptyBottleItem>())
     };
 
     public EnemyId GetId() => EnemyId.GreenSlime;
@@ -24,7 +24,7 @@ public class GreenSlime : IEnemy
 
     public int GetSpriteSheetIndex() => SpriteIndex.GreenSlime;
 
-    public Rectangle GetCollisionBox() => new Rectangle(0, 16, 32, 16);
+    public Rectangle GetCollisionBox() => new(0, 16, 32, 16);
 
     public int GetMaxHitPoints() => 50;
 }

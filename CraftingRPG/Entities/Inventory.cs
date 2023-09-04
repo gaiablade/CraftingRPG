@@ -1,9 +1,5 @@
 ﻿using CraftingRPG.Enums;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CraftingRPG.Entities;
 
@@ -11,7 +7,7 @@ public class Inventory
 {
     public Dictionary<ItemId, int> Items = new();
 
-    public int this[ItemId Id] 
+    public int this[ItemId Id]
     {
         get
         {

@@ -84,6 +84,22 @@ public class CraftingMenuState : IState
 
                 i++;
             }
+
+            // Craft button
+            var craftText = "Craft (Z)";
+            var craftTextSize = GameManager.Fnt15.MeasureString(craftText);
+            var ctColor = CanRecipeBeCrafted(Recipes.ElementAt(Cursor).Value) ? Color.Green : Color.Gray;
+            GameManager.SpriteBatch.Draw(GameManager.Pixel,
+                new Rectangle(GameManager.Resolution.X / 2 + GameManager.Resolution.X / 4 - (int)(craftTextSize.X + 50) / 2,
+                    GameManager.Resolution.Y - 50 - 50,
+                    (int)craftTextSize.X + 50,
+                    50),
+                ctColor);
+            GameManager.SpriteBatch.DrawString(GameManager.Fnt15,
+                craftText,
+                new Vector2(GameManager.Resolution.X / 2 + GameManager.Resolution.X / 4 - craftTextSize.X / 2,
+                    GameManager.Resolution.Y - 50 - 25 - craftTextSize.Y / 2),
+                Color.White);
         }
     }
 
@@ -129,6 +145,20 @@ public class CraftingMenuState : IState
         else if (GameManager.FramesKeysHeld[Keys.Up] == 1)
         {
             Cursor = CustomMath.WrapAround(Cursor - 1, 0, Recipes.Count - 1);
+        }
+
+        if (GameManager.FramesKeysHeld[Keys.Z] == 1)
+        {
+            var recipe = Recipes.ElementAt(Cursor);
+            if (CanRecipeBeCrafted(recipe.Value))
+            {
+                foreach (var (ingredientId, qty) in recipe.Value.GetIngredients())
+                {
+                    GameManager.PlayerInfo.Inventory[ingredientId] -= qty;
+                }
+                var itemId = recipe.Value.GetCraftedItem();
+                GameManager.PlayerInfo.Inventory[itemId]++;
+            }
         }
 
         if (GameManager.FramesKeysHeld[Keys.LeftControl] == 1)

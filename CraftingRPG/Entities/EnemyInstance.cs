@@ -28,8 +28,8 @@ public class EnemyInstance<T> : IEnemyInstance where T : IEnemy
     public Rectangle GetCollisionBox()
     {
         var localColBox = Enemy.GetCollisionBox();
-        return new Rectangle((int)Position.X + localColBox.X, 
-            (int)Position.Y + localColBox.Y, 
+        return new Rectangle((int)Position.X + localColBox.X,
+            (int)Position.Y + localColBox.Y,
             localColBox.Width, localColBox.Height);
     }
 
@@ -42,4 +42,6 @@ public class EnemyInstance<T> : IEnemyInstance where T : IEnemy
             return false;
         return true;
     }
+
+    public Vector2 SetPosition(Vector2 position) => Position = position;
 }

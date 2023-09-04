@@ -30,4 +30,6 @@ public class PlayerInstance : IInstance
     public int GetSpriteSheetIndex() => SpriteIndex.Player1;
 
     public Rectangle GetCollisionBox() => new Rectangle((int)Position.X, (int)Position.Y + 32 + 16, 32, 16);
+
+    public Vector2 SetPosition(Vector2 position) => Position = position;
 }

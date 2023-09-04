@@ -2,14 +2,12 @@
 using CraftingRPG.Enemies;
 using CraftingRPG.Entities;
 using CraftingRPG.Interfaces;
-using CraftingRPG.MapObjects;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 // I love you
@@ -22,6 +20,8 @@ public class OverworldState : IState
     private List<IEnemyInstance> Enemies;
     private List<IInstance> MapObjects;
     private List<IDropInstance> Drops;
+    private List<int> DropHoverTimers;
+    private List<Vector2> DropInitialPositions;
     private Vector2 MovementVector;
     private bool IsAttacking = false;
     private int AttackFrame = 0;
@@ -50,6 +50,8 @@ public class OverworldState : IState
 
         MapObjects = new();
         Drops = new();
+        DropHoverTimers = new();
+        DropInitialPositions = new();
     }
 
     public void Render()
@@ -146,6 +148,8 @@ public class OverworldState : IState
 
     public void Update()
     {
+        UpdateDrops();
+
         DetectAndHandleInput();
         DetectAndHandleMovement();
         DetectAndHandleCollisions();
@@ -161,6 +165,17 @@ public class OverworldState : IState
         else if (GameManager.FramesKeysHeld[Keys.I] == 1)
         {
             StateManager.Instance.PushState<InventoryState>(true);
+        }
+    }
+
+    private void UpdateDrops()
+    {
+        for (var i = 0; i < Drops.Count; i++)
+        {
+            DropHoverTimers[i]++;
+            var iPos = DropInitialPositions[i];
+            var pos = Drops[i].GetPosition();
+            Drops[i].SetPosition(new Vector2(pos.X, iPos.Y + 10 * (float)Math.Sin((double)DropHoverTimers[i] / 50)));
         }
     }
 
@@ -231,7 +246,7 @@ public class OverworldState : IState
         {
             MovementVector = new Vector2(1, 0);
         }
-        
+
         // Check collision with other instance, e.g. enemies and objects
         foreach (var instance in otherInstances)
         {
@@ -242,6 +257,7 @@ public class OverworldState : IState
                 Player.Position.Y -= MovementVector.Y;
             }
         }
+
         // Check collision with solid map tiles
         var tiles = GetTilesBelowPlayer();
         foreach (var tile in tiles)
@@ -256,6 +272,23 @@ public class OverworldState : IState
                 }
             }
         }
+
+        // Check if any drops are colliding
+        for (var i = 0; i < Drops.Count - 1; i++)
+        {
+            var cb1 = Drops[i].GetCollisionBox();
+            for (int j = i + 1; j < Drops.Count; j++)
+            {
+                var cb2 = Drops[j].GetCollisionBox();
+                if (cb2.Intersects(cb1))
+                {
+                    var pos1 = Drops[i].GetPosition();
+                    var pos2 = Drops[j].GetPosition();
+                    Drops[i].SetPosition(new Vector2(pos1.X - 1, pos1.Y));
+                    Drops[j].SetPosition(new Vector2(pos2.X + 1, pos2.Y));
+                }
+            }
+        }
     }
 
     private void DetectAndHandleDropPickupEvent()
@@ -264,8 +297,11 @@ public class OverworldState : IState
         {
             var drop = DropsBelowPlayer.First();
             drop.GetDroppable().OnObtain();
+            var i = Drops.IndexOf(drop);
             DropsBelowPlayer.Remove(drop);
             Drops.Remove(drop);
+            DropInitialPositions.RemoveAt(i);
+            DropHoverTimers.RemoveAt(i);
             ActionKeyPressed = false;
         }
     }
@@ -297,6 +333,8 @@ public class OverworldState : IState
                             {
                                 var dropInstance = new DropInstance(possibleDrop.Drop, inst.GetPosition());
                                 Drops.Add(dropInstance);
+                                DropHoverTimers.Add(0);
+                                DropInitialPositions.Add(dropInstance.GetPosition());
                             }
                         }
                     }

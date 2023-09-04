@@ -1,5 +1,4 @@
 ﻿using CraftingRPG.Entities;
-using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -55,7 +54,7 @@ public class IntroState : IState
         var lineHeight = GameManager.DefaultFont.MeasureString(IntroStoryLines[0]).Y;
         var i = 0;
         var lastY = 0F;
-        foreach (var line in IntroStoryLines) 
+        foreach (var line in IntroStoryLines)
         {
             var lineSize = GameManager.DefaultFont.MeasureString(line);
             lastY = 20 + (lineHeight + 5) * i;

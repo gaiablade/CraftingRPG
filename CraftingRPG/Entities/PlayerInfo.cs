@@ -1,9 +1,5 @@
-﻿using CraftingRPG.Constants;
-using CraftingRPG.Enums;
-using CraftingRPG.Interfaces;
+﻿using CraftingRPG.Interfaces;
 using CraftingRPG.Items;
-using CraftingRPG.Recipes;
-using Microsoft.Xna.Framework;
 
 namespace CraftingRPG.Entities;
 

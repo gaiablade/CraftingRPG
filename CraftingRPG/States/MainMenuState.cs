@@ -1,5 +1,4 @@
 ﻿using CraftingRPG.Entities;
-using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -24,9 +23,9 @@ public class MainMenuState : IState
     {
         var gameTitle = "Crafting RPG";
         var titleSize = GameManager.DefaultFont.MeasureString(gameTitle);
-        GameManager.SpriteBatch.DrawString(GameManager.DefaultFont, 
-            gameTitle, 
-            new Vector2(GameManager.Resolution.X / 2 - titleSize.X / 2, 50), 
+        GameManager.SpriteBatch.DrawString(GameManager.DefaultFont,
+            gameTitle,
+            new Vector2(GameManager.Resolution.X / 2 - titleSize.X / 2, 50),
             Color.White);
 
         var pressEnter = "Press Enter to Start!";

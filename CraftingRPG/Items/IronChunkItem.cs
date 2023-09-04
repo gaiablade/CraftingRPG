@@ -1,7 +1,6 @@
 ﻿using CraftingRPG.Constants;
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
-using System;
 using System.Collections.Generic;
 
 namespace CraftingRPG.Items;

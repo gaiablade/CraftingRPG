@@ -10,8 +10,8 @@ public class IronBandItem : IItem
     public ItemId GetId() => ItemId.IronBand;
 
     public ISet<ItemCategory> GetItemCategories() => new HashSet<ItemCategory>
-    { 
-        ItemCategory.Ingredient 
+    {
+        ItemCategory.Ingredient
     };
 
     public string GetName() => "Iron Band";

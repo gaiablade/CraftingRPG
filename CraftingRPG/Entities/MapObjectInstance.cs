@@ -1,6 +1,5 @@
 ﻿using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
-using System;
 
 namespace CraftingRPG.Entities;
 
@@ -29,4 +28,6 @@ public class MapObjectInstance<T> : IInstance where T : IMapObject, new()
     public Vector2 GetSize() => new Vector2(32, 32);
 
     public int GetSpriteSheetIndex() => Instance.GetSpriteSheetIndex();
+
+    public Vector2 SetPosition(Vector2 position) => Position = position;
 }

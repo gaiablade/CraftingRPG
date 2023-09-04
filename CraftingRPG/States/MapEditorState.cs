@@ -5,7 +5,6 @@ using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.IO;
-using System.Xml.Linq;
 
 namespace CraftingRPG.States;
 
@@ -27,7 +26,7 @@ public class MapEditorState : IState
         Dimensions = new Point(columns, rows);
         Map = new OverworldMap(columns, rows);
 
-        GameManager.AddKeysIfNotExists(Keys.Left, Keys.Right, Keys.Up, Keys.Down, Keys.Z, Keys.Space, Keys.X, 
+        GameManager.AddKeysIfNotExists(Keys.Left, Keys.Right, Keys.Up, Keys.Down, Keys.Z, Keys.Space, Keys.X,
             Keys.Q, Keys.W, Keys.O, Keys.P, Keys.L, Keys.K, Keys.Delete, Keys.Enter, Keys.M);
     }
 
@@ -216,5 +215,5 @@ public class MapEditorState : IState
             }
             File.WriteAllText("mapcreator/outputmap.json", json);
         }
-    }    
+    }
 }

@@ -2,7 +2,6 @@
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Items;
-using CraftingRPG.Recipes;
 using CraftingRPG.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

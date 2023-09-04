@@ -1,5 +1,4 @@
-﻿using CraftingRPG.Constants;
-using CraftingRPG.Interfaces;
+﻿using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 
 namespace CraftingRPG.Entities;
@@ -20,7 +19,7 @@ public class DropInstance : IDropInstance
         Drop = inst;
     }
 
-    public Rectangle GetCollisionBox() => new Rectangle(0, 0, 0, 0);
+    public Rectangle GetCollisionBox() => new Rectangle((int)Position.X, (int)Position.Y, (int)GetSize().X, (int)GetSize().Y);
 
     public float GetDepth() => -1;
 
@@ -31,4 +30,6 @@ public class DropInstance : IDropInstance
     public Vector2 GetSize() => new Vector2(32, 32);
 
     public int GetSpriteSheetIndex() => Drop.GetSpriteSheetIndex();
+
+    public Vector2 SetPosition(Vector2 position) => Position = position;
 }

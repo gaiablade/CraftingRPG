@@ -4,7 +4,6 @@ using CraftingRPG.Interfaces;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -101,7 +100,7 @@ public class InventoryState : IState
         var gridX = GameManager.Resolution.X / 2 + (GameManager.Resolution.X / 4 - gridMaxW / 2);
 
         GameManager.SpriteBatch.Draw(GameManager.Pixel,
-            new Rectangle(gridX, GridTop - 16, gridMaxW, 32 + 8 * 32), 
+            new Rectangle(gridX, GridTop - 16, gridMaxW, 32 + 8 * 32),
             Color.Red);
 
         if (Inventory.Items.Count > 0)
