@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CraftingRPG.Quests;
 
-public class FetchQuestMushrooms : BaseFetchQuest
+public class FetchQuestSmallPotionIngredients : BaseFetchQuest
 {
     public override string GetDescription() => "Sample Description. Blah Blah Blah Blah Blah Blah. Go get the 'shrooms :)";
 
@@ -12,7 +12,7 @@ public class FetchQuestMushrooms : BaseFetchQuest
 
     public override Dictionary<ItemId, int> GetRequiredItems() => new()
     {
-        { ItemId.HealingMushroom, 10 },
-        { ItemId.EmptyBottle, 5 }
+        { ItemId.HealingMushroom, 2 },
+        { ItemId.EmptyBottle, 1 }
     };
 }

@@ -2,6 +2,7 @@
 using CraftingRPG.Enemies;
 using CraftingRPG.Entities;
 using CraftingRPG.Interfaces;
+using CraftingRPG.MapObjects;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -53,6 +54,8 @@ public class OverworldState : IState
         Drops = new();
         DropHoverTimers = new();
         DropInitialPositions = new();
+
+        MapObjects.Add(new MapObjectInstance<TreasureChest>(new Vector2(32 * 8, 32 * 9)));
     }
 
     public void Render()
@@ -125,7 +128,7 @@ public class OverworldState : IState
             var dropNameSize = GameManager.Fnt15.MeasureString(dropName);
             GameManager.SpriteBatch.DrawString(GameManager.Fnt15,
                 dropName,
-                new Vector2(GameManager.Resolution.X / 2 - dropNameSize.X / 2, 50 / 2 - dropNameSize.Y / 2),
+                new Vector2((int)(GameManager.Resolution.X / 2 - dropNameSize.X / 2), (int)(50 / 2 - dropNameSize.Y / 2)),
                 Color.White);
         }
     }

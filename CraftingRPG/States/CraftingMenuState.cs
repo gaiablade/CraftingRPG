@@ -97,8 +97,8 @@ public class CraftingMenuState : IState
                 ctColor);
             GameManager.SpriteBatch.DrawString(GameManager.Fnt15,
                 craftText,
-                new Vector2(GameManager.Resolution.X / 2 + GameManager.Resolution.X / 4 - craftTextSize.X / 2,
-                    GameManager.Resolution.Y - 50 - 25 - craftTextSize.Y / 2),
+                new Vector2((int)(GameManager.Resolution.X / 2 + GameManager.Resolution.X / 4 - craftTextSize.X / 2),
+                    (int)(GameManager.Resolution.Y - 50 - 25 - craftTextSize.Y / 2)),
                 Color.White);
         }
     }

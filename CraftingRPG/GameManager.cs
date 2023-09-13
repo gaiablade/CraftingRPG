@@ -30,6 +30,7 @@ namespace CraftingRPG
         public static Dictionary<ItemId, IItem> ItemInfo { get; private set; }
 
         public static StateManager StateManager { get; private set; } = StateManager.Instance;
+        public static GlobalFlags GlobalFlags { get; private set; } = new();
 
         public GameManager()
         {

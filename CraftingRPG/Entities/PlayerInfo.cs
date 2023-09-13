@@ -2,6 +2,7 @@
 using CraftingRPG.Interfaces;
 using CraftingRPG.Items;
 using CraftingRPG.Quests;
+using CraftingRPG.Recipes;
 using System.Collections.Generic;
 
 namespace CraftingRPG.Entities;
@@ -18,9 +19,9 @@ public class PlayerInfo : IPlayerInfo
         Equipment.Weapon = new IronSwordItem();
         Equipment.Helmet = new IronHelmetItem();
 
-        var mushroomQuest = new FetchQuestInstance(new FetchQuestMushrooms());
-        mushroomQuest.AddCollectedItem(ItemId.HealingMushroom, 9);
-        mushroomQuest.AddCollectedItem(ItemId.EmptyBottle, 4);
+        var mushroomQuest = new FetchQuestInstance(new FetchQuestSmallPotionIngredients());
         Quests.Add(mushroomQuest);
+
+        RecipeBook.AddRecipe(new SmallHealthPotionRecipe());
     }
 }

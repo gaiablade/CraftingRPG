@@ -19,4 +19,6 @@ public static class SpriteIndex
     public const int Player2 = 14;
     public const int Crate = 15;
     public const int RecipeDrop = 16;
+    public const int TreasureChest = 17;
+    public const int TreasureChestOpen = 18;
 }

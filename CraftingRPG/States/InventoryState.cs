@@ -116,7 +116,7 @@ public class InventoryState : IState
                     Color.White);
                 GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
                     "x" + qty.ToString(),
-                    new Vector2(gridX + 16 + col * ItemWidthAndGap, GridTop + row * ItemHeightAndGap),
+                    new Vector2((int)(gridX + 16 + col * ItemWidthAndGap), (int)(GridTop + row * ItemHeightAndGap)),
                     Color.White);
 
                 col++;
