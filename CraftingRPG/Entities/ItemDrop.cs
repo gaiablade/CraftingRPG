@@ -15,6 +15,7 @@ public class ItemDrop<T> : IDroppable where T : IItem, new()
         var player = GameManager.PlayerInfo;
 
         player.Inventory[item.GetId()]++;
+        GameManager.MaterialGrabSfx01.Play(0.1F, 0F, 0F);
 
         foreach (var questInstance in player.Quests)
         {

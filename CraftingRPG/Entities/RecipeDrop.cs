@@ -14,6 +14,8 @@ public class RecipeDrop<T> : IDroppable where T : IRecipe, new()
         var recipe = new T();
         var player = GameManager.PlayerInfo;
 
+        GameManager.RecipeGrabSfx01.Play(0.1F, 0F, 0F);
+        
         if (!player.RecipeBook.Recipes.ContainsKey(recipe.GetId()))
         {
             player.RecipeBook.AddRecipe(recipe);
