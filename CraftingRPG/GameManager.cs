@@ -28,6 +28,7 @@ namespace CraftingRPG
         public static Texture2D TileSet { get; private set; }
         public static Texture2D Pixel { get; private set; }
         public static SoundEffect SwingSfx01 { get; private set; }
+        public static SoundEffect HitSfx01 { get; private set; }
         public static Point Resolution { get; private set; }
         public static PlayerInfo PlayerInfo { get; private set; }
         public static Dictionary<ItemId, IItem> ItemInfo { get; private set; }
@@ -91,6 +92,7 @@ namespace CraftingRPG
             TileSet = Content.Load<Texture2D>("textures/crpg_tileset");
             PlayerSpriteSheet = Content.Load<Texture2D>("textures/player");
             SwingSfx01 = Content.Load<SoundEffect>("sfx/swoosh_01");
+            HitSfx01 = Content.Load<SoundEffect>("sfx/Pierce_01");
         }
 
         protected override void Update(GameTime gameTime)
