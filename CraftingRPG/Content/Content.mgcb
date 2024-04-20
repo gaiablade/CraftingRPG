@@ -69,6 +69,12 @@
 /processorParam:TextureFormat=Compressed
 /build:fonts/rainyhearts-15px.spritefont
 
+#begin sfx/28_swoosh_01.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sfx/28_swoosh_01.wav;sfx/swoosh_01.wav
+
 #begin textures/crpg_spritesheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
