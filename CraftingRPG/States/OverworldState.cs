@@ -25,6 +25,8 @@ public class OverworldState : IState
     private List<Vector2> DropInitialPositions;
     private Vector2 MovementVector;
     private bool IsAttacking = false;
+    private bool IsWalking = false;
+    private int IdleOrWalkingAnimFrames = 0;
     private int AttackFrame = 0;
     private Rectangle AttackRect;
     private List<IEnemyInstance> AttackedEnemies = new();
@@ -82,10 +84,52 @@ public class OverworldState : IState
             var pos = instance.GetPosition();
             var size = instance.GetSize();
             var colBox = instance.GetCollisionBox();
-            GameManager.SpriteBatch.Draw(GameManager.SpriteSheet,
-                new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y),
-                new Rectangle(0, instance.GetSpriteSheetIndex() * 32, (int)size.X, (int)size.Y),
-                Color.White);
+
+            if (instance is PlayerInstance playerInstance)
+            {
+                Rectangle sourceRectangle;
+                var flip = false;
+                var spriteSize = GameManager.PlayerSpriteSize;
+                var animFrame = IdleOrWalkingAnimFrames / 10 % 6;
+                switch (playerInstance.FacingDirection)
+                {
+                    case Direction.Up:
+                        sourceRectangle = new Rectangle(new Point(0, spriteSize.Y * 2), spriteSize);
+                        break;
+                    case Direction.Down:
+                        sourceRectangle = new Rectangle(new Point(0, 0), spriteSize);
+                        break;
+                    case Direction.Left:
+                        sourceRectangle = new Rectangle(new Point(0, spriteSize.Y), spriteSize);
+                        flip = true;
+                        break;
+                    default: // Direction.Right
+                        sourceRectangle = new Rectangle(new Point(0, spriteSize.Y), spriteSize);
+                        break;
+                }
+
+                sourceRectangle.X = animFrame * spriteSize.X;
+                if (IsWalking)
+                {
+                    sourceRectangle.Y += spriteSize.Y * 3;
+                }
+
+                GameManager.SpriteBatch.Draw(GameManager.PlayerSpriteSheet,
+                    new Rectangle(pos.ToPoint(), size.ToPoint()),
+                    sourceRectangle,
+                    Color.White,
+                    0F,
+                    Vector2.Zero,
+                    flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+                    0);
+            }
+            else
+            {
+                GameManager.SpriteBatch.Draw(GameManager.SpriteSheet,
+                    new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y),
+                    new Rectangle(0, instance.GetSpriteSheetIndex() * 32, (int)size.X, (int)size.Y),
+                    Color.White);
+            }
         }
 
         var rotation = 0.0;
@@ -94,24 +138,30 @@ public class OverworldState : IState
         {
             case Direction.Up:
                 rotation = 0.0;
-                pointerPosition = new Point((int)Player.Position.X, (int)Player.Position.Y - 32);
+                pointerPosition = new Point((int)Player.Position.X + (int)Player.GetSize().X / 2,
+                    (int)Player.Position.Y);
                 break;
             case Direction.Down:
                 rotation = 180.0 * Math.PI / 180.0;
-                pointerPosition = new Point((int)Player.Position.X, (int)Player.Position.Y + 64);
+                pointerPosition = new Point((int)Player.Position.X + (int)Player.GetSize().X / 2,
+                    (int)Player.Position.Y + (int)Player.GetSize().Y);
                 break;
             case Direction.Left:
                 rotation = 270.0 * Math.PI / 180.0;
-                pointerPosition = new Point((int)Player.Position.X - 32, (int)Player.Position.Y + 32);
+                pointerPosition = new Point((int)Player.Position.X,
+                    (int)Player.Position.Y + (int)Player.GetSize().Y);
                 break;
             case Direction.Right:
                 rotation = 90.0 * Math.PI / 180.0;
-                pointerPosition = new Point((int)Player.Position.X + 32, (int)Player.Position.Y + 32);
+                pointerPosition = new Point((int)Player.Position.X + (int)Player.GetSize().X,
+                    (int)Player.Position.Y + (int)Player.GetSize().Y);
                 break;
         }
+
+        var pointerSize = new Point(32, 32);
         GameManager.SpriteBatch.Draw(GameManager.SpriteSheet,
-            new Rectangle(pointerPosition.X + 16, pointerPosition.Y + 16, 32, 32),
-            new Rectangle(0, 32 * SpriteIndex.Pointer, 32, 32),
+            new Rectangle(new Point(pointerPosition.X, pointerPosition.Y), pointerSize),
+            new Rectangle(new Point(0, pointerSize.Y * SpriteIndex.Pointer), pointerSize),
             Color.White,
             rotation: (float)rotation,
             origin: new Vector2(16, 16),
@@ -128,7 +178,8 @@ public class OverworldState : IState
             var dropNameSize = GameManager.Fnt15.MeasureString(dropName);
             GameManager.SpriteBatch.DrawString(GameManager.Fnt15,
                 dropName,
-                new Vector2((int)(GameManager.Resolution.X / 2 - dropNameSize.X / 2), (int)(50 / 2 - dropNameSize.Y / 2)),
+                new Vector2((int)(GameManager.Resolution.X / 2 - dropNameSize.X / 2),
+                    (int)(50 / 2 - dropNameSize.Y / 2)),
                 Color.White);
         }
     }
@@ -203,6 +254,7 @@ public class OverworldState : IState
         {
             MovementVector.X--;
         }
+
         if (GameManager.FramesKeysHeld[Keys.Up] > 0)
         {
             MovementVector.Y--;
@@ -215,6 +267,15 @@ public class OverworldState : IState
         if (MovementVector != Vector2.Zero)
         {
             MovementVector = CustomMath.UnitVector(MovementVector);
+            if (!IsWalking)
+            {
+                IsWalking = true;
+                IdleOrWalkingAnimFrames = 0;
+            }
+            else
+            {
+                IdleOrWalkingAnimFrames++;
+            }
 
             // If player is attacking, lock their facing direction
             if (!IsAttacking)
@@ -239,6 +300,19 @@ public class OverworldState : IState
 
             Player.Position.X += MovementVector.X * PlayerInstance.MovementSpeed;
             Player.Position.Y += MovementVector.Y * PlayerInstance.MovementSpeed;
+        }
+        else
+        {
+            if (IsWalking)
+            {
+                IsWalking = false;
+                IdleOrWalkingAnimFrames = 0;
+            }
+            else
+            {
+                IdleOrWalkingAnimFrames++;
+            }
+
         }
     }
 
@@ -348,6 +422,7 @@ public class OverworldState : IState
                     }
                 }
             }
+
             Enemies.RemoveAll(x => x.GetCurrentHitPoints() <= 0);
 
             AttackFrame++;
@@ -371,12 +446,14 @@ public class OverworldState : IState
 
     private void CalculateAttackHitbox()
     {
+        var pSize = Player.GetSize().ToPoint();
+        var pPos = Player.Position.ToPoint();
         AttackRect = Player.FacingDirection switch
         {
-            Direction.Left => new Rectangle((int)Player.Position.X - 32, (int)Player.Position.Y + 16, 32, 32),
-            Direction.Right => new Rectangle((int)Player.Position.X + 32, (int)Player.Position.Y + 16, 32, 32),
-            Direction.Up => new Rectangle((int)Player.Position.X, (int)Player.Position.Y, 32, 32),
-            Direction.Down => new Rectangle((int)Player.Position.X, (int)Player.Position.Y + 64, 32, 32),
+            Direction.Left => new Rectangle(pPos.X - pSize.X, pPos.Y + pSize.Y / 2, pSize.X, pSize.Y),
+            Direction.Right => new Rectangle(pPos.X + pSize.X, pPos.Y + pSize.Y / 2, pSize.X, pSize.Y),
+            Direction.Up => new Rectangle(pPos.X, pPos.Y - pSize.Y, pSize.X, pSize.Y),
+            Direction.Down => new Rectangle(pPos.X, pPos.Y + pSize.Y, pSize.X, pSize.Y),
             _ => new Rectangle()
         };
     }
