@@ -21,9 +21,9 @@ public class PlayerInstance : IInstance
 
     public Vector2 GetPosition() => Position;
 
-    public float GetDepth() => Position.Y + 64;
+    public float GetDepth() => Position.Y + 48;
 
-    public Vector2 GetSize() => new Vector2(32, 64);
+    public Vector2 GetSize() => new Vector2(48 * 2, 48 * 2);
 
     public Rectangle GetBounds() => new Rectangle((int)Position.X, (int)Position.Y, (int)GetSize().X, (int)GetSize().Y);
 
