@@ -281,7 +281,7 @@ public class OverworldState : IState
         {
             return;
         }
-        
+
         MovementVector = Vector2.Zero;
         if (GameManager.FramesKeysHeld[Keys.Right] > 0)
         {
@@ -349,7 +349,6 @@ public class OverworldState : IState
             {
                 IdleOrWalkingAnimFrames++;
             }
-
         }
     }
 
@@ -433,9 +432,10 @@ public class OverworldState : IState
             if (AttackAnimFrames / AttackFrameLength > 3)
             {
                 IsAttacking = false;
+                AttackedEnemies.Clear();
                 return;
             }
-            
+
             // Check if attack collides with any enemies
             CalculateAttackHitbox();
 
@@ -443,6 +443,7 @@ public class OverworldState : IState
             {
                 if (!AttackedEnemies.Contains(inst) && inst.GetCollisionBox().Intersects(AttackRect))
                 {
+                    GameManager.HitSfx01.Play(0.1F, 0F, 0F);
                     var damage = Player.Info.Equipment.Weapon.GetAttackStat();
                     var isDefeated = inst.IncurDamage(damage);
                     if (!isDefeated)
@@ -486,14 +487,51 @@ public class OverworldState : IState
     {
         var pSize = Player.GetSize().ToPoint();
         var pPos = Player.Position.ToPoint();
-        AttackRect = Player.FacingDirection switch
+        var animFrame = AttackAnimFrames / AttackFrameLength;
+        if (Player.FacingDirection == Direction.Left)
         {
-            Direction.Left => new Rectangle(pPos.X - pSize.X, pPos.Y + pSize.Y / 2, pSize.X, pSize.Y),
-            Direction.Right => new Rectangle(pPos.X + pSize.X, pPos.Y + pSize.Y / 2, pSize.X, pSize.Y),
-            Direction.Up => new Rectangle(pPos.X, pPos.Y - pSize.Y, pSize.X, pSize.Y),
-            Direction.Down => new Rectangle(pPos.X, pPos.Y + pSize.Y, pSize.X, pSize.Y),
-            _ => new Rectangle()
-        };
+            AttackRect = animFrame switch
+            {
+                0 => new Rectangle(new Point(0, 0), new Point(0, 0)),
+                1 => new Rectangle(new Point(pPos.X + 12, pPos.Y + 66), new Point(26, 28)),
+                2 => new Rectangle(0, 0, 0, 0),
+                3 => new Rectangle(0, 0, 0, 0),
+                _ => AttackRect
+            };
+        }
+        else if (Player.FacingDirection == Direction.Right)
+        {
+            AttackRect = animFrame switch
+            {
+                0 => new Rectangle(new Point(0, 0), new Point(0, 0)),
+                1 => new Rectangle(new Point(pPos.X + 64, pPos.Y + 64), new Point(26, 28)),
+                2 => new Rectangle(0, 0, 0, 0),
+                3 => new Rectangle(0, 0, 0, 0),
+                _ => AttackRect
+            };
+        }
+        else if (Player.FacingDirection == Direction.Down)
+        {
+            AttackRect = animFrame switch
+            {
+                0 => new Rectangle(new Point(0, 0), new Point(0, 0)),
+                1 => new Rectangle(pPos.X + 34, pPos.Y + 74, 44, 22),
+                2 => new Rectangle(0, 0, 0, 0),
+                3 => new Rectangle(0, 0, 0, 0),
+                _ => AttackRect
+            };
+        }
+        else if (Player.FacingDirection == Direction.Up)
+        {
+            AttackRect = animFrame switch
+            {
+                0 => new Rectangle(new Point(0, 0), new Point(0, 0)),
+                1 => new Rectangle(pPos.X + 22, pPos.Y + 44, 44, 22),
+                2 => new Rectangle(0, 0, 0, 0),
+                3 => new Rectangle(0, 0, 0, 0),
+                _ => AttackRect
+            };
+        }
     }
 
     private bool IsPlayerAboveDropInstance(out List<IDropInstance> drops)
