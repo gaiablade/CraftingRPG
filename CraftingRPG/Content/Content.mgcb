@@ -69,6 +69,12 @@
 /processorParam:TextureFormat=Compressed
 /build:fonts/rainyhearts-15px.spritefont
 
+#begin sfx/24_Pierce_01.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sfx/24_Pierce_01.wav;sfx/Pierce_01.wav
+
 #begin sfx/28_swoosh_01.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
