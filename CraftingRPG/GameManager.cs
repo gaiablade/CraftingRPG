@@ -23,11 +23,13 @@ namespace CraftingRPG
         public static SpriteFont Fnt15 { get; private set; }
         public static SpriteFont Fnt20 { get; private set; }
         public static Texture2D SpriteSheet { get; private set; }
+        public static Texture2D PlayerSpriteSheet { get; private set; }
         public static Texture2D TileSet { get; private set; }
         public static Texture2D Pixel { get; private set; }
         public static Point Resolution { get; private set; }
         public static PlayerInfo PlayerInfo { get; private set; }
         public static Dictionary<ItemId, IItem> ItemInfo { get; private set; }
+        public static Point PlayerSpriteSize = new Point(48, 48);
 
         public static StateManager StateManager { get; private set; } = StateManager.Instance;
         public static GlobalFlags GlobalFlags { get; private set; } = new();
@@ -85,6 +87,7 @@ namespace CraftingRPG
             Fnt20 = Content.Load<SpriteFont>("fonts/heygorgeous-20px");
             SpriteSheet = Content.Load<Texture2D>("textures/crpg_spritesheet");
             TileSet = Content.Load<Texture2D>("textures/crpg_tileset");
+            PlayerSpriteSheet = Content.Load<Texture2D>("textures/player");
         }
 
         protected override void Update(GameTime gameTime)
@@ -116,7 +119,7 @@ namespace CraftingRPG
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            SpriteBatch.Begin();
+            SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
             StateManager.CurrentState.Render();
 
