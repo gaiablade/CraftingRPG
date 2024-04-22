@@ -136,16 +136,16 @@ public class CraftingMenuState : IState
         return true;
     }
 
-    public void Update()
+    public void Update(GameTime gameTime)
     {
         if (GameManager.FramesKeysHeld[Keys.Down] == 1)
         {
-            GameManager.MenuHoverSfx01.Play(0.1F, 0F, 0F);
+            GameManager.MenuHoverSfx01.Play(0.3F, 0F, 0F);
             Cursor = CustomMath.WrapAround(Cursor + 1, 0, Recipes.Count - 1);
         }
         else if (GameManager.FramesKeysHeld[Keys.Up] == 1)
         {
-            GameManager.MenuHoverSfx01.Play(0.1F, 0F, 0F);
+            GameManager.MenuHoverSfx01.Play(0.3F, 0F, 0F);
             Cursor = CustomMath.WrapAround(Cursor - 1, 0, Recipes.Count - 1);
         }
 
@@ -160,7 +160,7 @@ public class CraftingMenuState : IState
                 }
                 var itemId = recipe.Value.GetCraftedItem();
                 GameManager.PlayerInfo.Inventory[itemId]++;
-                GameManager.MenuConfirmSfx01.Play(0.1F, 0F, 0F);
+                GameManager.MenuConfirmSfx01.Play(0.3F, 0F, 0F);
             }
         }
 

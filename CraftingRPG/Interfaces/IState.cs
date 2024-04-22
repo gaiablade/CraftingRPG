@@ -1,7 +1,9 @@
-﻿namespace CraftingRPG.Interfaces;
+﻿using Microsoft.Xna.Framework;
+
+namespace CraftingRPG.Interfaces;
 
 public interface IState
 {
-    public void Update();
+    public void Update(GameTime gameTime);
     public void Render();
 }

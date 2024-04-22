@@ -233,7 +233,7 @@ public class OverworldState : IState
         }
     }
 
-    public void Update()
+    public void Update(GameTime gameTime)
     {
         UpdateDrops();
 
