@@ -26,17 +26,16 @@ public class PlayerInstance : IInstance
 
     public Vector2 GetPosition() => Position;
 
-    public float GetDepth() => Position.Y + 48;
+    public float GetDepth() => Position.Y + GetSize().Y;
 
-    public Vector2 GetSize() => new Vector2(48 * 2, 48 * 2);
+    public Vector2 GetSize() => new Vector2(48, 48);
 
     public Rectangle GetBounds() => new Rectangle((int)Position.X, (int)Position.Y, (int)GetSize().X, (int)GetSize().Y);
 
     public int GetSpriteSheetIndex() => SpriteIndex.Player1;
 
-    //public Rectangle GetCollisionBox() => new Rectangle((int)Position.X, (int)Position.Y + 32 + 16, 32, 16);
     public Rectangle GetCollisionBox() =>
-        new Rectangle(new Point((int)Position.X + 18, (int)Position.Y + 48), new Point(22, 22));
+        new Rectangle(new Point((int)Position.X + 9, (int)Position.Y + 24), new Point(11, 11));
 
     public Vector2 SetPosition(Vector2 position) => Position = position;
 }
