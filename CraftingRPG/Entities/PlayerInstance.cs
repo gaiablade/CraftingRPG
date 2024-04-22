@@ -13,7 +13,7 @@ public class PlayerInstance : IInstance
 
     #region Movement
 
-    public const float MovementSpeed = 3.5F;
+    public const float MovementSpeed = 2F;
     public Vector2 Position = new Vector2();
     public int FacingDirection = Direction.Down;
 
