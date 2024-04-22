@@ -28,6 +28,7 @@ namespace CraftingRPG
         public static Texture2D SpriteSheet { get; private set; }
         public static Texture2D PlayerSpriteSheet { get; private set; }
         public static Texture2D TileSet { get; private set; }
+        public static Texture2D SlimeSpriteSheet { get; private set; }
         public static Texture2D Pixel { get; private set; }
         public static SoundEffect SwingSfx01 { get; private set; }
         public static SoundEffect HitSfx01 { get; private set; }
@@ -97,6 +98,7 @@ namespace CraftingRPG
             SpriteSheet = Content.Load<Texture2D>("textures/crpg_spritesheet");
             TileSet = Content.Load<Texture2D>("textures/crpg_tileset");
             PlayerSpriteSheet = Content.Load<Texture2D>("textures/player");
+            SlimeSpriteSheet = Content.Load<Texture2D>("textures/slime");
             SwingSfx01 = Content.Load<SoundEffect>("sfx/swoosh_01");
             HitSfx01 = Content.Load<SoundEffect>("sfx/Pierce_01");
             MaterialGrabSfx01 = Content.Load<SoundEffect>("sfx/Leather");
@@ -114,6 +116,8 @@ namespace CraftingRPG
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            Camera = new OrthographicCamera(this.GraphicsDevice);
 
             KeyboardState = Keyboard.GetState();
             foreach (var (key, frames) in FramesKeysHeld)
@@ -136,7 +140,7 @@ namespace CraftingRPG
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Camera.GetViewMatrix());

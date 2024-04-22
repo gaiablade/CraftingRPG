@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CraftingRPG.Enums;
 using CraftingRPG.MapManagement;
 using TiledSharp;
 
@@ -19,7 +20,6 @@ namespace CraftingRPG.States;
 public class OverworldState : IState
 {
     private PlayerInstance Player;
-    private List<IEnemyInstance> Enemies;
     private List<IInstance> MapObjects;
     private List<IDropInstance> Drops;
     private List<int> DropHoverTimers;
@@ -52,14 +52,7 @@ public class OverworldState : IState
         Player.Position = new Vector2(100, 100);
 
         CurrentMap = OverworldMap.FromFile("Maps/Map01.json");
-        MapManager.Instance.SetMap("Tmx/map1.tmx");
-
-        Enemies = new List<IEnemyInstance>
-        {
-            new EnemyInstance<GreenSlime>(new(), new Vector2(500, 500)),
-            new EnemyInstance<GreenSlime>(new(), new Vector2(200, 300)),
-            new EnemyInstance<GreenSlime>(new(), new Vector2(700, 100))
-        };
+        MapManager.Instance.LoadDefaultMap();
 
         MapObjects = new();
         Drops = new();
@@ -72,13 +65,13 @@ public class OverworldState : IState
     public void Render()
     {
         var instances = new List<IInstance>();
-        instances.AddRange(Enemies);
+        instances.AddRange(MapManager.Instance.Enemies);
         instances.AddRange(MapObjects);
         instances.AddRange(Drops);
         instances.Add(Player);
 
         instances.Sort((x, y) => x.GetDepth().CompareTo(y.GetDepth()));
-        
+
         DrawMap();
 
         foreach (var instance in instances)
@@ -159,6 +152,23 @@ public class OverworldState : IState
                         Vector2.Zero,
                         flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
                         0);
+                }
+            }
+            else if (instance is IEnemyInstance enemyInstance)
+            {
+                if (enemyInstance.GetEnemy().GetId() == EnemyId.GreenSlime)
+                {
+                    GameManager.SpriteBatch.Draw(GameManager.SlimeSpriteSheet,
+                        new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y),
+                        new Rectangle(0, 0, 32, 32),
+                        Color.White);
+                }
+                else
+                {
+                    GameManager.SpriteBatch.Draw(GameManager.SpriteSheet,
+                        new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y),
+                        new Rectangle(0, instance.GetSpriteSheetIndex() * 32, (int)size.X, (int)size.Y),
+                        Color.White);
                 }
             }
             else
@@ -247,6 +257,7 @@ public class OverworldState : IState
         {
             cameraPos.X = mapWidth - x.Width / 2;
         }
+
         if (cameraPos.Y - x.Height / 2F < 0)
         {
             cameraPos.Y = x.Height / 2F;
@@ -255,7 +266,7 @@ public class OverworldState : IState
         {
             cameraPos.Y = mapHeight - x.Height / 2F;
         }
-        
+
         GameManager.Camera.LookAt(cameraPos);
     }
 
@@ -268,7 +279,7 @@ public class OverworldState : IState
         DetectAndHandleCollisions();
         DetectAndHandleDropPickupEvent();
         DetectAndHandleAttack();
-        
+
         CalculateCameraPosition();
 
         IsAboveDrop = IsPlayerAboveDropInstance(out DropsBelowPlayer);
@@ -384,7 +395,7 @@ public class OverworldState : IState
     {
         // TODO: eventually we would want to check for collisions on all objects that have moved on a given frame.
         var otherInstances = new List<IInstance>();
-        otherInstances.AddRange(Enemies);
+        otherInstances.AddRange(MapManager.Instance.Enemies);
         otherInstances.AddRange(MapObjects);
 
         // If player's movement vector is zero, default to pushing them right
@@ -467,7 +478,7 @@ public class OverworldState : IState
             // Check if attack collides with any enemies
             CalculateAttackHitbox();
 
-            foreach (var inst in Enemies)
+            foreach (var inst in MapManager.Instance.Enemies)
             {
                 if (!AttackedEnemies.Contains(inst) && inst.GetCollisionBox().Intersects(AttackRect))
                 {
@@ -501,7 +512,7 @@ public class OverworldState : IState
                 }
             }
 
-            Enemies.RemoveAll(x => x.GetCurrentHitPoints() <= 0);
+            MapManager.Instance.Enemies.RemoveAll(x => x.GetCurrentHitPoints() <= 0);
         }
         else
         {
@@ -526,7 +537,7 @@ public class OverworldState : IState
             AttackRect = animFrame switch
             {
                 0 => new Rectangle(new Point(0, 0), new Point(0, 0)),
-                1 => new Rectangle(new Point(pPos.X + 12, pPos.Y + 66), new Point(26, 28)),
+                1 => new Rectangle(new Point(pPos.X + 6, pPos.Y + 33), new Point(13, 14)),
                 2 => new Rectangle(0, 0, 0, 0),
                 3 => new Rectangle(0, 0, 0, 0),
                 _ => AttackRect
@@ -537,7 +548,7 @@ public class OverworldState : IState
             AttackRect = animFrame switch
             {
                 0 => new Rectangle(new Point(0, 0), new Point(0, 0)),
-                1 => new Rectangle(new Point(pPos.X + 64, pPos.Y + 64), new Point(26, 28)),
+                1 => new Rectangle(new Point(pPos.X + 32, pPos.Y + 32), new Point(13, 14)),
                 2 => new Rectangle(0, 0, 0, 0),
                 3 => new Rectangle(0, 0, 0, 0),
                 _ => AttackRect
@@ -548,7 +559,7 @@ public class OverworldState : IState
             AttackRect = animFrame switch
             {
                 0 => new Rectangle(new Point(0, 0), new Point(0, 0)),
-                1 => new Rectangle(pPos.X + 34, pPos.Y + 74, 44, 22),
+                1 => new Rectangle(pPos.X + 17, pPos.Y + 37, 22, 11),
                 2 => new Rectangle(0, 0, 0, 0),
                 3 => new Rectangle(0, 0, 0, 0),
                 _ => AttackRect
@@ -559,7 +570,7 @@ public class OverworldState : IState
             AttackRect = animFrame switch
             {
                 0 => new Rectangle(new Point(0, 0), new Point(0, 0)),
-                1 => new Rectangle(pPos.X + 22, pPos.Y + 44, 44, 22),
+                1 => new Rectangle(pPos.X + 11, pPos.Y + 22, 22, 11),
                 2 => new Rectangle(0, 0, 0, 0),
                 3 => new Rectangle(0, 0, 0, 0),
                 _ => AttackRect
