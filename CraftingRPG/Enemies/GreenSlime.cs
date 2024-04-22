@@ -24,7 +24,7 @@ public class GreenSlime : IEnemy
 
     public int GetSpriteSheetIndex() => SpriteIndex.GreenSlime;
 
-    public Rectangle GetCollisionBox() => new(0, 16, 32, 16);
+    public Rectangle GetCollisionBox() => new(8, 11, 16, 13);
 
     public int GetMaxHitPoints() => 50;
 }
