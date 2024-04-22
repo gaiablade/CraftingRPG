@@ -8,7 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using CraftingRPG.MapManagement;
 using Microsoft.Xna.Framework.Audio;
+using MonoGame.Extended;
 
 namespace CraftingRPG
 {
@@ -37,6 +39,7 @@ namespace CraftingRPG
         public static PlayerInfo PlayerInfo { get; private set; }
         public static Dictionary<ItemId, IItem> ItemInfo { get; private set; }
         public static Point PlayerSpriteSize = new Point(48, 48);
+        public static OrthographicCamera Camera;
 
         public static StateManager StateManager { get; private set; } = StateManager.Instance;
         public static GlobalFlags GlobalFlags { get; private set; } = new();
@@ -79,7 +82,6 @@ namespace CraftingRPG
 
             PlayerInfo = new PlayerInfo();
             FramesKeysHeld = new Dictionary<Keys, int>();
-            StateManager.PushState<OverworldState>(true);
 
             base.Initialize();
         }
@@ -101,6 +103,11 @@ namespace CraftingRPG
             RecipeGrabSfx01 = Content.Load<SoundEffect>("sfx/Scroll");
             MenuHoverSfx01 = Content.Load<SoundEffect>("sfx/Hover_04");
             MenuConfirmSfx01 = Content.Load<SoundEffect>("sfx/Confirm_05");
+
+            MapManager.Instance.LoadMapsFromContents(this.Content);
+            Camera = new OrthographicCamera(GameManager.SpriteBatch.GraphicsDevice);
+            
+            StateManager.PushState<OverworldState>(true);
         }
 
         protected override void Update(GameTime gameTime)
@@ -122,17 +129,17 @@ namespace CraftingRPG
             }
 
             StateManager.ProcessStateRequests();
-            StateManager.CurrentState.Update();
+            StateManager.CurrentState.Update(gameTime);
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Camera.GetViewMatrix());
 
             StateManager.CurrentState.Render();
 
