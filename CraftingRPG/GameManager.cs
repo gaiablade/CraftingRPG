@@ -115,6 +115,8 @@ namespace CraftingRPG
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            Camera = new OrthographicCamera(this.GraphicsDevice);
+
             KeyboardState = Keyboard.GetState();
             foreach (var (key, frames) in FramesKeysHeld)
             {
