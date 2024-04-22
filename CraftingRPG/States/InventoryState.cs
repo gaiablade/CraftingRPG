@@ -155,7 +155,7 @@ public class InventoryState : IState
             Color.White);
     }
 
-    public void Update()
+    public void Update(GameTime gameTime)
     {
         if (GameManager.FramesKeysHeld[Keys.LeftControl] == 1)
         {

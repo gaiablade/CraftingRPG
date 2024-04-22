@@ -6,5 +6,7 @@ public interface IDroppable
 
     public int GetSpriteSheetIndex();
 
+    public bool CanDrop();
+
     public string GetName();
 }

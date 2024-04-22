@@ -36,7 +36,7 @@ public class MainMenuState : IState
             Color.Orange);
     }
 
-    public void Update()
+    public void Update(GameTime gameTime)
     {
         if (GameManager.FramesKeysHeld[Keys.Enter] == 1)
         {

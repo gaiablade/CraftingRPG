@@ -5,6 +5,8 @@ namespace CraftingRPG.Entities;
 
 public class RecipeDrop<T> : IDroppable where T : IRecipe, new()
 {
+    public bool CanDrop() => !GameManager.PlayerInfo.RecipeBook.Recipes.ContainsKey(new T().GetId());
+
     public string GetName() => new T().GetName() + " (Recipe)";
 
     public int GetSpriteSheetIndex() => SpriteIndex.RecipeDrop;
@@ -14,7 +16,7 @@ public class RecipeDrop<T> : IDroppable where T : IRecipe, new()
         var recipe = new T();
         var player = GameManager.PlayerInfo;
 
-        GameManager.RecipeGrabSfx01.Play(0.1F, 0F, 0F);
+        GameManager.RecipeGrabSfx01.Play(0.3F, 0F, 0F);
         
         if (!player.RecipeBook.Recipes.ContainsKey(recipe.GetId()))
         {

@@ -109,7 +109,7 @@ public class MapEditorState : IState
         }
     }
 
-    public void Update()
+    public void Update(GameTime gameTime)
     {
         if (GameManager.FramesKeysHeld[Keys.M] == 1)
         {
