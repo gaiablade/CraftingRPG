@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CraftingRPG.Enemies;
+using CraftingRPG.Entities;
+using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,7 +24,7 @@ public class MapManager
     private readonly Dictionary<string, TmxMap> Maps = new();
     private readonly Dictionary<string, TmxTileset> TileSets = new();
     private readonly Dictionary<string, Texture2D> TileSetTextures = new();
-
+    public List<IEnemyInstance> Enemies = new();
     public TmxMap GetMap(string key) => Maps[key];
     public Texture2D GetTileSetTexture(string key) => TileSetTextures[key];
     public TmxMap CurrentMap { get; set; }
@@ -38,11 +41,15 @@ public class MapManager
             {
                 TileSets.Add(tileSet.Name, tileSet);
                 if (string.IsNullOrEmpty(tileSet.Image.Source)) continue;
-                //var source = Path.ChangeExtension(tileSet.Image.Source, ".xnb");
                 var source = Path.Join("textures", Path.GetFileNameWithoutExtension(tileSet.Image.Source));
                 TileSetTextures.Add(tileSet.Image.Source, contentManager.Load<Texture2D>(source));
             }
         }
+    }
+
+    public void LoadDefaultMap()
+    {
+        SetMap("Tmx/map1.tmx");
     }
 
     public void SetMap(string mapName)
@@ -53,6 +60,23 @@ public class MapManager
             .Select(x => x.FirstGid)
             .OrderBy(x => x)
             .ToList();
+        Enemies.Clear();
+        var enemyLayer = CurrentMap.ObjectGroups
+            .FirstOrDefault(x => x.Name == "Enemies")?.Objects;
+
+        if (enemyLayer != null)
+        {
+            foreach (var enemy in enemyLayer)
+            {
+                switch (enemy.Properties["enemy_type"])
+                {
+                    case "slime01":
+                        Enemies.Add(new EnemyInstance<GreenSlime>(new GreenSlime(),
+                            new Vector2((float)enemy.X, (float)enemy.Y)));
+                        break;
+                }
+            }
+        }
     }
 
     public void DrawMap(SpriteBatch spriteBatch)
@@ -79,7 +103,7 @@ public class MapManager
             }
         }
 
-        foreach (var layer in CurrentMap.ObjectGroups)
+        foreach (var layer in CurrentMap.ObjectGroups.Where(x => x.Name != "Enemies"))
         {
             foreach (var obj in layer.Objects.OrderBy(x => x.Y))
             {
@@ -88,9 +112,10 @@ public class MapManager
                 var tileSet = CurrentTileSets[tileSetNo];
                 var sourceRect = GetTileSourceRectangle(tileSet, obj.Tile.Gid - tileSet.FirstGid);
                 var tex = TileSetTextures[tileSet.Image.Source];
-        
+
                 GameManager.SpriteBatch.Draw(tex,
-                    destinationRectangle: new Rectangle(pos.X, pos.Y - tileSet.TileHeight, tileSet.TileWidth, tileSet.TileHeight),
+                    destinationRectangle: new Rectangle(pos.X, pos.Y - tileSet.TileHeight, tileSet.TileWidth,
+                        tileSet.TileHeight),
                     sourceRectangle: sourceRect,
                     color: Color.White);
             }
