@@ -2,7 +2,6 @@
 using CraftingRPG.Enemies;
 using CraftingRPG.Entities;
 using CraftingRPG.Interfaces;
-using CraftingRPG.MapObjects;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,6 +9,8 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CraftingRPG.MapManagement;
+using TiledSharp;
 
 // I love you
 
@@ -35,7 +36,12 @@ public class OverworldState : IState
     private bool IsAboveDrop = false;
     private List<IDropInstance> DropsBelowPlayer;
     private bool ActionKeyPressed = false;
+
     private OverworldMap CurrentMap;
+
+    private TmxMap Map;
+    private int TileWidth;
+    private int TileHeight;
 
     public OverworldState()
     {
@@ -46,6 +52,7 @@ public class OverworldState : IState
         Player.Position = new Vector2(100, 100);
 
         CurrentMap = OverworldMap.FromFile("Maps/Map01.json");
+        MapManager.Instance.SetMap("Tmx/map1.tmx");
 
         Enemies = new List<IEnemyInstance>
         {
@@ -59,7 +66,7 @@ public class OverworldState : IState
         DropHoverTimers = new();
         DropInitialPositions = new();
 
-        MapObjects.Add(new MapObjectInstance<TreasureChest>(new Vector2(32 * 8, 32 * 9)));
+        //MapObjects.Add(new MapObjectInstance<TreasureChest>(new Vector2(32 * 8, 32 * 9)));
     }
 
     public void Render()
@@ -71,7 +78,7 @@ public class OverworldState : IState
         instances.Add(Player);
 
         instances.Sort((x, y) => x.GetDepth().CompareTo(y.GetDepth()));
-
+        
         DrawMap();
 
         foreach (var instance in instances)
@@ -144,7 +151,6 @@ public class OverworldState : IState
                     }
 
                     sourceRectangle.X = animFrame * spriteSize.X;
-
                     GameManager.SpriteBatch.Draw(GameManager.PlayerSpriteSheet,
                         new Rectangle(pos.ToPoint(), size.ToPoint()),
                         sourceRectangle,
@@ -218,19 +224,39 @@ public class OverworldState : IState
 
     private void DrawMap()
     {
-        for (int y = 0; y < CurrentMap.Height; y++)
+        MapManager.Instance.DrawMap(GameManager.SpriteBatch);
+    }
+
+    public void CalculateCameraPosition()
+    {
+        GameManager.Camera.Zoom = 2F;
+        var x = GameManager.Camera.BoundingRectangle;
+        var mapWidth = MapManager.Instance.CurrentMap.Width * MapManager.Instance.CurrentMap.TileWidth;
+        var mapHeight = MapManager.Instance.CurrentMap.Height * MapManager.Instance.CurrentMap.TileHeight;
+
+        var cameraPos = Vector2.Zero;
+        // Center the player
+        cameraPos.X = Player.Position.X + Player.GetSize().X / 2;
+        cameraPos.Y = Player.Position.Y + Player.GetSize().Y / 2;
+
+        if (cameraPos.X - x.Width / 2 < 0)
         {
-            for (int x = 0; x < CurrentMap.Width; x++)
-            {
-                if (CurrentMap.Tiles[y][x] != -1)
-                {
-                    GameManager.SpriteBatch.Draw(GameManager.TileSet,
-                        new Rectangle(32 * x, 32 * y, 32, 32),
-                        new Rectangle(0, 32 * CurrentMap.Tiles[y][x], 32, 32),
-                        Color.White);
-                }
-            }
+            cameraPos.X = x.Width / 2;
         }
+        else if (cameraPos.X + x.Width / 2 > mapWidth)
+        {
+            cameraPos.X = mapWidth - x.Width / 2;
+        }
+        if (cameraPos.Y - x.Height / 2F < 0)
+        {
+            cameraPos.Y = x.Height / 2F;
+        }
+        else if (cameraPos.Y + x.Height / 2F > mapHeight)
+        {
+            cameraPos.Y = mapHeight - x.Height / 2F;
+        }
+        
+        GameManager.Camera.LookAt(cameraPos);
     }
 
     public void Update(GameTime gameTime)
@@ -242,6 +268,8 @@ public class OverworldState : IState
         DetectAndHandleCollisions();
         DetectAndHandleDropPickupEvent();
         DetectAndHandleAttack();
+        
+        CalculateCameraPosition();
 
         IsAboveDrop = IsPlayerAboveDropInstance(out DropsBelowPlayer);
 
@@ -377,19 +405,19 @@ public class OverworldState : IState
         }
 
         // Check collision with solid map tiles
-        var tiles = GetTilesBelowPlayer();
-        foreach (var tile in tiles)
-        {
-            if (CurrentMap.CollisionMap[tile.Y][tile.X] == 2)
-            {
-                var tileCollisionBox = new Rectangle(tile.X * 32, tile.Y * 32, 32, 32);
-                while (tileCollisionBox.Intersects(Player.GetCollisionBox()))
-                {
-                    Player.Position.X -= MovementVector.X;
-                    Player.Position.Y -= MovementVector.Y;
-                }
-            }
-        }
+        // var tiles = GetTilesBelowPlayer();
+        // foreach (var tile in tiles)
+        // {
+        //     if (CurrentMap.CollisionMap[tile.Y][tile.X] == 2)
+        //     {
+        //         var tileCollisionBox = new Rectangle(tile.X * 32, tile.Y * 32, 32, 32);
+        //         while (tileCollisionBox.Intersects(Player.GetCollisionBox()))
+        //         {
+        //             Player.Position.X -= MovementVector.X;
+        //             Player.Position.Y -= MovementVector.Y;
+        //         }
+        //     }
+        // }
 
         // Check if any drops are colliding
         for (var i = 0; i < Drops.Count - 1; i++)
@@ -443,7 +471,7 @@ public class OverworldState : IState
             {
                 if (!AttackedEnemies.Contains(inst) && inst.GetCollisionBox().Intersects(AttackRect))
                 {
-                    GameManager.HitSfx01.Play(0.1F, 0F, 0F);
+                    GameManager.HitSfx01.Play(0.3F, 0F, 0F);
                     var damage = Player.Info.Equipment.Weapon.GetAttackStat();
                     var isDefeated = inst.IncurDamage(damage);
                     if (!isDefeated)
@@ -458,6 +486,11 @@ public class OverworldState : IState
                             var ran = Random.Shared.Next() % 100;
                             if (ran < possibleDrop.DropRate)
                             {
+                                if (!possibleDrop.Drop.CanDrop())
+                                {
+                                    continue;
+                                }
+
                                 var dropInstance = new DropInstance(possibleDrop.Drop, inst.GetPosition());
                                 Drops.Add(dropInstance);
                                 DropHoverTimers.Add(0);
