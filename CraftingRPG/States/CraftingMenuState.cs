@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Linq;
+using CraftingRPG.Global;
 
 namespace CraftingRPG.States;
 
@@ -42,13 +43,13 @@ public class CraftingMenuState : IState
                 new Rectangle(0, sprite * 32, 32, 32),
                 Color.White);
 
-            var nameSize = GameManager.DefaultFont.MeasureString(name);
-            GameManager.SpriteBatch.DrawString(GameManager.DefaultFont,
+            var nameSize = Globals.Instance.DefaultFont.MeasureString(name);
+            GameManager.SpriteBatch.DrawString(Globals.Instance.DefaultFont,
                 name,
                 new Vector2(GameManager.Resolution.X / 2 + 20 + 32, 10 + 16 - nameSize.Y / 2),
                 Color.White);
 
-            GameManager.SpriteBatch.DrawString(GameManager.DefaultFont,
+            GameManager.SpriteBatch.DrawString(Globals.Instance.DefaultFont,
                 "Ingredients:",
                 new Vector2(GameManager.Resolution.X / 2 + 20, 10 + nameSize.Y + 30),
                 Color.White);
@@ -62,8 +63,8 @@ public class CraftingMenuState : IState
                 var playersItemCount = GameManager.PlayerInfo.Inventory[itemId];
                 var color = playersItemCount >= requiredQty ? Color.White : Color.DarkGray;
                 var itemsReq = $"{itemInfo.GetName()} x{requiredQty}";
-                var itemsReqSize = GameManager.Fnt12.MeasureString(itemsReq);
-                GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
+                var itemsReqSize = Globals.Instance.Fnt12.MeasureString(itemsReq);
+                GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
                     itemsReq,
                     new Vector2(GameManager.Resolution.X / 2 + 20, 10 + nameSize.Y + 30 + nameSize.Y + 20 + (10 + nameSize.Y) * i + 16 - nameSize.Y / 2),
                     color);
@@ -75,8 +76,8 @@ public class CraftingMenuState : IState
                 if (playersItemCount > 0)
                 {
                     var playersItemCountDisplay = $"({playersItemCount})";
-                    var itemCountDisplaySize = GameManager.Fnt12.MeasureString(playersItemCountDisplay);
-                    GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
+                    var itemCountDisplaySize = Globals.Instance.Fnt12.MeasureString(playersItemCountDisplay);
+                    GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
                         playersItemCountDisplay,
                         new Vector2((int)(GameManager.Resolution.X / 2 + 20 + itemsReqSize.X + 10) + 40, 10 + nameSize.Y + 30 + nameSize.Y + 20 + (10 + nameSize.Y) * i + 16 - nameSize.Y / 2),
                         Color.White);
@@ -87,7 +88,7 @@ public class CraftingMenuState : IState
 
             // Craft button
             var craftText = "Craft (Z)";
-            var craftTextSize = GameManager.Fnt15.MeasureString(craftText);
+            var craftTextSize = Globals.Instance.Fnt15.MeasureString(craftText);
             var ctColor = CanRecipeBeCrafted(Recipes.ElementAt(Cursor).Value) ? Color.Green : Color.Gray;
             GameManager.SpriteBatch.Draw(GameManager.Pixel,
                 new Rectangle(GameManager.Resolution.X / 2 + GameManager.Resolution.X / 4 - (int)(craftTextSize.X + 50) / 2,
@@ -95,7 +96,7 @@ public class CraftingMenuState : IState
                     (int)craftTextSize.X + 50,
                     50),
                 ctColor);
-            GameManager.SpriteBatch.DrawString(GameManager.Fnt15,
+            GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt15,
                 craftText,
                 new Vector2((int)(GameManager.Resolution.X / 2 + GameManager.Resolution.X / 4 - craftTextSize.X / 2),
                     (int)(GameManager.Resolution.Y - 50 - 25 - craftTextSize.Y / 2)),
@@ -113,8 +114,8 @@ public class CraftingMenuState : IState
             var itemId = recipe.GetCraftedItem();
             var itemInfo = GameManager.ItemInfo[itemId];
             var itemName = $"{i + 1}. {itemInfo.GetName()}";
-            var nameSize = GameManager.Fnt15.MeasureString(itemName);
-            GameManager.SpriteBatch.DrawString(GameManager.Fnt15,
+            var nameSize = Globals.Instance.Fnt15.MeasureString(itemName);
+            GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt15,
                 itemName,
                 new Vector2(5, 15 + (nameSize.Y + 5) * i),
                 color);

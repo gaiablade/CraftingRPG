@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Linq;
+using CraftingRPG.Global;
 
 namespace CraftingRPG.States;
 
@@ -34,7 +35,7 @@ public class IntroState : IState
 
         while (index < allWords.Length)
         {
-            if (index + numberOfWords - 1 < allWords.Length && GameManager.DefaultFont.MeasureString(string.Join(' ', allWords.Skip(index).Take(numberOfWords))).X < GameManager.Resolution.X - 50)
+            if (index + numberOfWords - 1 < allWords.Length && Globals.Instance.DefaultFont.MeasureString(string.Join(' ', allWords.Skip(index).Take(numberOfWords))).X < GameManager.Resolution.X - 50)
             {
                 numberOfWords++;
             }
@@ -51,14 +52,14 @@ public class IntroState : IState
 
     public void Render()
     {
-        var lineHeight = GameManager.DefaultFont.MeasureString(IntroStoryLines[0]).Y;
+        var lineHeight = Globals.Instance.DefaultFont.MeasureString(IntroStoryLines[0]).Y;
         var i = 0;
         var lastY = 0F;
         foreach (var line in IntroStoryLines)
         {
-            var lineSize = GameManager.DefaultFont.MeasureString(line);
+            var lineSize = Globals.Instance.DefaultFont.MeasureString(line);
             lastY = 20 + (lineHeight + 5) * i;
-            GameManager.SpriteBatch.DrawString(GameManager.DefaultFont,
+            GameManager.SpriteBatch.DrawString(Globals.Instance.DefaultFont,
                 line,
                 new Vector2(GameManager.Resolution.X / 2 - lineSize.X / 2, lastY),
                 Color.White);
@@ -66,8 +67,8 @@ public class IntroState : IState
         }
 
         var pressEnter = "Press Enter to Continue.";
-        var pressEnterSize = GameManager.DefaultFont.MeasureString(pressEnter);
-        GameManager.SpriteBatch.DrawString(GameManager.DefaultFont,
+        var pressEnterSize = Globals.Instance.DefaultFont.MeasureString(pressEnter);
+        GameManager.SpriteBatch.DrawString(Globals.Instance.DefaultFont,
             pressEnter,
             new Vector2(GameManager.Resolution.X / 2 - pressEnterSize.X / 2, lastY + (GameManager.Resolution.Y - lastY) / 2 - pressEnterSize.Y / 2),
             Color.Orange);

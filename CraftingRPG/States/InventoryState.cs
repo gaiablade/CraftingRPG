@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Linq;
+using CraftingRPG.Global;
 
 namespace CraftingRPG.States;
 
@@ -53,16 +54,16 @@ public class InventoryState : IState
 
     private void DrawEquipment()
     {
-        var fntH = GameManager.Fnt12.MeasureString("A").Y;
+        var fntH = Globals.Instance.Fnt12.MeasureString("A").Y;
 
         var header = "Equipment";
-        var headerSize = GameManager.Fnt20.MeasureString(header);
-        GameManager.SpriteBatch.DrawString(GameManager.Fnt20,
+        var headerSize = Globals.Instance.Fnt20.MeasureString(header);
+        GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt20,
             header,
             new Vector2(CenterX / 2 - headerSize.X / 2, 25),
             Color.White);
 
-        GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
+        GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
             "Weapon",
             new Vector2(50, 75),
             Color.White);
@@ -73,14 +74,14 @@ public class InventoryState : IState
                 new Rectangle(50, (int)(75 + fntH + 10), 32, 32),
                 new Rectangle(0, Equipment.Weapon.GetSpriteSheetIndex() * 32, 32, 32),
                 Color.White);
-            GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
+            GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
                 Equipment.Weapon.GetName(),
                 new Vector2(50 + 32 + 10, 75 + fntH + 10 + 16 - fntH / 2),
                 Color.White);
         }
         else
         {
-            GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
+            GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
                 "None",
                 new Vector2(50, 75 + fntH + 10),
                 Color.DarkGray);
@@ -90,8 +91,8 @@ public class InventoryState : IState
     private void DrawItems()
     {
         var header = "Items";
-        var headerSize = GameManager.Fnt20.MeasureString(header);
-        GameManager.SpriteBatch.DrawString(GameManager.Fnt20,
+        var headerSize = Globals.Instance.Fnt20.MeasureString(header);
+        GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt20,
             header,
             new Vector2(GameManager.Resolution.X / 2 + GameManager.Resolution.X / 4 - headerSize.X / 2, 25),
             Color.White);
@@ -114,7 +115,7 @@ public class InventoryState : IState
                     new Rectangle(gridX + 16 + col * ItemWidthAndGap, GridTop + row * ItemHeightAndGap, 32, 32),
                     new Rectangle(0, itemInfo.GetSpriteSheetIndex() * 32, 32, 32),
                     Color.White);
-                GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
+                GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
                     "x" + qty.ToString(),
                     new Vector2((int)(gridX + 16 + col * ItemWidthAndGap), (int)(GridTop + row * ItemHeightAndGap)),
                     Color.White);
@@ -148,8 +149,8 @@ public class InventoryState : IState
         var (itemId, qty) = Inventory.Items.ElementAt(cursorFlat);
         var itemInfo = GameManager.ItemInfo[itemId];
         var itemName = itemInfo.GetName() + " x" + qty;
-        var itemNameSize = GameManager.Fnt12.MeasureString(itemName);
-        GameManager.SpriteBatch.DrawString(GameManager.Fnt12,
+        var itemNameSize = Globals.Instance.Fnt12.MeasureString(itemName);
+        GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
             itemName,
             new Vector2(CenterX + CenterX / 2 - itemNameSize.X / 2, 100),
             Color.White);

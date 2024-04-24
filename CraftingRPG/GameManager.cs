@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using CraftingRPG.Global;
 using CraftingRPG.MapManagement;
 using Microsoft.Xna.Framework.Audio;
 using MonoGame.Extended;
@@ -20,13 +21,7 @@ namespace CraftingRPG
         public static SpriteBatch SpriteBatch { get; private set; }
         public static KeyboardState @KeyboardState { get; private set; }
         public static Dictionary<Keys, int> FramesKeysHeld { get; private set; }
-        public static SpriteFont DefaultFont { get; private set; }
-        public static SpriteFont Fnt10 { get; private set; }
-        public static SpriteFont Fnt12 { get; private set; }
-        public static SpriteFont Fnt15 { get; private set; }
-        public static SpriteFont Fnt20 { get; private set; }
         public static Texture2D SpriteSheet { get; private set; }
-        public static Texture2D PlayerSpriteSheet { get; private set; }
         public static Texture2D TileSet { get; private set; }
         public static Texture2D SlimeSpriteSheet { get; private set; }
         public static Texture2D Pixel { get; private set; }
@@ -40,7 +35,6 @@ namespace CraftingRPG
         public static PlayerInfo PlayerInfo { get; private set; }
         public static Dictionary<ItemId, IItem> ItemInfo { get; private set; }
         public static Point PlayerSpriteSize = new Point(48, 48);
-        public static OrthographicCamera Camera;
 
         public static StateManager StateManager { get; private set; } = StateManager.Instance;
         public static GlobalFlags GlobalFlags { get; private set; } = new();
@@ -90,14 +84,14 @@ namespace CraftingRPG
         protected override void LoadContent()
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            DefaultFont = Content.Load<SpriteFont>("fonts/heygorgeous");
-            Fnt10 = Content.Load<SpriteFont>("fonts/rainyhearts-10px");
-            Fnt12 = Content.Load<SpriteFont>("fonts/rainyhearts-12px");
-            Fnt15 = Content.Load<SpriteFont>("fonts/rainyhearts-15px");
-            Fnt20 = Content.Load<SpriteFont>("fonts/heygorgeous-20px");
+            Globals.Instance.PlayerSpriteSheet = Content.Load<Texture2D>("textures/player");
+            Globals.Instance.DefaultFont = Content.Load<SpriteFont>("fonts/heygorgeous");
+            Globals.Instance.Fnt10 = Content.Load<SpriteFont>("fonts/heygorgeous");
+            Globals.Instance.Fnt12 = Content.Load<SpriteFont>("fonts/heygorgeous");
+            Globals.Instance.Fnt15 = Content.Load<SpriteFont>("fonts/heygorgeous");
+            Globals.Instance.Fnt20 = Content.Load<SpriteFont>("fonts/heygorgeous-20px");
             SpriteSheet = Content.Load<Texture2D>("textures/crpg_spritesheet");
             TileSet = Content.Load<Texture2D>("textures/crpg_tileset");
-            PlayerSpriteSheet = Content.Load<Texture2D>("textures/player");
             SlimeSpriteSheet = Content.Load<Texture2D>("textures/slime");
             SwingSfx01 = Content.Load<SoundEffect>("sfx/swoosh_01");
             HitSfx01 = Content.Load<SoundEffect>("sfx/Pierce_01");
@@ -107,17 +101,17 @@ namespace CraftingRPG
             MenuConfirmSfx01 = Content.Load<SoundEffect>("sfx/Confirm_05");
 
             MapManager.Instance.LoadMapsFromContents(this.Content);
-            Camera = new OrthographicCamera(GameManager.SpriteBatch.GraphicsDevice);
-            
+
             StateManager.PushState<OverworldState>(true);
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
+                Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            Camera = new OrthographicCamera(this.GraphicsDevice);
+            Globals.Instance.Camera = new OrthographicCamera(this.GraphicsDevice);
 
             KeyboardState = Keyboard.GetState();
             foreach (var (key, frames) in FramesKeysHeld)
@@ -143,7 +137,8 @@ namespace CraftingRPG
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Camera.GetViewMatrix());
+            SpriteBatch.Begin(samplerState: SamplerState.PointClamp,
+                transformMatrix: Globals.Instance.Camera.GetViewMatrix());
 
             StateManager.CurrentState.Render();
 

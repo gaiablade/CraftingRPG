@@ -6,6 +6,9 @@
  <tileset firstgid="78" source="objects.tsx"/>
  <tileset firstgid="286" source="objects_32x16.tsx"/>
  <layer id="1" name="Tile Layer 1" width="40" height="40">
+  <properties>
+   <property name="depth" value="0"/>
+  </properties>
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -50,178 +53,866 @@
 </data>
  </layer>
  <objectgroup id="2" name="Object Layer 1" class="object_layer">
-  <object id="13" gid="2" x="-4" y="659" width="48" height="64"/>
-  <object id="14" gid="2" x="12.5" y="629" width="48" height="64"/>
-  <object id="15" gid="2" x="36" y="660.5" width="48" height="64"/>
-  <object id="16" gid="2" x="76" y="665" width="48" height="64"/>
-  <object id="17" gid="2" x="98.5" y="652" width="48" height="64"/>
-  <object id="18" gid="2" x="120.5" y="669.5" width="48" height="64"/>
-  <object id="19" gid="2" x="45.5" y="619.5" width="48" height="64"/>
-  <object id="20" gid="2" x="78" y="630" width="48" height="64"/>
-  <object id="21" gid="2" x="-1" y="591" width="48" height="64"/>
-  <object id="22" gid="2" x="-15.5" y="620.5" width="48" height="64"/>
-  <object id="23" gid="2" x="36.5" y="591.5" width="48" height="64"/>
-  <object id="24" gid="2" x="58.5" y="567" width="48" height="64"/>
-  <object id="25" gid="2" x="23" y="557.5" width="48" height="64"/>
-  <object id="26" gid="2" x="-10.5" y="545.5" width="48" height="64"/>
-  <object id="27" gid="2" x="53" y="533.5" width="48" height="64"/>
-  <object id="28" gid="2" x="22.5" y="524.5" width="48" height="64"/>
-  <object id="29" gid="2" x="56.5" y="501.5" width="48" height="64"/>
-  <object id="30" gid="2" x="9.5" y="495" width="48" height="64"/>
-  <object id="31" gid="2" x="-16.5" y="469" width="48" height="64"/>
-  <object id="32" gid="2" x="41.5" y="461" width="48" height="64"/>
-  <object id="33" gid="2" x="81" y="488" width="48" height="64"/>
-  <object id="34" gid="2" x="10.5" y="441" width="48" height="64"/>
-  <object id="35" gid="2" x="-15" y="410" width="48" height="64"/>
-  <object id="36" gid="2" x="34.5" y="406.5" width="48" height="64"/>
-  <object id="37" gid="2" x="60" y="377" width="48" height="64"/>
-  <object id="38" gid="2" x="63" y="439" width="48" height="64"/>
-  <object id="39" gid="2" x="98.5" y="452.5" width="48" height="64"/>
-  <object id="40" gid="2" x="81" y="406.5" width="48" height="64"/>
-  <object id="41" gid="2" x="25" y="375.5" width="48" height="64"/>
-  <object id="42" gid="2" x="-6" y="387.5" width="48" height="64"/>
-  <object id="43" gid="2" x="30.5" y="353" width="48" height="64"/>
-  <object id="44" gid="2" x="-4" y="348" width="48" height="64"/>
-  <object id="45" gid="2" x="64" y="321.5" width="48" height="64"/>
-  <object id="46" gid="2" x="82" y="364" width="48" height="64"/>
-  <object id="47" gid="2" x="29.5" y="311.5" width="48" height="64"/>
-  <object id="48" gid="2" x="-5" y="319.5" width="48" height="64"/>
-  <object id="49" gid="2" x="-8.5" y="280" width="48" height="64"/>
-  <object id="50" gid="2" x="43" y="271.5" width="48" height="64"/>
-  <object id="51" gid="2" x="90.5" y="303.5" width="48" height="64"/>
-  <object id="52" gid="2" x="85.5" y="260.5" width="48" height="64"/>
-  <object id="53" gid="2" x="40" y="240" width="48" height="64"/>
-  <object id="54" gid="2" x="10.5" y="253" width="48" height="64"/>
-  <object id="55" gid="2" x="-11.5" y="211.5" width="48" height="64"/>
-  <object id="56" gid="2" x="72.5" y="223" width="48" height="64"/>
-  <object id="57" gid="2" x="28.5" y="215" width="48" height="64"/>
-  <object id="58" gid="2" x="102" y="210.5" width="48" height="64"/>
-  <object id="59" gid="2" x="114" y="246.5" width="48" height="64"/>
-  <object id="60" gid="2" x="240.5" y="670.5" width="48" height="64"/>
-  <object id="61" gid="2" x="261" y="648.5" width="48" height="64"/>
-  <object id="62" gid="2" x="243" y="595" width="48" height="64"/>
-  <object id="63" gid="2" x="311.5" y="570" width="48" height="64"/>
-  <object id="64" gid="2" x="330" y="615" width="48" height="64"/>
-  <object id="65" gid="2" x="265.5" y="607.5" width="48" height="64"/>
-  <object id="66" gid="2" x="298.5" y="628" width="48" height="64"/>
-  <object id="67" gid="2" x="292" y="669.5" width="48" height="64"/>
-  <object id="68" gid="2" x="342" y="651.5" width="48" height="64"/>
-  <object id="69" gid="2" x="389.5" y="660.5" width="48" height="64"/>
-  <object id="70" gid="2" x="381.5" y="619" width="48" height="64"/>
-  <object id="71" gid="2" x="361" y="596" width="48" height="64"/>
-  <object id="72" gid="2" x="385.5" y="560.5" width="48" height="64"/>
-  <object id="73" gid="2" x="433.5" y="592" width="48" height="64"/>
-  <object id="74" gid="2" x="419" y="623" width="48" height="64"/>
-  <object id="75" gid="2" x="450.5" y="661.5" width="48" height="64"/>
-  <object id="76" gid="2" x="480.5" y="633.5" width="48" height="64"/>
-  <object id="77" gid="2" x="478" y="605.5" width="48" height="64"/>
-  <object id="78" gid="2" x="462" y="596.5" width="48" height="64"/>
-  <object id="79" gid="2" x="503" y="582" width="48" height="64"/>
-  <object id="80" gid="2" x="557" y="577.5" width="48" height="64"/>
-  <object id="81" gid="2" x="515" y="611" width="48" height="64"/>
-  <object id="82" gid="2" x="499" y="651" width="48" height="64"/>
-  <object id="83" gid="2" x="551.5" y="669" width="48" height="64"/>
-  <object id="84" gid="2" x="543" y="631.5" width="48" height="64"/>
-  <object id="85" gid="2" x="578.5" y="614.5" width="48" height="64"/>
-  <object id="86" gid="2" x="617" y="651.5" width="48" height="64"/>
-  <object id="87" gid="2" x="583" y="668.5" width="48" height="64"/>
-  <object id="88" gid="2" x="598" y="569" width="48" height="64"/>
-  <object id="89" gid="2" x="604" y="519.5" width="48" height="64"/>
-  <object id="90" gid="2" x="570" y="544" width="48" height="64"/>
-  <object id="91" gid="2" x="611.5" y="466.5" width="48" height="64"/>
-  <object id="92" gid="2" x="583" y="490" width="48" height="64"/>
-  <object id="93" gid="2" x="413.5" y="569" width="48" height="64"/>
-  <object id="94" gid="2" x="121" y="298" width="48" height="64"/>
-  <object id="95" gid="2" x="200" y="309" width="48" height="64"/>
-  <object id="96" gid="2" x="190" y="267" width="48" height="64"/>
-  <object id="97" gid="2" x="140" y="284" width="48" height="64"/>
-  <object id="98" gid="2" x="159" y="311" width="48" height="64"/>
-  <object id="99" gid="2" x="166" y="281" width="48" height="64"/>
-  <object id="100" gid="2" x="221" y="282" width="48" height="64"/>
-  <object id="101" gid="2" x="248" y="245" width="48" height="64"/>
-  <object id="102" gid="2" x="279" y="287" width="48" height="64"/>
-  <object id="103" gid="2" x="250" y="296" width="48" height="64"/>
-  <object id="104" gid="2" x="318" y="292" width="48" height="64"/>
-  <object id="105" gid="2" x="313" y="245" width="48" height="64"/>
-  <object id="106" gid="2" x="289" y="248" width="48" height="64"/>
-  <object id="107" gid="2" x="361" y="264" width="48" height="64"/>
-  <object id="108" gid="2" x="363" y="311" width="48" height="64"/>
-  <object id="109" gid="2" x="416" y="288" width="48" height="64"/>
-  <object id="110" gid="2" x="345" y="295" width="48" height="64"/>
-  <object id="111" gid="2" x="392" y="263" width="48" height="64"/>
-  <object id="112" gid="2" x="395" y="315" width="48" height="64"/>
-  <object id="113" gid="2" x="442" y="317" width="48" height="64"/>
-  <object id="114" gid="2" x="457" y="280" width="48" height="64"/>
-  <object id="115" gid="2" x="482" y="257" width="48" height="64"/>
-  <object id="116" gid="2" x="608" y="266" width="48" height="64"/>
-  <object id="117" gid="2" x="600" y="309" width="48" height="64"/>
-  <object id="118" gid="2" x="577" y="334" width="48" height="64"/>
-  <object id="119" gid="2" x="595" y="372" width="48" height="64"/>
-  <object id="120" gid="2" x="580" y="409" width="48" height="64"/>
-  <object id="121" gid="2" x="599" y="435" width="48" height="64"/>
-  <object id="122" gid="2" x="611" y="412" width="48" height="64"/>
-  <object id="123" gid="2" x="621" y="338" width="48" height="64"/>
-  <object id="124" gid="2" x="594" y="228" width="48" height="64"/>
-  <object id="125" gid="2" x="605" y="189" width="48" height="64"/>
-  <object id="126" gid="2" x="616" y="163" width="48" height="64"/>
-  <object id="127" gid="2" x="598" y="105" width="48" height="64"/>
-  <object id="128" gid="2" x="613" y="48" width="48" height="64"/>
-  <object id="129" gid="2" x="616" y="142" width="48" height="64"/>
-  <object id="130" gid="2" x="604" y="72" width="48" height="64"/>
-  <object id="131" gid="2" x="561" y="58" width="48" height="64"/>
-  <object id="132" gid="2" x="580" y="34" width="48" height="64"/>
-  <object id="133" gid="2" x="537" y="31" width="48" height="64"/>
-  <object id="134" gid="2" x="437" y="41" width="48" height="64"/>
-  <object id="135" gid="2" x="-6" y="42" width="48" height="64"/>
-  <object id="136" gid="2" x="39" y="47" width="48" height="64"/>
-  <object id="137" gid="2" x="90" y="41" width="48" height="64"/>
-  <object id="138" gid="2" x="139" y="39" width="48" height="64"/>
-  <object id="139" gid="2" x="167" y="42" width="48" height="64"/>
-  <object id="140" gid="2" x="204" y="44" width="48" height="64"/>
-  <object id="141" gid="2" x="235" y="40" width="48" height="64"/>
-  <object id="142" gid="2" x="268" y="48" width="48" height="64"/>
-  <object id="143" gid="2" x="301" y="46" width="48" height="64"/>
-  <object id="144" gid="2" x="327" y="41" width="48" height="64"/>
-  <object id="145" gid="2" x="364" y="40" width="48" height="64"/>
-  <object id="146" gid="2" x="403" y="39" width="48" height="64"/>
-  <object id="147" gid="2" x="440" y="40" width="48" height="64"/>
-  <object id="148" gid="2" x="476" y="40" width="48" height="64"/>
-  <object id="149" gid="2" x="508" y="40" width="48" height="64"/>
-  <object id="150" gid="2" x="536" y="40" width="48" height="64"/>
-  <object id="151" gid="2" x="115" y="47" width="48" height="64"/>
-  <object id="152" gid="2" x="73" y="46" width="48" height="64"/>
-  <object id="153" gid="2" x="14" y="38" width="48" height="64"/>
-  <object id="154" gid="2" x="-10" y="75" width="48" height="64"/>
-  <object id="155" gid="2" x="80" y="72" width="48" height="64"/>
-  <object id="156" gid="2" x="48" y="91" width="48" height="64"/>
-  <object id="157" gid="2" x="19" y="64" width="48" height="64"/>
-  <object id="158" gid="2" x="136" y="63" width="48" height="64"/>
-  <object id="159" gid="2" x="209" y="75" width="48" height="64"/>
-  <object id="160" gid="2" x="276" y="96" width="48" height="64"/>
-  <object id="161" gid="2" x="237" y="75" width="48" height="64"/>
-  <object id="162" gid="2" x="312" y="71" width="48" height="64"/>
-  <object id="163" gid="2" x="396" y="59" width="48" height="64"/>
-  <object id="164" gid="2" x="356" y="67" width="48" height="64"/>
-  <object id="165" gid="2" x="382" y="110" width="48" height="64"/>
-  <object id="166" gid="2" x="414" y="78" width="48" height="64"/>
-  <object id="167" gid="2" x="376" y="87" width="48" height="64"/>
-  <object id="168" gid="2" x="472" y="55" width="48" height="64"/>
-  <object id="169" gid="2" x="451" y="95" width="48" height="64"/>
-  <object id="170" gid="2" x="489" y="96" width="48" height="64"/>
-  <object id="171" gid="2" x="506" y="58" width="48" height="64"/>
-  <object id="172" gid="2" x="530" y="85" width="48" height="64"/>
-  <object id="173" gid="2" x="562" y="105" width="48" height="64"/>
-  <object id="177" gid="94" x="392" y="477" width="16" height="16"/>
-  <object id="178" gid="80" x="166" y="363" width="16" height="16"/>
-  <object id="179" gid="84" x="542" y="120" width="16" height="16"/>
-  <object id="181" gid="78" x="138" y="545" width="16" height="16"/>
-  <object id="183" gid="287" x="192" y="368" width="32" height="16"/>
-  <object id="185" gid="286" x="512" y="496" width="32" height="16"/>
-  <object id="186" gid="288" x="560" y="128" width="32" height="16"/>
-  <object id="187" gid="288" x="176" y="192" width="32" height="16"/>
-  <object id="188" gid="82" x="208" y="192" width="16" height="16"/>
-  <object id="189" gid="83" x="224" y="208" width="16" height="16"/>
-  <object id="190" gid="95" x="448" y="464" width="16" height="16"/>
+  <object id="13" gid="2" x="-4" y="659" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="14" gid="2" x="12.5" y="629" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="15" gid="2" x="36" y="660.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="16" gid="2" x="76" y="665" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="17" gid="2" x="98.5" y="652" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="18" gid="2" x="120.5" y="669.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="19" gid="2" x="45.5" y="619.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="20" gid="2" x="78" y="630" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="21" gid="2" x="-1" y="591" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="22" gid="2" x="-15.5" y="620.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="23" gid="2" x="36.5" y="591.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="24" gid="2" x="58.5" y="567" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="25" gid="2" x="23" y="557.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="26" gid="2" x="-10.5" y="545.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="27" gid="2" x="53" y="533.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="28" gid="2" x="22.5" y="524.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="29" gid="2" x="56.5" y="501.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="30" gid="2" x="9.5" y="495" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="31" gid="2" x="-16.5" y="469" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="32" gid="2" x="41.5" y="461" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="33" gid="2" x="81" y="488" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="34" gid="2" x="10.5" y="441" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="35" gid="2" x="-15" y="410" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="36" gid="2" x="34.5" y="406.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="37" gid="2" x="60" y="377" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="38" gid="2" x="63" y="439" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="39" gid="2" x="98.5" y="452.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="40" gid="2" x="81" y="406.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="41" gid="2" x="25" y="375.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="42" gid="2" x="-6" y="387.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="43" gid="2" x="30.5" y="353" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="44" gid="2" x="-4" y="348" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="45" gid="2" x="64" y="321.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="46" gid="2" x="82" y="364" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="47" gid="2" x="29.5" y="311.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="48" gid="2" x="-5" y="319.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="49" gid="2" x="-8.5" y="280" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="50" gid="2" x="43" y="271.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="51" gid="2" x="90.5" y="303.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="52" gid="2" x="85.5" y="260.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="53" gid="2" x="40" y="240" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="54" gid="2" x="10.5" y="253" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="55" gid="2" x="-11.5" y="211.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="56" gid="2" x="72.5" y="223" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="57" gid="2" x="28.5" y="215" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="58" gid="2" x="102" y="210.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="59" gid="2" x="114" y="246.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="60" gid="2" x="240.5" y="670.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="61" gid="2" x="261" y="648.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="62" gid="2" x="243" y="595" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="63" gid="2" x="311.5" y="570" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="64" gid="2" x="330" y="615" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="65" gid="2" x="265.5" y="607.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="66" gid="2" x="298.5" y="628" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="67" gid="2" x="292" y="669.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="68" gid="2" x="342" y="651.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="69" gid="2" x="389.5" y="660.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="70" gid="2" x="381.5" y="619" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="71" gid="2" x="361" y="596" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="72" gid="2" x="385.5" y="560.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="73" gid="2" x="433.5" y="592" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="74" gid="2" x="419" y="623" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="75" gid="2" x="450.5" y="661.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="76" gid="2" x="480.5" y="633.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="77" gid="2" x="478" y="605.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="78" gid="2" x="462" y="596.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="79" gid="2" x="503" y="582" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="80" gid="2" x="557" y="577.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="81" gid="2" x="515" y="611" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="82" gid="2" x="499" y="651" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="83" gid="2" x="551.5" y="669" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="84" gid="2" x="543" y="631.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="85" gid="2" x="578.5" y="614.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="86" gid="2" x="617" y="651.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="87" gid="2" x="583" y="668.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="88" gid="2" x="598" y="569" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="89" gid="2" x="604" y="519.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="90" gid="2" x="570" y="544" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="91" gid="2" x="611.5" y="466.5" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="92" gid="2" x="583" y="490" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="93" gid="2" x="413.5" y="569" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="94" gid="2" x="121" y="298" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="95" gid="2" x="200" y="309" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="96" gid="2" x="190" y="267" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="97" gid="2" x="140" y="284" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="98" gid="2" x="159" y="311" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="99" gid="2" x="166" y="281" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="100" gid="2" x="221" y="282" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="101" gid="2" x="248" y="245" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="102" gid="2" x="279" y="287" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="103" gid="2" x="250" y="296" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="104" gid="2" x="318" y="292" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="105" gid="2" x="313" y="245" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="106" gid="2" x="289" y="248" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="107" gid="2" x="361" y="264" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="108" gid="2" x="363" y="311" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="109" gid="2" x="416" y="288" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="110" gid="2" x="345" y="295" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="111" gid="2" x="392" y="263" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="112" gid="2" x="395" y="315" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="113" gid="2" x="442" y="317" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="114" gid="2" x="457" y="280" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="115" gid="2" x="482" y="257" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="116" gid="2" x="608" y="266" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="117" gid="2" x="600" y="309" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="118" gid="2" x="577" y="334" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="119" gid="2" x="595" y="372" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="120" gid="2" x="580" y="409" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="121" gid="2" x="599" y="435" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="122" gid="2" x="611" y="412" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="123" gid="2" x="621" y="338" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="124" gid="2" x="594" y="228" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="125" gid="2" x="605" y="189" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="126" gid="2" x="616" y="163" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="127" gid="2" x="598" y="105" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="128" gid="2" x="613" y="48" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="129" gid="2" x="616" y="142" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="130" gid="2" x="604" y="72" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="131" gid="2" x="561" y="58" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="132" gid="2" x="580" y="34" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="133" gid="2" x="537" y="31" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="134" gid="2" x="437" y="41" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="135" gid="2" x="-6" y="42" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="136" gid="2" x="39" y="47" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="137" gid="2" x="90" y="41" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="138" gid="2" x="139" y="39" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="139" gid="2" x="167" y="42" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="140" gid="2" x="204" y="44" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="141" gid="2" x="235" y="40" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="142" gid="2" x="268" y="48" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="143" gid="2" x="301" y="46" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="144" gid="2" x="327" y="41" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="145" gid="2" x="364" y="40" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="146" gid="2" x="403" y="39" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="147" gid="2" x="440" y="40" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="148" gid="2" x="476" y="40" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="149" gid="2" x="508" y="40" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="150" gid="2" x="536" y="40" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="151" gid="2" x="115" y="47" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="152" gid="2" x="73" y="46" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="153" gid="2" x="14" y="38" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="154" gid="2" x="-10" y="75" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="155" gid="2" x="80" y="72" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="156" gid="2" x="48" y="91" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="157" gid="2" x="19" y="64" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="158" gid="2" x="136" y="63" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="159" gid="2" x="209" y="75" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="160" gid="2" x="276" y="96" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="161" gid="2" x="237" y="75" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="162" gid="2" x="312" y="71" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="163" gid="2" x="396" y="59" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="164" gid="2" x="356" y="67" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="165" gid="2" x="382" y="110" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="166" gid="2" x="414" y="78" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="167" gid="2" x="376" y="87" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="168" gid="2" x="472" y="55" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="169" gid="2" x="451" y="95" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="170" gid="2" x="489" y="96" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="171" gid="2" x="506" y="58" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="172" gid="2" x="530" y="85" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="173" gid="2" x="562" y="105" width="48" height="64">
+   <properties>
+    <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="177" gid="94" x="392" y="477" width="16" height="16">
+   <properties>
+    <property name="object_type" value="stone01"/>
+   </properties>
+  </object>
+  <object id="178" gid="80" x="166" y="363" width="16" height="16">
+   <properties>
+    <property name="object_type" value="crate01"/>
+   </properties>
+  </object>
+  <object id="179" gid="84" x="542" y="120" width="16" height="16">
+   <properties>
+    <property name="object_type" value="grave01"/>
+   </properties>
+  </object>
+  <object id="181" gid="78" x="138" y="545" width="16" height="16">
+   <properties>
+    <property name="object_type" value="sign01"/>
+   </properties>
+  </object>
+  <object id="183" gid="287" x="192" y="368" width="32" height="16">
+   <properties>
+    <property name="object_type" value="bench01"/>
+   </properties>
+  </object>
+  <object id="185" gid="286" x="512" y="496" width="32" height="16">
+   <properties>
+    <property name="object_type" value="log02"/>
+   </properties>
+  </object>
+  <object id="186" gid="288" x="560" y="128" width="32" height="16">
+   <properties>
+    <property name="object_type" value="log01"/>
+   </properties>
+  </object>
+  <object id="187" gid="288" x="176" y="192" width="32" height="16">
+   <properties>
+    <property name="object_type" value="log01"/>
+   </properties>
+  </object>
+  <object id="188" gid="82" x="208" y="192" width="16" height="16">
+   <properties>
+    <property name="object_type" value="pot01"/>
+   </properties>
+  </object>
+  <object id="189" gid="83" x="224" y="208" width="16" height="16">
+   <properties>
+    <property name="object_type" value="crate01"/>
+   </properties>
+  </object>
+  <object id="190" gid="95" x="448" y="464" width="16" height="16">
+   <properties>
+    <property name="object_type" value="stone02"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="3" name="Enemies" class="enemy_layer">
   <object id="198" x="192" y="112" width="16" height="16">
