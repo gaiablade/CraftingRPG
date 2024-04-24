@@ -70,6 +70,27 @@
 /processorParam:TextureFormat=Compressed
 /build:fonts/rainyhearts-15px.spritefont
 
+#begin fonts/toriko-10.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fonts/toriko-10.spritefont
+
+#begin fonts/toriko-12.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fonts/toriko-12.spritefont
+
+#begin fonts/toriko-15.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fonts/toriko-15.spritefont
+
 #begin sfx/004_Hover_04.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
