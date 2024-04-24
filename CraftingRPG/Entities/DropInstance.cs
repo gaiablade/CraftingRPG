@@ -19,7 +19,8 @@ public class DropInstance : IDropInstance
         Drop = inst;
     }
 
-    public Rectangle GetCollisionBox() => new Rectangle((int)Position.X, (int)Position.Y, (int)GetSize().X, (int)GetSize().Y);
+    public Rectangle GetCollisionBox() =>
+        new Rectangle((int)Position.X, (int)Position.Y, (int)GetSize().X, (int)GetSize().Y);
 
     public float GetDepth() => -1;
 
