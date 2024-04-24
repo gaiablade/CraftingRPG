@@ -14,8 +14,17 @@ public class PlayerInstance : IInstance
     #region Movement
 
     public const float MovementSpeed = 2F;
+    public const int AttackFrameLength = 5;
     public Vector2 Position = new Vector2();
-    public int FacingDirection = Direction.Down;
+    public Vector2 Size = new Vector2(48, 48);
+    public int FacingDirection { get; set; } = Direction.Down;
+    public bool IsAttacking { get; set; } = false;
+    public int IdleOrWalkingAnimFrames { get; set; } = 0;
+    public int AttackAnimFrames { get; set; } = 0;
+    public bool IsWalking { get; set; } = false;
+    public Vector2 MovementVector;
+    public bool IsAboveDrop = false;
+    public Rectangle AttackRect;
 
     #endregion
 
