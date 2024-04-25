@@ -2,8 +2,10 @@
 using CraftingRPG.Constants;
 using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
+using RectangleF = MonoGame.Extended.RectangleF;
 
 namespace CraftingRPG.Entities;
 
@@ -15,6 +17,8 @@ public class PlayerInstance : IInstance
 
     public const float MovementSpeed = 2F;
     public const int AttackFrameLength = 5;
+    public static readonly Point SpriteSize = new Point(48, 48);
+    
     public Vector2 Position = new Vector2();
     public Vector2 Size = new Vector2(48, 48);
     public int FacingDirection { get; set; } = Direction.Down;
@@ -24,7 +28,7 @@ public class PlayerInstance : IInstance
     public bool IsWalking { get; set; } = false;
     public Vector2 MovementVector;
     public bool IsAboveDrop = false;
-    public Rectangle AttackRect;
+    public RectangleF AttackRect;
 
     #endregion
 
@@ -43,8 +47,8 @@ public class PlayerInstance : IInstance
 
     public int GetSpriteSheetIndex() => SpriteIndex.Player1;
 
-    public Rectangle GetCollisionBox() =>
-        new Rectangle(new Point((int)Position.X + 9, (int)Position.Y + 24), new Point(11, 11));
+    public RectangleF GetCollisionBox() =>
+        new RectangleF(new Point2(Position.X + 18, Position.Y + 22), new Size2(13, 19));
 
     public Vector2 SetPosition(Vector2 position) => Position = position;
 }
