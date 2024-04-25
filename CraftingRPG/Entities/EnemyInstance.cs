@@ -1,5 +1,6 @@
 ﻿using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 
 namespace CraftingRPG.Entities;
 
@@ -25,7 +26,7 @@ public class EnemyInstance<T> : IEnemyInstance where T : IEnemy
 
     public int GetSpriteSheetIndex() => Enemy.GetSpriteSheetIndex();
 
-    public Rectangle GetCollisionBox()
+    public RectangleF GetCollisionBox()
     {
         var localColBox = Enemy.GetCollisionBox();
         return new Rectangle((int)Position.X + localColBox.X,

@@ -10,5 +10,6 @@ public enum MapObjectId
     Sign01,
     Bench01,
     Stone01,
-    Stone02
+    Stone02,
+    Pot01
 }

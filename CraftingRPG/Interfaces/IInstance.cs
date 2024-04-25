@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 
 namespace CraftingRPG.Interfaces;
 
@@ -9,5 +10,5 @@ public interface IInstance
     public float GetDepth();
     public Vector2 GetSize();
     public int GetSpriteSheetIndex();
-    public Rectangle GetCollisionBox();
+    public RectangleF GetCollisionBox();
 }

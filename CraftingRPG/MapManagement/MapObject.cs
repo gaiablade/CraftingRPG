@@ -13,4 +13,11 @@ public class MapObject
     public int Height { get; set; }
     public MapTileSet TileSet { get; set; }
     public Rectangle SourceRectangle { get; set; }
+    public MapObjectAttributes Attributes { get; set; }
+
+    public Rectangle GetCollisionBox()
+    {
+        var clBx = this.Attributes.CollisionRectangle;
+        return new Rectangle((int)(clBx.X + X), (int)(clBx.Y + Y), clBx.Width, clBx.Height);
+    }
 }

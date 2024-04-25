@@ -1,5 +1,6 @@
 ﻿using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 
 namespace CraftingRPG.Entities;
 
@@ -19,7 +20,7 @@ public class DropInstance : IDropInstance
         Drop = inst;
     }
 
-    public Rectangle GetCollisionBox() =>
+    public RectangleF GetCollisionBox() =>
         new Rectangle((int)Position.X, (int)Position.Y, (int)GetSize().X, (int)GetSize().Y);
 
     public float GetDepth() => -1;

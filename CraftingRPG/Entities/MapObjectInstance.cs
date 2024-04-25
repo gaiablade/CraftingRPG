@@ -1,5 +1,6 @@
 ﻿using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 
 namespace CraftingRPG.Entities;
 
@@ -14,10 +15,10 @@ public class MapObjectInstance<T> : IInstance where T : IMapObject, new()
         Instance = new();
     }
 
-    public Rectangle GetCollisionBox()
+    public RectangleF GetCollisionBox()
     {
         var locColBox = Instance.GetCollisionBox();
-        return new Rectangle((int)Position.X + locColBox.X, (int)Position.Y + locColBox.Y,
+        return new RectangleF(Position.X + locColBox.X, Position.Y + locColBox.Y,
             locColBox.Width, locColBox.Height);
     }
 

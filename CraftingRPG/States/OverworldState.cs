@@ -3,6 +3,7 @@ using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using CraftingRPG.Global;
 using CraftingRPG.MapManagement;
 using TiledSharp;
 
@@ -39,8 +40,8 @@ public class OverworldState : IState
         GameManager.AddKeysIfNotExists(Keys.Left, Keys.Right, Keys.Up, Keys.Down, Keys.Z, Keys.X, Keys.C, Keys.I,
             Keys.Q);
 
-        Global.Globals.Instance.Player = new PlayerInstance(GameManager.PlayerInfo);
-        Player = Global.Globals.Instance.Player;
+        Globals.Instance.Player = new PlayerInstance(GameManager.PlayerInfo);
+        Player = Globals.Instance.Player;
         Player.Position = new Vector2(100, 100);
 
         MapManager.Instance.LoadDefaultMap();
