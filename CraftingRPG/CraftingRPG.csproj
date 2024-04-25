@@ -86,7 +86,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\textures\" />
-    <Folder Include="Extensions\" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Maps\Map01.json">
