@@ -92,6 +92,7 @@ public class TiledMapLoader : IMapLoader
                 mapObject.Y = tiledObject.Y - mapObject.Height;
                 mapObject.SourceRectangle =
                     GetTileSourceRectangle(mapObject.TileSet, tiledObject.Tile.Gid - tiledTileSets[tileSetNo].FirstGid);
+                mapObject.Attributes = MapObjectAttributes.GetObjectAttributes(mapObject.Id);
                 mapObjects.Add(mapObject);
             }
 
@@ -163,6 +164,8 @@ public class TiledMapLoader : IMapLoader
                 return MapObjectId.Stone01;
             case "stone02":
                 return MapObjectId.Stone02;
+            case "pot01":
+                return MapObjectId.Pot01;
         }
 
         return MapObjectId.Bench01;
