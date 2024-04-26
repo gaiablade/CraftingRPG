@@ -137,6 +137,8 @@ public class MapManager
         DetectAndHandleCollisions();
         DetectAndHandleDropPickupEvent();
         DetectAndHandleAttack();
+        
+        Globals.Instance.Player.UpdateAnimation(gameTime);
 
         UpdateDrops();
         CalculateCameraPosition();
@@ -177,77 +179,16 @@ public class MapManager
 
     private void DrawPlayer(PlayerInstance player)
     {
-        if (!player.IsAttacking)
-        {
-            Rectangle sourceRectangle;
-            var flip = false;
-            var spriteSize = GameManager.PlayerSpriteSize;
-            var animFrame = player.IdleOrWalkingAnimFrames / 8 % 6;
-            switch (player.FacingDirection)
-            {
-                case Direction.Up:
-                    sourceRectangle = new Rectangle(new Point(0, spriteSize.Y * 2), spriteSize);
-                    break;
-                case Direction.Down:
-                    sourceRectangle = new Rectangle(new Point(0, 0), spriteSize);
-                    break;
-                case Direction.Left:
-                    sourceRectangle = new Rectangle(new Point(0, spriteSize.Y), spriteSize);
-                    flip = true;
-                    break;
-                default: // Direction.Right
-                    sourceRectangle = new Rectangle(new Point(0, spriteSize.Y), spriteSize);
-                    break;
-            }
-        
-            sourceRectangle.X = animFrame * spriteSize.X;
-            if (Globals.Instance.Player.IsWalking)
-            {
-                sourceRectangle.Y += spriteSize.Y * 3;
-            }
-        
-            GameManager.SpriteBatch.Draw(Globals.Instance.PlayerSpriteSheet,
-                new Rectangle(player.Position.ToPoint(), player.Size.ToPoint()),
-                sourceRectangle,
-                Color.White,
-                0F,
-                Vector2.Zero,
-                flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
-                0);
-        }
-        else
-        {
-            Rectangle sourceRectangle;
-            var flip = false;
-            var spriteSize = GameManager.PlayerSpriteSize;
-            var animFrame = player.AttackAnimFrames / PlayerInstance.AttackFrameLength;
-            switch (player.FacingDirection)
-            {
-                case Direction.Up:
-                    sourceRectangle = new Rectangle(new Point(0, spriteSize.Y * 8), spriteSize);
-                    break;
-                case Direction.Down:
-                    sourceRectangle = new Rectangle(new Point(0, spriteSize.Y * 6), spriteSize);
-                    break;
-                case Direction.Left:
-                    sourceRectangle = new Rectangle(new Point(0, spriteSize.Y * 7), spriteSize);
-                    flip = true;
-                    break;
-                default: // Direction.Right
-                    sourceRectangle = new Rectangle(new Point(0, spriteSize.Y * 7), spriteSize);
-                    break;
-            }
-        
-            sourceRectangle.X = animFrame * spriteSize.X;
-            GameManager.SpriteBatch.Draw(Globals.Instance.PlayerSpriteSheet,
-                new Rectangle(player.Position.ToPoint(), player.Size.ToPoint()),
-                sourceRectangle,
-                Color.White,
-                0F,
-                Vector2.Zero,
-                flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
-                0);
-        }
+        var sourceRectangle = player.GetSourceRectangle();
+        var flip = player.FacingDirection == Direction.Left;
+        GameManager.SpriteBatch.Draw(Globals.Instance.PlayerSpriteSheet,
+            new Rectangle(player.Position.ToPoint(), PlayerInstance.SpriteSize),
+            sourceRectangle,
+            Color.White,
+            0F,
+            Vector2.Zero,
+            flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+            0);
     }
 
     private void DetectAndHandleInput()
@@ -292,11 +233,6 @@ public class MapManager
             if (!player.IsWalking)
             {
                 player.IsWalking = true;
-                player.IdleOrWalkingAnimFrames = 0;
-            }
-            else
-            {
-                player.IdleOrWalkingAnimFrames++;
             }
 
             // If player is attacking, lock their facing direction
@@ -324,11 +260,6 @@ public class MapManager
             if (player.IsWalking)
             {
                 player.IsWalking = false;
-                player.IdleOrWalkingAnimFrames = 0;
-            }
-            else
-            {
-                player.IdleOrWalkingAnimFrames++;
             }
         }
     }
@@ -423,17 +354,6 @@ public class MapManager
         var player = Globals.Instance.Player;
         if (player.IsAttacking)
         {
-            player.AttackAnimFrames++;
-            if (player.AttackAnimFrames / PlayerInstance.AttackFrameLength > 3)
-            {
-                player.IsAttacking = false;
-                AttackedEnemies.Clear();
-                return;
-            }
-
-            // Check if attack collides with any enemies
-            CalculateAttackHitbox();
-
             foreach (var inst in CurrentMap.Enemies)
             {
                 if (!AttackedEnemies.Contains(inst) && inst.GetCollisionBox().Intersects(player.AttackRect))
@@ -472,11 +392,10 @@ public class MapManager
         }
         else
         {
+            AttackedEnemies.Clear();
             if (Globals.Instance.ActionKeyPressed)
             {
                 player.IsAttacking = true;
-                player.AttackAnimFrames = 0;
-                CalculateAttackHitbox();
                 Globals.Instance.ActionKeyPressed = false;
                 GameManager.SwingSfx01.Play(volume: 0.1F, 0F, 0F);
             }
@@ -491,58 +410,6 @@ public class MapManager
             var iPos = DropInitialPositions[i];
             var pos = Drops[i].GetPosition();
             Drops[i].SetPosition(new Vector2(pos.X, iPos.Y + 10 * (float)Math.Sin((double)DropHoverTimers[i] / 50)));
-        }
-    }
-
-    private void CalculateAttackHitbox()
-    {
-        var player = Globals.Instance.Player;
-        var pSize = player.GetSize().ToPoint();
-        var pPos = player.Position.ToPoint();
-        var animFrame = player.AttackAnimFrames / PlayerInstance.AttackFrameLength;
-        if (player.FacingDirection == Direction.Left)
-        {
-            player.AttackRect = animFrame switch
-            {
-                0 => new Rectangle(new Point(0, 0), new Point(0, 0)),
-                1 => new Rectangle(new Point(pPos.X + 6, pPos.Y + 33), new Point(13, 14)),
-                2 => new Rectangle(0, 0, 0, 0),
-                3 => new Rectangle(0, 0, 0, 0),
-                _ => player.AttackRect
-            };
-        }
-        else if (player.FacingDirection == Direction.Right)
-        {
-            player.AttackRect = animFrame switch
-            {
-                0 => new Rectangle(new Point(0, 0), new Point(0, 0)),
-                1 => new Rectangle(new Point(pPos.X + 32, pPos.Y + 32), new Point(13, 14)),
-                2 => new Rectangle(0, 0, 0, 0),
-                3 => new Rectangle(0, 0, 0, 0),
-                _ => player.AttackRect
-            };
-        }
-        else if (player.FacingDirection == Direction.Down)
-        {
-            player.AttackRect = animFrame switch
-            {
-                0 => new Rectangle(new Point(0, 0), new Point(0, 0)),
-                1 => new Rectangle(pPos.X + 17, pPos.Y + 37, 22, 11),
-                2 => new Rectangle(0, 0, 0, 0),
-                3 => new Rectangle(0, 0, 0, 0),
-                _ => player.AttackRect
-            };
-        }
-        else if (player.FacingDirection == Direction.Up)
-        {
-            player.AttackRect = animFrame switch
-            {
-                0 => new Rectangle(new Point(0, 0), new Point(0, 0)),
-                1 => new Rectangle(pPos.X + 11, pPos.Y + 22, 22, 11),
-                2 => new Rectangle(0, 0, 0, 0),
-                3 => new Rectangle(0, 0, 0, 0),
-                _ => player.AttackRect
-            };
         }
     }
 
