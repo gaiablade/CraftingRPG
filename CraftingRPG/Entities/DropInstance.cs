@@ -23,7 +23,7 @@ public class DropInstance : IDropInstance
     public RectangleF GetCollisionBox() =>
         new Rectangle((int)Position.X, (int)Position.Y, (int)GetSize().X, (int)GetSize().Y);
 
-    public float GetDepth() => -1;
+    public double GetDepth() => -1;
 
     public IDroppable GetDroppable() => Drop;
 

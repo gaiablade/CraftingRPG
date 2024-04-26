@@ -77,8 +77,6 @@ public class PlayerInstance : IInstance
 
     public Vector2 GetPosition() => Position;
 
-    public float GetDepth() => Position.Y + GetSize().Y;
-
     public Vector2 GetSize() => new Vector2(48, 48);
 
     public Rectangle GetBounds() => new Rectangle((int)Position.X, (int)Position.Y, (int)GetSize().X, (int)GetSize().Y);
@@ -208,5 +206,10 @@ public class PlayerInstance : IInstance
     public Rectangle GetSourceRectangle()
     {
         return CurrentAnimation.GetSourceRectangle();
+    }
+
+    public double GetDepth()
+    {
+        return Position.Y + GetSize().Y;
     }
 }

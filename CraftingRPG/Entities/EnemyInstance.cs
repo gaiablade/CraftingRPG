@@ -20,7 +20,7 @@ public class EnemyInstance<T> : IEnemyInstance where T : IEnemy
     public IEnemy GetEnemy() => Enemy;
     public Vector2 GetPosition() => Position;
 
-    public float GetDepth() => Position.Y + 32;
+    public double GetDepth() => Position.Y + 32;
 
     public Vector2 GetSize() => new Vector2(32, 32);
 

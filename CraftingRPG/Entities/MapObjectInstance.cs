@@ -22,7 +22,7 @@ public class MapObjectInstance<T> : IInstance where T : IMapObject, new()
             locColBox.Width, locColBox.Height);
     }
 
-    public float GetDepth() => Position.Y + 32;
+    public double GetDepth() => Position.Y + 32;
 
     public Vector2 GetPosition() => Position;
 
