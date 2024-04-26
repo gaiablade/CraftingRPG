@@ -69,23 +69,17 @@ public class MapManager
             this.DrawTileLayer(spriteBatch, tileLayer);
         }
 
-        foreach (var objectLayer in CurrentMap.ObjectLayers)
-        {
-            foreach (var mapObject in objectLayer.Objects)
-            {
-                GameManager.SpriteBatch.Draw(mapObject.TileSet.SpriteSheetTexture,
-                    new Rectangle(new Point((int)mapObject.X, (int)mapObject.Y),
-                        new Point(mapObject.Width, mapObject.Height)),
-                    mapObject.SourceRectangle,
-                    Color.White);
-            }
-        }
-
         var instances = new List<IInstance>();
         instances.Add(Globals.Instance.Player);
         instances.AddRange(CurrentMap.Enemies);
+        foreach (var objectLayer in CurrentMap.ObjectLayers)
+        {
+            instances.AddRange(objectLayer.Objects);
+        }
         instances.AddRange(Drops);
-        instances.Sort((x, y) => x.GetDepth().CompareTo(y.GetDepth()));
+
+        // TODO: Remove Linq
+        instances = instances.OrderBy(x => x.GetDepth()).ThenBy(x => x.GetPosition().X).ToList();
 
         foreach (var instance in instances)
         {
@@ -102,6 +96,14 @@ public class MapManager
                         new Rectangle(0, 0, 32, 32),
                         Color.White);
                 }
+            }
+            else if (instance is MapObject mapObject)
+            {
+                GameManager.SpriteBatch.Draw(mapObject.TileSet.SpriteSheetTexture,
+                new Rectangle(new Point((int)mapObject.X, (int)mapObject.Y),
+                    new Point(mapObject.Width, mapObject.Height)),
+                mapObject.SourceRectangle,
+                Color.White);
             }
             else
             {

@@ -1,10 +1,12 @@
 using CraftingRPG.Enums;
+using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 
 namespace CraftingRPG.MapManagement;
 
-public class MapObject
+public class MapObject : IInstance
 {
     public MapObjectId Id { get; set; }
     public double X { get; set; }
@@ -15,9 +17,34 @@ public class MapObject
     public Rectangle SourceRectangle { get; set; }
     public MapObjectAttributes Attributes { get; set; }
 
-    public Rectangle GetCollisionBox()
+    public int GetSpriteSheetIndex()
+    {
+        return -1;
+    }
+
+    public RectangleF GetCollisionBox()
     {
         var clBx = this.Attributes.CollisionRectangle;
-        return new Rectangle((int)(clBx.X + X), (int)(clBx.Y + Y), clBx.Width, clBx.Height);
+        return new RectangleF((float)(clBx.X + X), (float)(clBx.Y + Y), clBx.Width, clBx.Height);
+    }
+
+    public Vector2 GetPosition()
+    {
+        return new Vector2((float)X, (float)Y);
+    }
+
+    public Vector2 SetPosition(Vector2 position)
+    {
+        return Vector2.Zero;
+    }
+
+    public double GetDepth()
+    {
+        return GetCollisionBox().Y + GetCollisionBox().Height;
+    }
+
+    public Vector2 GetSize()
+    {
+        return new Vector2(Width, Height);
     }
 }
