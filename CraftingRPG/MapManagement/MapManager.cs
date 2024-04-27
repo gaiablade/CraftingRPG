@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CraftingRPG.Constants;
-using CraftingRPG.Enemies;
 using CraftingRPG.Entities;
 using CraftingRPG.Extensions;
 using CraftingRPG.Global;
@@ -29,9 +28,8 @@ public class MapManager
     {
         "Tmx/map1.tmx"
     };
-    
+
     private List<IDropInstance> Drops = new();
-    private List<IDropInstance> DropsBelowPlayer = new();
     private List<Vector2> DropInitialPositions = new();
     private List<int> DropHoverTimers = new();
     private List<IEnemyInstance> AttackedEnemies = new();
@@ -62,11 +60,12 @@ public class MapManager
 
     public void Draw(SpriteBatch spriteBatch)
     {
+        var player = Globals.Instance.Player;
         var camera = Globals.Instance.Camera;
 
         foreach (var tileLayer in CurrentMap.TileLayers)
         {
-            this.DrawTileLayer(spriteBatch, tileLayer);
+            DrawTileLayer(spriteBatch, tileLayer);
         }
 
         var instances = new List<IInstance>();
@@ -76,6 +75,7 @@ public class MapManager
         {
             instances.AddRange(objectLayer.Objects);
         }
+
         instances.AddRange(Drops);
 
         // TODO: Remove Linq
@@ -87,48 +87,28 @@ public class MapManager
             {
                 DrawPlayer(playerInstance);
             }
-            else if (instance is IEnemyInstance)
+            else if (instance is IEnemyInstance enemyInstance)
             {
-                if (instance is EnemyInstance<GreenSlime> slimeInstance)
-                {
-                    GameManager.SpriteBatch.Draw(GameManager.SlimeSpriteSheet,
-                        new Rectangle(slimeInstance.Position.ToPoint(), slimeInstance.GetSize().ToPoint()),
-                        new Rectangle(0, 0, 32, 32),
-                        Color.White);
-                }
+                GameManager.SpriteBatch.Draw(enemyInstance.GetSpriteSheet(),
+                    new Rectangle(enemyInstance.GetPosition().ToPoint(), enemyInstance.GetSize().ToPoint()),
+                    enemyInstance.GetTextureRectangle(),
+                    Color.White);
             }
             else if (instance is MapObject mapObject)
             {
                 GameManager.SpriteBatch.Draw(mapObject.TileSet.SpriteSheetTexture,
-                new Rectangle(new Point((int)mapObject.X, (int)mapObject.Y),
-                    new Point(mapObject.Width, mapObject.Height)),
-                mapObject.SourceRectangle,
-                Color.White);
-            }
-            else
-            {
-                var size = instance.GetSize();
-                var pos = instance.GetPosition();
-                GameManager.SpriteBatch.Draw(GameManager.SpriteSheet,
-                    new Rectangle(pos.ToPoint(), size.ToPoint()),
-                    new Rectangle(0, instance.GetSpriteSheetIndex() * 32, (int)size.X, (int)size.Y),
+                    new Rectangle(new Point((int)mapObject.X, (int)mapObject.Y),
+                        new Point(mapObject.Width, mapObject.Height)),
+                    mapObject.SourceRectangle,
                     Color.White);
             }
-        }
-
-        // UI
-        if (DropsBelowPlayer.Count > 0)
-        {
-            GameManager.SpriteBatch.Draw(GameManager.Pixel,
-                new Rectangle(new Point((int)camera.BoundingRectangle.Left, (int)camera.BoundingRectangle.Top),
-                    new Point((int)camera.BoundingRectangle.Width + 10, 50)),
-                new Color(0, 0, 0, 150));
-            var dropName = DropsBelowPlayer.First().GetDroppable().GetName();
-            var dropNameSize = Globals.Instance.Fnt15.MeasureString(dropName);
-            GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt15,
-                dropName,
-                new Vector2(camera.Center.X - dropNameSize.X / 2, camera.BoundingRectangle.Top),
-                Color.White);
+            else if (instance is IDropInstance dropInstance)
+            {
+                GameManager.SpriteBatch.Draw(dropInstance.GetSpriteSheet(),
+                    new Rectangle(dropInstance.GetPosition().ToPoint(), dropInstance.GetSize().ToPoint()),
+                    dropInstance.GetTextureRectangle(),
+                    Color.White);
+            }
         }
     }
 
@@ -139,12 +119,16 @@ public class MapManager
         DetectAndHandleCollisions();
         DetectAndHandleDropPickupEvent();
         DetectAndHandleAttack();
-        
+
         Globals.Instance.Player.UpdateAnimation(gameTime);
+        foreach (var enemy in CurrentMap.Enemies)
+        {
+        }
 
         UpdateDrops();
         CalculateCameraPosition();
-        Globals.Instance.Player.IsAboveDrop = IsPlayerAboveDropInstance(out DropsBelowPlayer);
+        Globals.Instance.Player.IsAboveDrop = IsPlayerAboveDropInstance(out var dropsBelowPlayer);
+        Globals.Instance.Player.DropsBelowPlayer = dropsBelowPlayer;
     }
 
     public void AddDrop(IDropInstance drop)
@@ -165,7 +149,7 @@ public class MapManager
 
         return new Rectangle(x, y, tileSet.TileWidth, tileSet.TileHeight);
     }
-    
+
     private void DrawTileLayer(SpriteBatch spriteBatch, TileLayer tileLayer)
     {
         foreach (var tile in tileLayer.Tiles)
@@ -181,11 +165,10 @@ public class MapManager
 
     private void DrawPlayer(PlayerInstance player)
     {
-        var sourceRectangle = player.GetSourceRectangle();
         var flip = player.FacingDirection == Direction.Left;
-        GameManager.SpriteBatch.Draw(Globals.Instance.PlayerSpriteSheet,
+        GameManager.SpriteBatch.Draw(player.GetSpriteSheet(),
             new Rectangle(player.Position.ToPoint(), PlayerInstance.SpriteSize),
-            sourceRectangle,
+            player.GetTextureRectangle(),
             Color.White,
             0F,
             Vector2.Zero,
@@ -201,14 +184,14 @@ public class MapManager
     private void DetectAndHandleMovement(GameTime gameTime)
     {
         var player = Globals.Instance.Player;
-        
+
         player.MovementVector = Vector2.Zero;
 
         if (player.IsAttacking)
         {
             return;
         }
-        
+
         if (GameManager.FramesKeysHeld[Keys.Right] > 0)
         {
             player.MovementVector.X = 1;
@@ -230,7 +213,7 @@ public class MapManager
         if (player.MovementVector != Vector2.Zero)
         {
             player.MovementVector = CustomMath.UnitVector(player.MovementVector);
-            
+
             // Animation
             if (!player.IsWalking)
             {
@@ -274,21 +257,7 @@ public class MapManager
         var projectedPlayerBounds = player.GetCollisionBox();
         projectedPlayerBounds.X += player.MovementVector.X;
         projectedPlayerBounds.Y += player.MovementVector.Y;
-        
-        // var otherInstances = new List<IInstance>();
-        // otherInstances.AddRange(CurrentMap.Enemies);
-        //
-        // // Check collision with other instance, e.g. enemies and objects
-        // foreach (var instance in otherInstances)
-        // {
-        //     var otherColBox = instance.GetCollisionBox();
-        //     while (otherColBox.Intersects(player.GetCollisionBox()))
-        //     {
-        //         player.Position.X -= player.MovementVector.X;
-        //         player.Position.Y -= player.MovementVector.Y;
-        //     }
-        // }
-        
+
         // Check for collision with map objects
         foreach (var objectLayer in CurrentMap.ObjectLayers)
         {
@@ -296,12 +265,12 @@ public class MapManager
             {
                 var attr = mapObject.Attributes;
                 var objCBox = mapObject.GetCollisionBox();
-                
+
                 if (!attr.IsSolid || !projectedPlayerBounds.Intersects(objCBox)) continue;
-                
+
                 var depth = projectedPlayerBounds.GetIntersectionDepth(objCBox);
                 var absDepth = new Vector2(Math.Abs(depth.X), Math.Abs(depth.Y));
-                
+
                 if (absDepth.Y < absDepth.X)
                 {
                     player.MovementVector.Y += depth.Y;
@@ -329,7 +298,7 @@ public class MapManager
                 }
             }
         }
-        
+
         // Do movement
         player.Position.X += player.MovementVector.X;
         player.Position.Y += player.MovementVector.Y;
@@ -340,10 +309,10 @@ public class MapManager
         var player = Globals.Instance.Player;
         if (Globals.Instance.ActionKeyPressed && player.IsAboveDrop)
         {
-            var drop = DropsBelowPlayer.First();
-            drop.GetDroppable().OnObtain();
+            var drop = player.DropsBelowPlayer.First();
+            drop.OnObtain();
             var i = Drops.IndexOf(drop);
-            DropsBelowPlayer.Remove(drop);
+            player.DropsBelowPlayer.Remove(drop);
             Drops.Remove(drop);
             DropInitialPositions.RemoveAt(i);
             DropHoverTimers.RemoveAt(i);
@@ -372,15 +341,18 @@ public class MapManager
                         var dropTable = inst.GetEnemy().GetDropTable();
                         foreach (var possibleDrop in dropTable)
                         {
-                            var ran = Random.Shared.Next() % 100;
-                            if (ran < possibleDrop.DropRate)
+                            var randomNumber = Random.Shared.Next() % 100;
+                            if (randomNumber < possibleDrop.DropRate)
                             {
-                                if (!possibleDrop.Drop.CanDrop())
+                                var dropInstance = possibleDrop.CreateDropInstance();
+
+                                if (!dropInstance.CanDrop())
                                 {
                                     continue;
                                 }
 
-                                var dropInstance = new DropInstance(possibleDrop.Drop, inst.GetPosition());
+                                dropInstance.SetPosition(inst.GetPosition());
+
                                 Drops.Add(dropInstance);
                                 DropHoverTimers.Add(0);
                                 DropInitialPositions.Add(dropInstance.GetPosition());
@@ -473,7 +445,7 @@ public class MapManager
         foreach (var dropInstance in Drops)
         {
             var pos = dropInstance.GetPosition();
-            var dropBounds = new Rectangle((int)pos.X, (int)pos.Y, 32, 32);
+            var dropBounds = new Rectangle((int)pos.X, (int)pos.Y, 16, 16);
             if (dropBounds.Intersects(playerBounds))
             {
                 drops.Add(dropInstance);
