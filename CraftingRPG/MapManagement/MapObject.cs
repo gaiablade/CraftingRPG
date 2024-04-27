@@ -28,6 +28,16 @@ public class MapObject : IInstance
         return new RectangleF((float)(clBx.X + X), (float)(clBx.Y + Y), clBx.Width, clBx.Height);
     }
 
+    public Texture2D GetSpriteSheet()
+    {
+        return TileSet.SpriteSheetTexture;
+    }
+
+    public Rectangle GetTextureRectangle()
+    {
+        return SourceRectangle;
+    }
+
     public Vector2 GetPosition()
     {
         return new Vector2((float)X, (float)Y);
