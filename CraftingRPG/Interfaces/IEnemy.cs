@@ -13,4 +13,5 @@ public interface IEnemy
     public int GetSpriteSheetIndex();
     public Rectangle GetCollisionBox();
     public int GetMaxHitPoints();
+    public void UpdateAnimation(GameTime gameTime);
 }
