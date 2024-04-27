@@ -1,5 +1,6 @@
 ﻿using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
 namespace CraftingRPG.Entities;
@@ -20,6 +21,16 @@ public class MapObjectInstance<T> : IInstance where T : IMapObject, new()
         var locColBox = Instance.GetCollisionBox();
         return new RectangleF(Position.X + locColBox.X, Position.Y + locColBox.Y,
             locColBox.Width, locColBox.Height);
+    }
+
+    public Texture2D GetSpriteSheet()
+    {
+        return GameManager.SpriteSheet;
+    }
+
+    public Rectangle GetTextureRectangle()
+    {
+        return new();
     }
 
     public double GetDepth() => Position.Y + 32;
