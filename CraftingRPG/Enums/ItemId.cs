@@ -4,14 +4,14 @@ public enum ItemId
 {
     None,
     EmptyBottle,
-    HealingMushroom,
-    HeartyFlower,
     SmallHealthPotion,
     MediumHealthPotion,
-    IronSword,
+    HealingMushroom,
     IronChunk,
+    HeartyFlower,
+    ArcaneFlower,
     IronHelmet,
     MageBracelet,
     IronBand,
-    ArcaneFlower
+    IronSword,
 }

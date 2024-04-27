@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using CraftingRPG.AssetManagement;
 using CraftingRPG.Global;
 using CraftingRPG.MapManagement;
 using Microsoft.Xna.Framework.Audio;
@@ -23,7 +24,6 @@ namespace CraftingRPG
         public static Dictionary<Keys, int> FramesKeysHeld { get; private set; }
         public static Texture2D SpriteSheet { get; private set; }
         public static Texture2D TileSet { get; private set; }
-        public static Texture2D SlimeSpriteSheet { get; private set; }
         public static Texture2D Pixel { get; private set; }
         public static SoundEffect SwingSfx01 { get; private set; }
         public static SoundEffect HitSfx01 { get; private set; }
@@ -56,6 +56,8 @@ namespace CraftingRPG
             _graphics.PreferredBackBufferWidth = Resolution.X;
             _graphics.PreferredBackBufferHeight = Resolution.Y;
             _graphics.ApplyChanges();
+            Resolution = new Point(GraphicsDevice.PresentationParameters.BackBufferWidth,
+                GraphicsDevice.PresentationParameters.BackBufferHeight);
 
             Pixel = new Texture2D(GraphicsDevice, 1, 1);
             Pixel.SetData(new[] { Color.White });
@@ -92,7 +94,6 @@ namespace CraftingRPG
             Globals.Instance.Fnt20 = Content.Load<SpriteFont>("fonts/heygorgeous-20px");
             SpriteSheet = Content.Load<Texture2D>("textures/crpg_spritesheet");
             TileSet = Content.Load<Texture2D>("textures/crpg_tileset");
-            SlimeSpriteSheet = Content.Load<Texture2D>("textures/slime");
             SwingSfx01 = Content.Load<SoundEffect>("sfx/swoosh_01");
             HitSfx01 = Content.Load<SoundEffect>("sfx/Pierce_01");
             MaterialGrabSfx01 = Content.Load<SoundEffect>("sfx/Leather");
@@ -101,6 +102,7 @@ namespace CraftingRPG
             MenuConfirmSfx01 = Content.Load<SoundEffect>("sfx/Confirm_05");
 
             MapManager.Instance.LoadMapsFromContents(this.Content);
+            Assets.Instance.LoadAssets(this.Content);
 
             StateManager.PushState<OverworldState>(true);
         }
@@ -110,8 +112,6 @@ namespace CraftingRPG
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            Globals.Instance.Camera = new OrthographicCamera(this.GraphicsDevice);
 
             KeyboardState = Keyboard.GetState();
             foreach (var (key, frames) in FramesKeysHeld)
@@ -139,9 +139,21 @@ namespace CraftingRPG
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             SpriteBatch.Begin(samplerState: SamplerState.PointClamp,
                 transformMatrix: Globals.Instance.Camera.GetViewMatrix());
+            
+            foreach (var state in StateManager.States)
+            {
+                state.DrawWorld();
+            }
 
-            StateManager.CurrentState.Render();
-
+            SpriteBatch.End();
+            
+            SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            
+            foreach (var state in StateManager.States)
+            {
+                state.DrawUI();
+            }
+            
             SpriteBatch.End();
 
             base.Draw(gameTime);

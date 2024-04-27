@@ -1,29 +1,19 @@
-﻿using CraftingRPG.Constants;
-using CraftingRPG.Entities;
-using CraftingRPG.Interfaces;
+﻿using CraftingRPG.Interfaces;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
 using System.Linq;
+using CraftingRPG.AssetManagement;
 using CraftingRPG.Global;
+using CraftingRPG.SpriteAnimation;
+using CraftingRPG.Timers;
 
 namespace CraftingRPG.States;
 
 public class InventoryState : IState
 {
-    private const int NumberOfColumns = 6;
-    private readonly List<string> Tabs = new()
-    {
-        "All (Unsorted)",
-        "Weapons",
-        "Armor",
-        "Potions",
-        "Ingredients"
-    };
+    private const int NumberOfColumns = 5;
 
-    private Inventory Inventory;
-    private PlayerEquipment Equipment;
     private int ActiveTab = 0;
     private Point Cursor = new(0, 0);
 
@@ -33,120 +23,134 @@ public class InventoryState : IState
     private readonly int ItemHeightAndGap = 32 + 10;
     private readonly int GridTop = 150;
 
+    private ITimer TransitionTimer;
+    private double MenuPosition;
+    private bool MenuClosed;
+
+    private Animation CursorAnimation;
+
     public InventoryState()
     {
         GameManager.AddKeysIfNotExists(Keys.LeftControl, Keys.Left, Keys.Right, Keys.Down, Keys.Up);
 
-        Inventory = GameManager.PlayerInfo.Inventory;
-        Equipment = GameManager.PlayerInfo.Equipment;
+        TransitionTimer = new EaseOutTimer(0.5);
+        CursorAnimation = new Animation(4, 0.4, new Point(32, 32));
     }
 
-    public void Render()
+    public void DrawWorld()
     {
+    }
+
+    public void DrawUI()
+    {
+        var percent = TransitionTimer.GetPercent();
+        MenuPosition = percent * GameManager.Resolution.Y - GameManager.Resolution.Y;
+        var backgroundColor = 0.75F * percent;
+
+        GameManager.SpriteBatch.Draw(GameManager.Pixel,
+            new Rectangle(Point.Zero, GameManager.Resolution),
+            Color.Black * (float)backgroundColor);
+        GameManager.SpriteBatch.Draw(Assets.Instance.InventoryUi,
+            new Rectangle(new Point(-16, (int)MenuPosition - 16), GameManager.Resolution),
+            Assets.Instance.InventoryUi.Bounds,
+            Color.White);
+
         DrawEquipment();
         DrawItems();
 
-        // DEBUG: Draw a separator in the center of the screen
-        GameManager.SpriteBatch.Draw(GameManager.Pixel,
-            new Rectangle(GameManager.Resolution.X / 2, 0, 1, GameManager.Resolution.Y),
-            Color.Black);
+        if (Globals.Instance.Player.Info.Inventory.Items.Count > 0)
+        {
+            DrawCursor();
+        }
     }
 
     private void DrawEquipment()
     {
-        var fntH = Globals.Instance.Fnt12.MeasureString("A").Y;
+        const int statsHeaderX = 176;
+        const int statsHeaderY = 60;
+        const string statsHeader = "Stats & Equip.";
 
-        var header = "Equipment";
-        var headerSize = Globals.Instance.Fnt20.MeasureString(header);
-        GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt20,
-            header,
-            new Vector2(CenterX / 2 - headerSize.X / 2, 25),
-            Color.White);
+        var statsHeaderDimensions = Assets.Instance.Monogram24.MeasureString(statsHeader);
 
-        GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
-            "Weapon",
-            new Vector2(50, 75),
-            Color.White);
+        GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
+            statsHeader,
+            new Vector2(statsHeaderX - statsHeaderDimensions.X / 2, (float)(MenuPosition + statsHeaderY)),
+            Color.Black);
 
-        if (Equipment.Weapon != null)
-        {
-            GameManager.SpriteBatch.Draw(GameManager.SpriteSheet,
-                new Rectangle(50, (int)(75 + fntH + 10), 32, 32),
-                new Rectangle(0, Equipment.Weapon.GetSpriteSheetIndex() * 32, 32, 32),
-                Color.White);
-            GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
-                Equipment.Weapon.GetName(),
-                new Vector2(50 + 32 + 10, 75 + fntH + 10 + 16 - fntH / 2),
-                Color.White);
-        }
-        else
-        {
-            GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
-                "None",
-                new Vector2(50, 75 + fntH + 10),
-                Color.DarkGray);
-        }
+        const int weaponHeaderX = 86;
+        const int weaponHeaderY = 154;
+        const string weaponHeader = "Weapon:";
+
+        GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
+            weaponHeader,
+            new Vector2(weaponHeaderX, (float)MenuPosition + weaponHeaderY),
+            Color.Black);
+
+        const int weaponNameX = 265;
+        const int weaponNameY = 180;
+
+        var weapon = Globals.Instance.Player.Info.Equipment.Weapon;
+        var weaponName = weapon != null ? weapon.GetName() : "None";
+        var weaponNameDimensions = Assets.Instance.Monogram24.MeasureString(weaponName);
+
+        GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
+            weaponName,
+            new Vector2(weaponNameX - weaponNameDimensions.X, (float)MenuPosition + weaponNameY),
+            Color.Black);
     }
 
     private void DrawItems()
     {
-        var header = "Items";
-        var headerSize = Globals.Instance.Fnt20.MeasureString(header);
-        GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt20,
-            header,
-            new Vector2(GameManager.Resolution.X / 2 + GameManager.Resolution.X / 4 - headerSize.X / 2, 25),
-            Color.White);
+        const int inventoryHeaderX = 560;
+        const int inventoryHeaderY = 58;
+        const string inventoryHeader = "Inventory";
 
-        var gridMaxW = NumberOfColumns * ItemWidthAndGap;
-        var gridX = GameManager.Resolution.X / 2 + (GameManager.Resolution.X / 4 - gridMaxW / 2);
+        var inventoryHeaderDimensions = Assets.Instance.Monogram24.MeasureString(inventoryHeader);
 
-        GameManager.SpriteBatch.Draw(GameManager.Pixel,
-            new Rectangle(gridX, GridTop - 16, gridMaxW, 32 + 8 * 32),
-            Color.Red);
+        GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
+            inventoryHeader,
+            new Vector2(inventoryHeaderX - inventoryHeaderDimensions.X / 2, (float)(MenuPosition + inventoryHeaderY)),
+            Color.Black);
 
-        if (Inventory.Items.Count > 0)
+        const int inventoryX = 416;
+        const int inventoryY = 128;
+        var inventory = Globals.Instance.Player.Info.Inventory;
+
+        var i = 0;
+        foreach (var (itemId, quantity) in inventory.Items)
         {
-            var row = 0;
-            var col = 0;
-            foreach (var (itemId, qty) in Inventory.Items)
-            {
-                var itemInfo = GameManager.ItemInfo[itemId];
-                GameManager.SpriteBatch.Draw(GameManager.SpriteSheet,
-                    new Rectangle(gridX + 16 + col * ItemWidthAndGap, GridTop + row * ItemHeightAndGap, 32, 32),
-                    new Rectangle(0, itemInfo.GetSpriteSheetIndex() * 32, 32, 32),
-                    Color.White);
-                GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
-                    "x" + qty.ToString(),
-                    new Vector2((int)(gridX + 16 + col * ItemWidthAndGap), (int)(GridTop + row * ItemHeightAndGap)),
-                    Color.White);
+            var itemInfo = GameManager.ItemInfo[itemId];
 
-                col++;
-                if (col == NumberOfColumns)
-                {
-                    col = 0;
-                    row++;
-                }
-            }
+            var gridX = i % 5;
+            var gridY = i / 5;
 
-            DrawCursor(gridX);
-            DrawSelectedItemName();
+            GameManager.SpriteBatch.Draw(itemInfo.GetTileSet(),
+                new Rectangle(new Point(inventoryX + gridX * 64, (int)MenuPosition + inventoryY + gridY * 64),
+                    new Point(32, 32)),
+                itemInfo.GetSourceRectangle(),
+                Color.White);
+
+            i++;
         }
     }
 
-    public void DrawCursor(int gridX)
+    public void DrawCursor()
     {
-        var cursorX = gridX + 16 + Cursor.X * ItemWidthAndGap;
-        var cursorY = GridTop + Cursor.Y * ItemHeightAndGap;
-        GameManager.SpriteBatch.Draw(GameManager.SpriteSheet,
-            new Rectangle(cursorX, cursorY, 32, 32),
-            new Rectangle(0, SpriteIndex.Cursor * 32, 32, 32),
-            Color.White);
+        const int inventoryX = 416;
+        const int inventoryY = 128;
+
+        GameManager.SpriteBatch.Draw(Assets.Instance.WoodCursorSpriteSheet,
+            new Rectangle(new Point(inventoryX + Cursor.X * 64, 
+                    (int)MenuPosition + inventoryY + Cursor.Y * 64), 
+                new Point(32, 32)),
+            CursorAnimation.GetSourceRectangle(), Color.White);
     }
 
     public void DrawSelectedItemName()
     {
+        var inventory = Globals.Instance.Player.Info.Inventory;
         var cursorFlat = Cursor.Y * NumberOfColumns + Cursor.X;
-        var (itemId, qty) = Inventory.Items.ElementAt(cursorFlat);
+        var (itemId, qty) = inventory.Items.ElementAt(cursorFlat);
         var itemInfo = GameManager.ItemInfo[itemId];
         var itemName = itemInfo.GetName() + " x" + qty;
         var itemNameSize = Globals.Instance.Fnt12.MeasureString(itemName);
@@ -158,9 +162,23 @@ public class InventoryState : IState
 
     public void Update(GameTime gameTime)
     {
+        TransitionTimer.Update(gameTime);
+        CursorAnimation.Update(gameTime);
+
+        if (MenuClosed)
+        {
+            if (TransitionTimer.IsDone())
+            {
+                GameManager.StateManager.PopState();
+            }
+
+            return;
+        }
+
         if (GameManager.FramesKeysHeld[Keys.LeftControl] == 1)
         {
-            StateManager.Instance.PopState();
+            MenuClosed = true;
+            TransitionTimer.SetReverse();
         }
 
         if (GameManager.FramesKeysHeld[Keys.Left] == 1)
@@ -185,19 +203,22 @@ public class InventoryState : IState
 
     private void NormalizeCursor()
     {
-        var numRows = Inventory.Items.Count / NumberOfColumns + 1;
+        var inventory = Globals.Instance.Player.Info.Inventory;
+        var numRows = inventory.Items.Count / NumberOfColumns + 1;
         while (Cursor.Y >= numRows)
         {
             Cursor.Y--;
         }
+
         if (Cursor.Y < 0)
         {
             Cursor.Y = 0;
         }
+
         // If on last row and Cursor.X greater than number of columns in row, set to last
         if (Cursor.Y == numRows - 1)
         {
-            var lastRowColumns = Inventory.Items.Count % NumberOfColumns;
+            var lastRowColumns = inventory.Items.Count % NumberOfColumns;
             if (Cursor.X > lastRowColumns - 1)
             {
                 Cursor.X = lastRowColumns - 1;

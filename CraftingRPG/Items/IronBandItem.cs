@@ -1,7 +1,9 @@
-﻿using CraftingRPG.Constants;
-using CraftingRPG.Enums;
+﻿using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using System.Collections.Generic;
+using CraftingRPG.AssetManagement;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CraftingRPG.Items;
 
@@ -14,7 +16,15 @@ public class IronBandItem : IItem
         ItemCategory.Ingredient
     };
 
-    public string GetName() => "Iron Band";
+    public Texture2D GetTileSet()
+    {
+        return Assets.Instance.IconSpriteSheet;
+    }
 
-    public int GetSpriteSheetIndex() => SpriteIndex.QuestionMark;
+    public Rectangle GetSourceRectangle()
+    {
+        return new Rectangle(0, 1600, 0, 0);
+    }
+
+    public string GetName() => "Iron Band";
 }

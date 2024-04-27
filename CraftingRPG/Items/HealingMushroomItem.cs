@@ -1,7 +1,9 @@
-﻿using CraftingRPG.Constants;
-using CraftingRPG.Enums;
+﻿using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using System.Collections.Generic;
+using CraftingRPG.AssetManagement;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CraftingRPG.Items;
 
@@ -14,7 +16,15 @@ public class HealingMushroomItem : IItem
         ItemCategory.Ingredient
     };
 
-    public string GetName() => "Healing Mushroom";
+    public Texture2D GetTileSet()
+    {
+        return Assets.Instance.IconSpriteSheet;
+    }
 
-    public int GetSpriteSheetIndex() => SpriteIndex.HealingMushroom;
+    public Rectangle GetSourceRectangle()
+    {
+        return new Rectangle(32, 672, 32, 32);
+    }
+
+    public string GetName() => "Healing Mushroom";
 }

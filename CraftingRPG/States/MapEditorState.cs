@@ -30,7 +30,7 @@ public class MapEditorState : IState
             Keys.Q, Keys.W, Keys.O, Keys.P, Keys.L, Keys.K, Keys.Delete, Keys.Enter, Keys.M);
     }
 
-    public void Render()
+    public void DrawWorld()
     {
         // Draw Map
         for (int y = 0; y < Map.Tiles.Count; y++)
@@ -107,6 +107,10 @@ public class MapEditorState : IState
                 }
             }
         }
+    }
+
+    public void DrawUI()
+    {
     }
 
     public void Update(GameTime gameTime)

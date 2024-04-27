@@ -1,7 +1,9 @@
-﻿using CraftingRPG.Constants;
-using CraftingRPG.Enums;
+﻿using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using System.Collections.Generic;
+using CraftingRPG.AssetManagement;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CraftingRPG.Items;
 
@@ -14,7 +16,15 @@ public class IronHelmetItem : IItem
         ItemCategory.Armor
     };
 
-    public string GetName() => "Iron Helmet";
+    public Texture2D GetTileSet()
+    {
+        return Assets.Instance.IconSpriteSheet;
+    }
 
-    public int GetSpriteSheetIndex() => SpriteIndex.QuestionMark;
+    public Rectangle GetSourceRectangle()
+    {
+        return new Rectangle(64, 1408, 32, 32);
+    }
+
+    public string GetName() => "Iron Helmet";
 }

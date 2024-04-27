@@ -5,7 +5,7 @@ namespace CraftingRPG.Entities;
 
 public class Inventory
 {
-    public Dictionary<ItemId, int> Items = new();
+    public SortedDictionary<ItemId, int> Items = new();
 
     public int this[ItemId Id]
     {

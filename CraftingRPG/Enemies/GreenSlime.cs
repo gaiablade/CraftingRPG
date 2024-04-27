@@ -6,6 +6,7 @@ using CraftingRPG.Items;
 using CraftingRPG.Recipes;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using CraftingRPG.Entities.DropInstances;
 
 namespace CraftingRPG.Enemies;
 
@@ -13,9 +14,8 @@ public class GreenSlime : IEnemy
 {
     public List<EnemyDrop> GetDropTable() => new List<EnemyDrop>
     {
-        new EnemyDrop(80, new ItemDrop<HealingMushroomItem>()),
-        new EnemyDrop(70, new ItemDrop<EmptyBottleItem>()),
-        new EnemyDrop(100, new RecipeDrop<IronHelmetRecipe>())
+        new EnemyDrop(30, () => new HealingMushroomInstance()),
+        new EnemyDrop(80, () => new IronHelmetRecipeInstance())
     };
 
     public EnemyId GetId() => EnemyId.GreenSlime;
@@ -27,4 +27,9 @@ public class GreenSlime : IEnemy
     public Rectangle GetCollisionBox() => new(8, 11, 16, 13);
 
     public int GetMaxHitPoints() => 50;
+    
+    public void UpdateAnimation(GameTime gameTime)
+    {
+        throw new System.NotImplementedException();
+    }
 }

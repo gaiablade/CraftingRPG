@@ -1,11 +1,14 @@
-﻿using CraftingRPG.Entities;
+﻿using System;
+using CraftingRPG.Entities;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Linq;
+using CraftingRPG.AssetManagement;
 using CraftingRPG.Global;
+using CraftingRPG.Timers;
 
 namespace CraftingRPG.States;
 
@@ -15,34 +18,74 @@ public class QuestMenuState : IState
     private string Header = "Quests";
     private Vector2 HeaderSize;
 
+    private ITimer TransitionTimer;
+    private double MenuPosition;
+    private bool MenuClosed;
+
     public QuestMenuState()
     {
         GameManager.AddKeysIfNotExists(Keys.LeftControl, Keys.Up, Keys.Down);
+        TransitionTimer = new EaseOutTimer(0.4);
     }
 
-    public void Render()
+    public void DrawWorld()
     {
-        var quests = GameManager.PlayerInfo.Quests;
+    }
 
-        Header = "Quests";
-        HeaderSize = Globals.Instance.Fnt20.MeasureString(Header);
-        GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt20,
-            Header,
-            new Vector2(GameManager.Resolution.X / 2 - HeaderSize.X / 2, 10),
+    public void DrawUI()
+    {
+        var percent = (float)TransitionTimer.GetPercent();
+        MenuPosition = percent * GameManager.Resolution.Y - GameManager.Resolution.Y;
+        var backgroundColor = Color.Black * 0.75F * percent;
+
+        GameManager.SpriteBatch.Draw(GameManager.Pixel,
+            new Rectangle(Point.Zero, GameManager.Resolution),
+            backgroundColor);
+        GameManager.SpriteBatch.Draw(Assets.Instance.QuestUi,
+            new Rectangle(new Point(-16, (int)MenuPosition - 16), GameManager.Resolution),
+            Assets.Instance.QuestUi.Bounds,
             Color.White);
 
-        for (var i = 0; i < quests.Count; i++)
-        {
-            var text = $"{i + 1}) {quests[i].GetQuest().GetName()}";
-            var textSize = Globals.Instance.Fnt12.MeasureString(text);
-            var color = Cursor == i ? Color.Orange : Color.White;
-            GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
-                text,
-                new Vector2(10, 10 + HeaderSize.Y + 10 + (10 + textSize.Y) * i),
-                color);
-        }
+        const int questHeaderX = 400;
+        const int questHeaderY = 57;
+        const string questHeader = "Quests";
+        var questHeaderDimensions = Assets.Instance.Monogram24.MeasureString(questHeader);
+        
+        GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
+            questHeader,
+            new Vector2(questHeaderX - questHeaderDimensions.X / 2, (int)MenuPosition + questHeaderY),
+            Color.Black);
 
-        DrawHighlightedQuestInfo();
+        const int questNoteX = 96;
+        const int questNoteY = 112;
+        const int questNameX = 119;
+        const int questNameY = 135;
+        const int maxCharsPerLine = 13;
+
+        var i = 0;
+        var quests = GameManager.PlayerInfo.Quests;
+        foreach (var questInstance in quests)
+        {
+            var questName = questInstance.GetQuest().GetName();
+            var lines = BreakUpString(questName, maxCharsPerLine);
+            var questNameDimensions = Assets.Instance.Monogram24.MeasureString(questName);
+
+            GameManager.SpriteBatch.Draw(Assets.Instance.PaperNoteSpriteSheet,
+                new Rectangle(questNoteX, (int)MenuPosition + questNoteY, 192, 192),
+                new Rectangle(288, 32, 96, 96),
+                Color.White);
+
+            var j = 0;
+            foreach (var line in lines)
+            {
+                GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
+                    line,
+                    new Vector2(questNameX, (int)MenuPosition + questNameY + questNameDimensions.Y * j),
+                    Color.Black);
+                j++;
+            }
+            i++;
+        }
     }
 
     private void DrawHighlightedQuestInfo()
@@ -66,7 +109,9 @@ public class QuestMenuState : IState
 
         while (index < allWords.Length)
         {
-            if (index + numberOfWords - 1 < allWords.Length && Globals.Instance.Fnt12.MeasureString(string.Join(' ', allWords.Skip(index).Take(numberOfWords))).X < GameManager.Resolution.X / 2 - 50)
+            if (index + numberOfWords - 1 < allWords.Length &&
+                Globals.Instance.Fnt12.MeasureString(string.Join(' ', allWords.Skip(index).Take(numberOfWords))).X <
+                GameManager.Resolution.X / 2 - 50)
             {
                 numberOfWords++;
             }
@@ -83,7 +128,8 @@ public class QuestMenuState : IState
         {
             GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
                 descLines[i],
-                new Vector2((int)(GameManager.Resolution.X / 2 + 25), (int)(10 + HeaderSize.Y + 10 + questStatusSize.Y + 10 + (10 + lineHeight) * i)),
+                new Vector2((int)(GameManager.Resolution.X / 2 + 25),
+                    (int)(10 + HeaderSize.Y + 10 + questStatusSize.Y + 10 + (10 + lineHeight) * i)),
                 Color.White);
         }
 
@@ -102,9 +148,9 @@ public class QuestMenuState : IState
             foreach (var (itemId, qty) in fetchQuest.GetCollectedItems())
             {
                 var itemInfo = GameManager.ItemInfo[itemId];
-                GameManager.SpriteBatch.Draw(GameManager.SpriteSheet,
+                GameManager.SpriteBatch.Draw(itemInfo.GetTileSet(),
                     new Rectangle(GameManager.Resolution.X / 2 + 10, (int)y, 32, 32),
-                    new Rectangle(0, 32 * itemInfo.GetSpriteSheetIndex(), 32, 32),
+                    itemInfo.GetSourceRectangle(),
                     Color.White);
                 var itemName = itemInfo.GetName();
                 var quest = fetchQuest.GetFetchQuest();
@@ -123,11 +169,23 @@ public class QuestMenuState : IState
 
     public void Update(GameTime gameTime)
     {
+        TransitionTimer.Update(gameTime);
+
+        if (MenuClosed)
+        {
+            if (TransitionTimer.IsDone())
+            {
+                GameManager.StateManager.PopState();
+            }
+
+            return;
+        }
+
         if (GameManager.FramesKeysHeld[Keys.Up] == 1)
         {
             GameManager.MenuHoverSfx01.Play(0.3F, 0F, 0F);
             Cursor = CustomMath.WrapAround(Cursor - 1, 0, GameManager.PlayerInfo.Quests.Count - 1);
-        } 
+        }
         else if (GameManager.FramesKeysHeld[Keys.Down] == 1)
         {
             GameManager.MenuHoverSfx01.Play(0.3F, 0F, 0F);
@@ -136,7 +194,31 @@ public class QuestMenuState : IState
 
         if (GameManager.FramesKeysHeld[Keys.LeftControl] == 1)
         {
-            GameManager.StateManager.PopState();
+            TransitionTimer.SetReverse();
+            MenuClosed = true;
         }
+    }
+
+    private string[] BreakUpString(string s, int charsPerLine)
+    {
+        var list = new List<string>();
+        var currentIndex = 0;
+        var lastWrap = 0;
+
+        do
+        {
+            currentIndex = lastWrap + charsPerLine > s.Length
+                ? s.Length
+                : (s.LastIndexOfAny(new[] { ' ', ',', '.', '?', '!', ':', ';', '-', '\n', '\r', '\t' },
+                    Math.Min(s.Length - 1, lastWrap + charsPerLine)) + 1);
+            
+            if (currentIndex <= lastWrap)
+                currentIndex = Math.Min(lastWrap + charsPerLine, s.Length);
+            
+            list.Add(s.Substring(lastWrap, currentIndex - lastWrap).Trim(' '));
+            lastWrap = currentIndex;
+        } while (currentIndex < s.Length);
+
+        return list.ToArray();
     }
 }

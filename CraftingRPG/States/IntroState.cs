@@ -50,7 +50,7 @@ public class IntroState : IState
         return storyLines;
     }
 
-    public void Render()
+    public void DrawWorld()
     {
         var lineHeight = Globals.Instance.DefaultFont.MeasureString(IntroStoryLines[0]).Y;
         var i = 0;
@@ -72,6 +72,10 @@ public class IntroState : IState
             pressEnter,
             new Vector2(GameManager.Resolution.X / 2 - pressEnterSize.X / 2, lastY + (GameManager.Resolution.Y - lastY) / 2 - pressEnterSize.Y / 2),
             Color.Orange);
+    }
+
+    public void DrawUI()
+    {
     }
 
     public void Update(GameTime gameTime)
