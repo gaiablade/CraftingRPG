@@ -1,7 +1,9 @@
-﻿using CraftingRPG.Constants;
-using CraftingRPG.Enums;
+﻿using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using System.Collections.Generic;
+using CraftingRPG.AssetManagement;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CraftingRPG.Items;
 
@@ -14,7 +16,15 @@ public class MediumHealthPotionItem : IItem
         ItemCategory.Potion
     };
 
-    public string GetName() => "Medium Health Potion";
+    public Texture2D GetTileSet()
+    {
+        return Assets.Instance.IconSpriteSheet;
+    }
 
-    public int GetSpriteSheetIndex() => SpriteIndex.MediumHealthPotion;
+    public Rectangle GetSourceRectangle()
+    {
+        return new Rectangle(32, 544, 32, 32);
+    }
+
+    public string GetName() => "Medium Health Potion";
 }
