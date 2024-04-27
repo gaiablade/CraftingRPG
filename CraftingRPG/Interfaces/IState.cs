@@ -5,5 +5,6 @@ namespace CraftingRPG.Interfaces;
 public interface IState
 {
     public void Update(GameTime gameTime);
-    public void Render();
+    public void DrawWorld();
+    public void DrawUI();
 }
