@@ -20,7 +20,7 @@ public class MainMenuState : IState
         }
     }
 
-    public void Render()
+    public void DrawWorld()
     {
         var gameTitle = "Crafting RPG";
         var titleSize = Globals.Instance.DefaultFont.MeasureString(gameTitle);
@@ -35,6 +35,10 @@ public class MainMenuState : IState
             pressEnter,
             new Vector2(GameManager.Resolution.X / 2 - pressEnterSize.X / 2, GameManager.Resolution.Y / 2 - pressEnterSize.Y / 2),
             Color.Orange);
+    }
+
+    public void DrawUI()
+    {
     }
 
     public void Update(GameTime gameTime)

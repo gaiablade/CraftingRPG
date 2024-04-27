@@ -1,11 +1,13 @@
-﻿using CraftingRPG.Entities;
+﻿using System;
+using CraftingRPG.Entities;
 using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
+using System.Linq;
+using CraftingRPG.AssetManagement;
 using CraftingRPG.Global;
 using CraftingRPG.MapManagement;
-using TiledSharp;
+using CraftingRPG.Timers;
 
 // I love you
 
@@ -14,26 +16,11 @@ namespace CraftingRPG.States;
 public class OverworldState : IState
 {
     private PlayerInstance Player;
-    private List<IInstance> MapObjects;
-    private List<IDropInstance> Drops;
-    private Vector2 MovementVector;
-    private bool IsAttacking = false;
-    private int AttackAnimFrames = 0;
-    private int AttackFrameLength = 8;
-    private bool IsWalking = false;
-    private int IdleOrWalkingAnimFrames = 0;
-    private int AttackFrame = 0;
-    private Rectangle AttackRect;
-    private List<IEnemyInstance> AttackedEnemies = new();
-    private bool IsAboveDrop = false;
-    private List<IDropInstance> DropsBelowPlayer;
-    private bool ActionKeyPressed = false;
 
-    private GameMap CurrentMap;
-
-    private TmxMap Map;
-    private int TileWidth;
-    private int TileHeight;
+    // Dropped item label
+    private int DroppedItemLabelY = -64;
+    private bool PreviousIsAboveDrop = false;
+    private ITimer DroppedItemLabelTimer;
 
     public OverworldState()
     {
@@ -45,15 +32,42 @@ public class OverworldState : IState
         Player.Position = new Vector2(100, 100);
 
         MapManager.Instance.LoadDefaultMap();
-        CurrentMap = MapManager.Instance.GetCurrentMap();
-
-        MapObjects = new();
-        Drops = new();
+        
+        DroppedItemLabelTimer = new EaseOutTimer(0.4, true);
+        DroppedItemLabelTimer.Update(new GameTime(TimeSpan.Zero, TimeSpan.MaxValue));
     }
 
-    public void Render()
+    public void DrawWorld()
     {
         DrawMap();
+    }
+
+    public void DrawUI()
+    {
+        var player = Globals.Instance.Player;
+        var resolution = GameManager.Resolution;
+        var woodUi = Assets.Instance.WoodUISpriteSheet;
+        
+        var percent = DroppedItemLabelTimer.GetPercent();
+        var displacement = 64 * percent;
+
+        var dropLabelWidth = 64 * 3;
+
+        GameManager.SpriteBatch.Draw(woodUi,
+            new Rectangle(GameManager.Resolution.X / 2 - dropLabelWidth / 2, DroppedItemLabelY + (int)displacement,
+                dropLabelWidth, 64),
+            new Rectangle(416, 96, 32 * 3, 32),
+            Color.White);
+
+        if (!player.IsAboveDrop) return;
+
+        var dropName = player.DropsBelowPlayer.First().GetDroppable().GetName();
+        var dropNameSize = Assets.Instance.Monogram12.MeasureString(dropName);
+
+        GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram12,
+            dropName,
+            new Vector2(resolution.X / 2 - dropNameSize.X / 2, (float)(25 - 64 + displacement)),
+            Color.Black);
     }
 
     private void DrawMap()
@@ -63,9 +77,22 @@ public class OverworldState : IState
 
     public void Update(GameTime gameTime)
     {
+        DroppedItemLabelTimer.Update(gameTime);
+
         MapManager.Instance.Update(gameTime);
 
-        IsAboveDrop = IsPlayerAboveDropInstance(out DropsBelowPlayer);
+        var player = Globals.Instance.Player;
+
+        if (player.IsAboveDrop && !PreviousIsAboveDrop)
+        {
+            DroppedItemLabelTimer.SetReverse(false);
+        }
+        else if (!player.IsAboveDrop && PreviousIsAboveDrop)
+        {
+            DroppedItemLabelTimer.SetReverse();
+        }
+
+        PreviousIsAboveDrop = player.IsAboveDrop;
 
         if (GameManager.FramesKeysHeld[Keys.C] == 1)
         {
@@ -79,24 +106,5 @@ public class OverworldState : IState
         {
             StateManager.Instance.PushState<QuestMenuState>(true);
         }
-    }
-
-    private bool IsPlayerAboveDropInstance(out List<IDropInstance> drops)
-    {
-        drops = new List<IDropInstance>();
-
-        var playerBounds = Player.GetBounds();
-
-        foreach (var dropInstance in Drops)
-        {
-            var pos = dropInstance.GetPosition();
-            var dropBounds = new Rectangle((int)pos.X, (int)pos.Y, 32, 32);
-            if (dropBounds.Intersects(playerBounds))
-            {
-                drops.Add(dropInstance);
-            }
-        }
-
-        return drops.Count > 0;
     }
 }
