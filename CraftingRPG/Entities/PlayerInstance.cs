@@ -1,7 +1,12 @@
-﻿using CraftingRPG.Constants;
+﻿using System.Collections.Generic;
+using CraftingRPG.Constants;
+using CraftingRPG.Enums;
+using CraftingRPG.Global;
 using CraftingRPG.Interfaces;
+using CraftingRPG.Recipes;
 using CraftingRPG.SpriteAnimation;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -26,6 +31,7 @@ public class PlayerInstance : IInstance
     public int FacingDirection { get; set; } = Direction.Down;
     public bool IsAttacking { get; set; }
     public bool IsWalking { get; set; }
+    public List<IDropInstance> DropsBelowPlayer { get; set; } = new();
     #endregion
     
     public Vector2 MovementVector;
@@ -73,6 +79,20 @@ public class PlayerInstance : IInstance
         AttackingSideAnimation = new Animation(4, attackInterval, SpriteSize, false, 0, 336);
         AttackingNorthAnimation = new Animation(4, attackInterval, SpriteSize, false, 0, 384);
         CurrentAnimation = IdleSouthAnimation;
+        
+        Info.RecipeBook.AddRecipe(RecipeId.IronSword, new IronSwordRecipe());
+        Info.RecipeBook.AddRecipe(RecipeId.MageBracelet, new MageBraceletRecipe());
+
+        Info.Inventory[ItemId.HealingMushroom]++;
+        Info.Inventory[ItemId.IronSword]++;
+        Info.Inventory[ItemId.EmptyBottle]++;
+        Info.Inventory[ItemId.MageBracelet]++;
+        Info.Inventory[ItemId.ArcaneFlower]++;
+        Info.Inventory[ItemId.SmallHealthPotion]++;
+        Info.Inventory[ItemId.HeartyFlower]++;
+        Info.Inventory[ItemId.IronHelmet]++;
+        Info.Inventory[ItemId.IronChunk]++;
+        Info.Inventory[ItemId.MediumHealthPotion]++;
     }
 
     public Vector2 GetPosition() => Position;
@@ -81,9 +101,17 @@ public class PlayerInstance : IInstance
 
     public Rectangle GetBounds() => new Rectangle((int)Position.X, (int)Position.Y, (int)GetSize().X, (int)GetSize().Y);
 
-    public int GetSpriteSheetIndex() => SpriteIndex.Player1;
-
     public RectangleF GetCollisionBox() => new(new Point2(Position.X + 18, Position.Y + 22), new Size2(13, 19));
+    
+    public Texture2D GetSpriteSheet()
+    {
+        return Globals.Instance.PlayerSpriteSheet;
+    }
+
+    public Rectangle GetTextureRectangle()
+    {
+        return CurrentAnimation.GetSourceRectangle();
+    }
 
     public Vector2 SetPosition(Vector2 position) => Position = position;
 
