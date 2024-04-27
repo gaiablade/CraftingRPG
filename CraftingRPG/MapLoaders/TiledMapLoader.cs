@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CraftingRPG.Enemies;
-using CraftingRPG.Entities;
+using CraftingRPG.Entities.EnemyInstances;
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using CraftingRPG.MapManagement;
@@ -114,7 +113,9 @@ public class TiledMapLoader : IMapLoader
                 switch (enemyId)
                 {
                     case EnemyId.GreenSlime:
-                        enemies.Add(new EnemyInstance<GreenSlime>(new GreenSlime(), new Vector2((float)tiledEnemy.X, (float)tiledEnemy.Y)));
+                        var greenSlimeInstance = new GreenSlimeInstance();
+                        greenSlimeInstance.SetPosition(new Vector2((int)tiledEnemy.X, (int)tiledEnemy.Y));
+                        enemies.Add(greenSlimeInstance);
                         break;
                 }
             }
