@@ -6,13 +6,13 @@ using CraftingRPG.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
 using CraftingRPG.AssetManagement;
+using CraftingRPG.GameStateManagement;
 using CraftingRPG.Global;
+using CraftingRPG.InputManagement;
 using CraftingRPG.MapManagement;
 using Microsoft.Xna.Framework.Audio;
-using MonoGame.Extended;
 
 namespace CraftingRPG
 {
@@ -21,7 +21,6 @@ namespace CraftingRPG
         private GraphicsDeviceManager _graphics;
         public static SpriteBatch SpriteBatch { get; private set; }
         public static KeyboardState @KeyboardState { get; private set; }
-        public static Dictionary<Keys, int> FramesKeysHeld { get; private set; }
         public static Texture2D SpriteSheet { get; private set; }
         public static Texture2D TileSet { get; private set; }
         public static Texture2D Pixel { get; private set; }
@@ -36,15 +35,11 @@ namespace CraftingRPG
         public static Dictionary<ItemId, IItem> ItemInfo { get; private set; }
         public static Point PlayerSpriteSize = new Point(48, 48);
 
-        public static StateManager StateManager { get; private set; } = StateManager.Instance;
+        public static GameStateManager StateManager { get; private set; } = GameStateManager.Instance;
         public static GlobalFlags GlobalFlags { get; private set; } = new();
 
         public GameManager()
         {
-            // Set framerate to 60fps
-            this.IsFixedTimeStep = true;
-            this.TargetElapsedTime = TimeSpan.FromSeconds(1d / 60d);
-
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -78,7 +73,8 @@ namespace CraftingRPG
             };
 
             PlayerInfo = new PlayerInfo();
-            FramesKeysHeld = new Dictionary<Keys, int>();
+            
+            InputManager.Instance.LoadKeybindingConfiguration();
 
             base.Initialize();
         }
@@ -86,12 +82,6 @@ namespace CraftingRPG
         protected override void LoadContent()
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            Globals.Instance.PlayerSpriteSheet = Content.Load<Texture2D>("textures/player");
-            Globals.Instance.DefaultFont = Content.Load<SpriteFont>("fonts/heygorgeous");
-            Globals.Instance.Fnt10 = Content.Load<SpriteFont>("fonts/heygorgeous");
-            Globals.Instance.Fnt12 = Content.Load<SpriteFont>("fonts/heygorgeous");
-            Globals.Instance.Fnt15 = Content.Load<SpriteFont>("fonts/heygorgeous");
-            Globals.Instance.Fnt20 = Content.Load<SpriteFont>("fonts/heygorgeous-20px");
             SpriteSheet = Content.Load<Texture2D>("textures/crpg_spritesheet");
             TileSet = Content.Load<Texture2D>("textures/crpg_tileset");
             SwingSfx01 = Content.Load<SoundEffect>("sfx/swoosh_01");
@@ -113,18 +103,10 @@ namespace CraftingRPG
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            Time.Delta = gameTime.ElapsedGameTime.TotalSeconds;
+
             KeyboardState = Keyboard.GetState();
-            foreach (var (key, frames) in FramesKeysHeld)
-            {
-                if (KeyboardState.IsKeyDown(key))
-                {
-                    FramesKeysHeld[key] = frames + 1;
-                }
-                else
-                {
-                    FramesKeysHeld[key] = 0;
-                }
-            }
+            InputManager.Instance.Update(KeyboardState, gameTime);
 
             StateManager.ProcessStateRequests();
             StateManager.CurrentState.Update(gameTime);
@@ -134,11 +116,11 @@ namespace CraftingRPG
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             SpriteBatch.Begin(samplerState: SamplerState.PointClamp,
-                transformMatrix: Globals.Instance.Camera.GetViewMatrix());
+                transformMatrix: Globals.Camera.GetViewMatrix());
             
             foreach (var state in StateManager.States)
             {
@@ -157,25 +139,6 @@ namespace CraftingRPG
             SpriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        public static void AddKeyIfNotExists(Keys key)
-        {
-            if (!FramesKeysHeld.ContainsKey(key))
-            {
-                FramesKeysHeld.Add(key, 0);
-            }
-        }
-
-        public static void AddKeysIfNotExists(params Keys[] keys)
-        {
-            foreach (var key in keys)
-            {
-                if (!FramesKeysHeld.ContainsKey(key))
-                {
-                    FramesKeysHeld.Add(key, 0);
-                }
-            }
         }
     }
 }
