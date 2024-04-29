@@ -3,7 +3,7 @@ using System.Linq;
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 
-namespace CraftingRPG.Quests;
+namespace CraftingRPG.QuestManagement;
 
 public class FetchQuestInstance : IQuestInstance
 {

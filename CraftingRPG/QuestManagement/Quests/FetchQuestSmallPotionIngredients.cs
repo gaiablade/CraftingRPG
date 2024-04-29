@@ -1,8 +1,7 @@
-﻿using CraftingRPG.Entities;
+﻿using System.Collections.Generic;
 using CraftingRPG.Enums;
-using System.Collections.Generic;
 
-namespace CraftingRPG.Quests;
+namespace CraftingRPG.QuestManagement.Quests;
 
 public class FetchQuestSmallPotionIngredients : BaseFetchQuest
 {

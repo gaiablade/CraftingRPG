@@ -1,5 +1,5 @@
 ﻿using CraftingRPG.Interfaces;
-using CraftingRPG.Quests;
+using CraftingRPG.QuestManagement;
 
 namespace CraftingRPG.Entities;
 

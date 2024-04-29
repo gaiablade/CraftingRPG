@@ -2,7 +2,7 @@
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 
-namespace CraftingRPG.Quests;
+namespace CraftingRPG.QuestManagement;
 
 public abstract class BaseFetchQuest : IQuest
 {
