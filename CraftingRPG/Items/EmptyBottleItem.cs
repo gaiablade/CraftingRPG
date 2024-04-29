@@ -2,6 +2,7 @@
 using CraftingRPG.Interfaces;
 using System.Collections.Generic;
 using CraftingRPG.AssetManagement;
+using CraftingRPG.Constants;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -26,6 +27,6 @@ namespace CraftingRPG.Items
             return new Rectangle(224, 544, 32, 32);
         }
 
-        public string GetName() => "Empty Bottle";
+        public string GetName() => ItemName.EmptyBottle;
     }
 }

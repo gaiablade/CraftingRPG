@@ -2,6 +2,7 @@
 using CraftingRPG.Interfaces;
 using System.Collections.Generic;
 using CraftingRPG.AssetManagement;
+using CraftingRPG.Constants;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -26,5 +27,5 @@ public class ArcaneFlowerItem : IItem
         return new Rectangle(352, 576, 32, 32);
     }
 
-    public string GetName() => "Arcane Flower";
+    public string GetName() => ItemName.ArcaneFlower;
 }

@@ -2,6 +2,7 @@
 using CraftingRPG.Interfaces;
 using System.Collections.Generic;
 using CraftingRPG.AssetManagement;
+using CraftingRPG.Constants;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -26,5 +27,5 @@ public class HeartyFlowerItem : IItem
         return new Rectangle(416, 576, 32, 32);
     }
 
-    public string GetName() => "Hearty Flower";
+    public string GetName() => ItemName.HeartyFlower;
 }
