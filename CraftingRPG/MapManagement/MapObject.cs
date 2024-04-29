@@ -53,8 +53,8 @@ public class MapObject : IInstance
         return GetCollisionBox().Y + GetCollisionBox().Height;
     }
 
-    public Vector2 GetSize()
+    public Point GetSize()
     {
-        return new Vector2(Width, Height);
+        return new Point(Width, Height);
     }
 }

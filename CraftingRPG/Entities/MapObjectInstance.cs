@@ -37,7 +37,7 @@ public class MapObjectInstance<T> : IInstance where T : IMapObject, new()
 
     public Vector2 GetPosition() => Position;
 
-    public Vector2 GetSize() => new Vector2(32, 32);
+    public Point GetSize() => new(32, 32);
 
     public int GetSpriteSheetIndex() => Instance.GetSpriteSheetIndex();
 

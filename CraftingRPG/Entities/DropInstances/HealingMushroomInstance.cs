@@ -9,8 +9,6 @@ namespace CraftingRPG.Entities.DropInstances;
 public class HealingMushroomInstance : BaseItemInstance
 {
     private HealingMushroomItem Item;
-    private Vector2 Position;
-    private Vector2 Size = new(16, 16);
 
     public HealingMushroomInstance()
     {
@@ -33,7 +31,7 @@ public class HealingMushroomInstance : BaseItemInstance
         return -1;
     }
 
-    public override Vector2 GetSize()
+    public override Point GetSize()
     {
         return Size;
     }

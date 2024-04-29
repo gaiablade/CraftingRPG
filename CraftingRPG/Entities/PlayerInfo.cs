@@ -1,9 +1,9 @@
-﻿using CraftingRPG.Enums;
-using CraftingRPG.Interfaces;
+﻿using CraftingRPG.Interfaces;
 using CraftingRPG.Items;
 using CraftingRPG.Quests;
 using CraftingRPG.Recipes;
 using System.Collections.Generic;
+using CraftingRPG.RecipeBookManagement;
 
 namespace CraftingRPG.Entities;
 

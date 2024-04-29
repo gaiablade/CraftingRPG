@@ -4,8 +4,8 @@ namespace CraftingRPG.Interfaces;
 
 public interface IEnemyInstance : IInstance
 {
-    public IEnemy GetEnemy();
+    public IEnemy GetEnemyInfo();
     public int GetCurrentHitPoints();
     public bool IncurDamage(int damage);
-    public void UpdateAnimation(GameTime gameTime);
+    public void Update(GameTime gameTime);
 }
