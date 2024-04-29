@@ -9,7 +9,7 @@ public interface IInstance
     public Vector2 GetPosition();
     public Vector2 SetPosition(Vector2 position);
     public double GetDepth();
-    public Vector2 GetSize();
+    public Point GetSize();
     public RectangleF GetCollisionBox();
     public Texture2D GetSpriteSheet();
     public Rectangle GetTextureRectangle();

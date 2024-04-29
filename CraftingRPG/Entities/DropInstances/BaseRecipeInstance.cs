@@ -1,3 +1,5 @@
+using CraftingRPG.AssetManagement;
+using CraftingRPG.Global;
 using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,62 +9,53 @@ namespace CraftingRPG.Entities.DropInstances;
 
 public abstract class BaseRecipeInstance : IDropInstance
 {
-    public virtual Vector2 GetPosition()
+    protected IRecipe Recipe { get; set; }
+    protected IDroppable Droppable { get; set; }
+    protected Vector2 Position { get; set; }
+    protected Point Size { get; set; }
+    protected double Depth { get; set; } = -1;
+
+    #region Constructors
+    protected BaseRecipeInstance()
     {
-        throw new System.NotImplementedException();
+        Size = new(16, 16);
     }
 
-    public virtual Vector2 SetPosition(Vector2 position)
+    protected BaseRecipeInstance(Point size)
     {
-        throw new System.NotImplementedException();
+        Size = size;
     }
-
-    public virtual double GetDepth()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public virtual Vector2 GetSize()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public virtual RectangleF GetCollisionBox()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public virtual Texture2D GetSpriteSheet()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public virtual Rectangle GetTextureRectangle()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public virtual bool CanDrop()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public virtual IDroppable GetDroppable()
-    {
-        throw new System.NotImplementedException();
-    }
+    #endregion
+    
+    #region Required Overrides
+    public abstract Rectangle GetTextureRectangle();
+    #endregion
+    
+    public virtual Vector2 GetPosition() => Position;
+    public virtual IDroppable GetDroppable() => Droppable;
+    public virtual double GetDepth() => Depth;
+    public virtual Point GetSize() => Size;
+    public virtual RectangleF GetCollisionBox() => new(Position, Size);
+    public virtual Vector2 SetPosition(Vector2 position) => Position = position;
+    public virtual Texture2D GetSpriteSheet() => Assets.Instance.IconSpriteSheet;
+    public virtual bool CanDrop() => !Globals.Player.Info.RecipeBook.Recipes.ContainsKey(Recipe.GetId());
 
     public virtual void OnObtain()
     {
+        AddToRecipeBook(Recipe);
     }
 
     protected void AddToRecipeBook<T>() where T : IRecipe, new()
     {
-        var recipe = new T();
+        AddToRecipeBook(new T());
+    }
+    
+    protected static void AddToRecipeBook(IRecipe recipe)
+    {
         var player = GameManager.PlayerInfo;
 
         GameManager.RecipeGrabSfx01.Play(0.3F, 0F, 0F);
-        
+
         if (!player.RecipeBook.Recipes.ContainsKey(recipe.GetId()))
         {
             player.RecipeBook.AddRecipe(recipe);

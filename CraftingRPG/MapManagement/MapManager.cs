@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using CraftingRPG.Constants;
 using CraftingRPG.Entities;
+using CraftingRPG.Enums;
 using CraftingRPG.Extensions;
 using CraftingRPG.Global;
+using CraftingRPG.InputManagement;
 using CraftingRPG.Interfaces;
 using CraftingRPG.MapLoaders;
 using CraftingRPG.Utility;
@@ -60,16 +62,13 @@ public class MapManager
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        var player = Globals.Instance.Player;
-        var camera = Globals.Instance.Camera;
-
         foreach (var tileLayer in CurrentMap.TileLayers)
         {
             DrawTileLayer(spriteBatch, tileLayer);
         }
 
         var instances = new List<IInstance>();
-        instances.Add(Globals.Instance.Player);
+        instances.Add(Globals.Player);
         instances.AddRange(CurrentMap.Enemies);
         foreach (var objectLayer in CurrentMap.ObjectLayers)
         {
@@ -90,7 +89,7 @@ public class MapManager
             else if (instance is IEnemyInstance enemyInstance)
             {
                 GameManager.SpriteBatch.Draw(enemyInstance.GetSpriteSheet(),
-                    new Rectangle(enemyInstance.GetPosition().ToPoint(), enemyInstance.GetSize().ToPoint()),
+                    new Rectangle(enemyInstance.GetPosition().ToPoint(), enemyInstance.GetSize()),
                     enemyInstance.GetTextureRectangle(),
                     Color.White);
             }
@@ -105,7 +104,7 @@ public class MapManager
             else if (instance is IDropInstance dropInstance)
             {
                 GameManager.SpriteBatch.Draw(dropInstance.GetSpriteSheet(),
-                    new Rectangle(dropInstance.GetPosition().ToPoint(), dropInstance.GetSize().ToPoint()),
+                    new Rectangle(dropInstance.GetPosition().ToPoint(), dropInstance.GetSize()),
                     dropInstance.GetTextureRectangle(),
                     Color.White);
             }
@@ -120,15 +119,15 @@ public class MapManager
         DetectAndHandleDropPickupEvent();
         DetectAndHandleAttack();
 
-        Globals.Instance.Player.UpdateAnimation(gameTime);
+        Globals.Player.UpdateAnimation(gameTime);
         foreach (var enemy in CurrentMap.Enemies)
         {
         }
 
         UpdateDrops();
         CalculateCameraPosition();
-        Globals.Instance.Player.IsAboveDrop = IsPlayerAboveDropInstance(out var dropsBelowPlayer);
-        Globals.Instance.Player.DropsBelowPlayer = dropsBelowPlayer;
+        Globals.Player.IsAboveDrop = IsPlayerAboveDropInstance(out var dropsBelowPlayer);
+        Globals.Player.DropsBelowPlayer = dropsBelowPlayer;
     }
 
     public void AddDrop(IDropInstance drop)
@@ -167,7 +166,7 @@ public class MapManager
     {
         var flip = player.FacingDirection == Direction.Left;
         GameManager.SpriteBatch.Draw(player.GetSpriteSheet(),
-            new Rectangle(player.Position.ToPoint(), PlayerInstance.SpriteSize),
+            new Rectangle(Vector2.Round(player.Position).ToPoint(), PlayerInstance.SpriteSize),
             player.GetTextureRectangle(),
             Color.White,
             0F,
@@ -178,12 +177,12 @@ public class MapManager
 
     private void DetectAndHandleInput()
     {
-        Globals.Instance.ActionKeyPressed = GameManager.FramesKeysHeld[Keys.Z] == 1;
+        Globals.ActionKeyPressed = InputManager.Instance.IsKeyPressed(InputAction.Attack);
     }
 
     private void DetectAndHandleMovement(GameTime gameTime)
     {
-        var player = Globals.Instance.Player;
+        var player = Globals.Player;
 
         player.MovementVector = Vector2.Zero;
 
@@ -192,20 +191,20 @@ public class MapManager
             return;
         }
 
-        if (GameManager.FramesKeysHeld[Keys.Right] > 0)
+        if (InputManager.Instance.GetDurationHeld(InputAction.MoveEast) > 0)
         {
             player.MovementVector.X = 1;
         }
-        else if (GameManager.FramesKeysHeld[Keys.Left] > 0)
+        else if (InputManager.Instance.GetDurationHeld(InputAction.MoveWest) > 0)
         {
             player.MovementVector.X = -1;
         }
 
-        if (GameManager.FramesKeysHeld[Keys.Up] > 0)
+        if (InputManager.Instance.GetDurationHeld(InputAction.MoveNorth) > 0)
         {
             player.MovementVector.Y = -1;
         }
-        else if (GameManager.FramesKeysHeld[Keys.Down] > 0)
+        else if (InputManager.Instance.GetDurationHeld(InputAction.MoveSouth) > 0)
         {
             player.MovementVector.Y = 1;
         }
@@ -238,7 +237,8 @@ public class MapManager
                 player.FacingDirection = Direction.Left;
             }
 
-            player.MovementVector = Vector2.Multiply(player.MovementVector, PlayerInstance.MovementSpeed);
+            player.MovementVector = Vector2.Multiply(player.MovementVector, 
+                PlayerInstance.MovementSpeed * (float)Time.Delta);
         }
         else
         {
@@ -252,7 +252,7 @@ public class MapManager
     private void DetectAndHandleCollisions()
     {
         // TODO: eventually we would want to check for collisions on all objects that have moved on a given frame.
-        var player = Globals.Instance.Player;
+        var player = Globals.Player;
 
         var projectedPlayerBounds = player.GetCollisionBox();
         projectedPlayerBounds.X += player.MovementVector.X;
@@ -306,8 +306,8 @@ public class MapManager
 
     private void DetectAndHandleDropPickupEvent()
     {
-        var player = Globals.Instance.Player;
-        if (Globals.Instance.ActionKeyPressed && player.IsAboveDrop)
+        var player = Globals.Player;
+        if (Globals.ActionKeyPressed && player.IsAboveDrop)
         {
             var drop = player.DropsBelowPlayer.First();
             drop.OnObtain();
@@ -316,13 +316,13 @@ public class MapManager
             Drops.Remove(drop);
             DropInitialPositions.RemoveAt(i);
             DropHoverTimers.RemoveAt(i);
-            Globals.Instance.ActionKeyPressed = false;
+            Globals.ActionKeyPressed = false;
         }
     }
 
     private void DetectAndHandleAttack()
     {
-        var player = Globals.Instance.Player;
+        var player = Globals.Player;
         if (player.IsAttacking)
         {
             foreach (var inst in CurrentMap.Enemies)
@@ -338,7 +338,7 @@ public class MapManager
                     }
                     else
                     {
-                        var dropTable = inst.GetEnemy().GetDropTable();
+                        var dropTable = inst.GetEnemyInfo().GetDropTable();
                         foreach (var possibleDrop in dropTable)
                         {
                             var randomNumber = Random.Shared.Next() % 100;
@@ -367,10 +367,10 @@ public class MapManager
         else
         {
             AttackedEnemies.Clear();
-            if (Globals.Instance.ActionKeyPressed)
+            if (Globals.ActionKeyPressed)
             {
                 player.IsAttacking = true;
-                Globals.Instance.ActionKeyPressed = false;
+                Globals.ActionKeyPressed = false;
                 GameManager.SwingSfx01.Play(volume: 0.1F, 0F, 0F);
             }
         }
@@ -389,9 +389,12 @@ public class MapManager
 
     private void CalculateCameraPosition()
     {
-        var player = Globals.Instance.Player;
-        var camera = new OrthographicCamera(GameManager.SpriteBatch.GraphicsDevice);
-        camera.Zoom = 2F;
+        var player = Globals.Player;
+        var camera = new OrthographicCamera(GameManager.SpriteBatch.GraphicsDevice)
+        {
+            Zoom = 3F
+        };
+        
         var x = camera.BoundingRectangle;
         var mapWidth = CurrentMap.Width * CurrentMap.TileWidth;
         var mapHeight = CurrentMap.Height * CurrentMap.TileHeight;
@@ -419,14 +422,14 @@ public class MapManager
             cameraPos.Y = mapHeight - x.Height / 2F;
         }
 
-        camera.LookAt(cameraPos);
-        Globals.Instance.Camera = camera;
+        camera.LookAt(Vector2.Round(cameraPos));
+        Globals.Camera = camera;
     }
 
     private HashSet<Point> GetTilesBelowPlayer()
     {
         var tiles = new HashSet<Point>();
-        var pcb = Globals.Instance.Player.GetCollisionBox().ToRectangle();
+        var pcb = Globals.Player.GetCollisionBox().ToRectangle();
 
         tiles.Add(new(pcb.X / 32, pcb.Y / 32));
         tiles.Add(new((pcb.X + 32) / 32, pcb.Y / 32));
@@ -440,7 +443,7 @@ public class MapManager
     {
         drops = new List<IDropInstance>();
 
-        var playerBounds = Globals.Instance.Player.GetBounds();
+        var playerBounds = Globals.Player.GetBounds();
 
         foreach (var dropInstance in Drops)
         {

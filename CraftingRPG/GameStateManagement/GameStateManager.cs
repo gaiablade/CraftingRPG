@@ -1,9 +1,9 @@
-﻿using CraftingRPG.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using CraftingRPG.Interfaces;
 
-namespace CraftingRPG.Entities;
+namespace CraftingRPG.GameStateManagement;
 
-public class StateManager
+public class GameStateManager
 {
     private class StateAddRequest
     {
@@ -13,13 +13,13 @@ public class StateManager
     private Queue<StateAddRequest> StateAddRequests = new();
     private int StatePopRequests = 0;
 
-    public static StateManager Instance = new();
+    public static GameStateManager Instance = new();
 
     public Stack<IState> States { get; set; } = new();
 
     public IState CurrentState => States.Peek();
 
-    public StateManager()
+    public GameStateManager()
     {
     }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CraftingRPG.AssetManagement;
 using CraftingRPG.Constants;
 using CraftingRPG.Enums;
 using CraftingRPG.Global;
@@ -19,10 +20,10 @@ public class PlayerInstance : IInstance
     public PlayerInfo Info { get; set; }
 
     #region Constants
-    public const float MovementSpeed = 2F;
+    public const float MovementSpeed = 100F;
     public const int AttackFrameLength = 5;
     public static readonly Point SpriteSize = new Point(48, 48);
-    public Vector2 Size = new Vector2(48, 48);
+    public Point Size = new(48, 48);
     #endregion
     
     #region Public Getters/Setters
@@ -97,15 +98,14 @@ public class PlayerInstance : IInstance
 
     public Vector2 GetPosition() => Position;
 
-    public Vector2 GetSize() => new Vector2(48, 48);
-
+    public Point GetSize() => Size;
     public Rectangle GetBounds() => new Rectangle((int)Position.X, (int)Position.Y, (int)GetSize().X, (int)GetSize().Y);
 
     public RectangleF GetCollisionBox() => new(new Point2(Position.X + 18, Position.Y + 22), new Size2(13, 19));
     
     public Texture2D GetSpriteSheet()
     {
-        return Globals.Instance.PlayerSpriteSheet;
+        return Assets.Instance.PlayerSpriteSheet;
     }
 
     public Rectangle GetTextureRectangle()

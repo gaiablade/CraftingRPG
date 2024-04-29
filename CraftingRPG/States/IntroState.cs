@@ -1,10 +1,11 @@
-﻿using CraftingRPG.Entities;
-using CraftingRPG.Interfaces;
+﻿using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Linq;
-using CraftingRPG.Global;
+using CraftingRPG.AssetManagement;
+using CraftingRPG.Enums;
+using CraftingRPG.GameStateManagement;
+using CraftingRPG.InputManagement;
 
 namespace CraftingRPG.States;
 
@@ -15,10 +16,6 @@ public class IntroState : IState
     public IntroState()
     {
         IntroStoryLines = GetStoryLines();
-        if (!GameManager.FramesKeysHeld.ContainsKey(Keys.Enter))
-        {
-            GameManager.FramesKeysHeld.Add(Keys.Enter, 0);
-        }
     }
 
     private List<string> GetStoryLines()
@@ -35,7 +32,7 @@ public class IntroState : IState
 
         while (index < allWords.Length)
         {
-            if (index + numberOfWords - 1 < allWords.Length && Globals.Instance.DefaultFont.MeasureString(string.Join(' ', allWords.Skip(index).Take(numberOfWords))).X < GameManager.Resolution.X - 50)
+            if (index + numberOfWords - 1 < allWords.Length && Assets.Instance.Monogram24.MeasureString(string.Join(' ', allWords.Skip(index).Take(numberOfWords))).X < GameManager.Resolution.X - 50)
             {
                 numberOfWords++;
             }
@@ -52,14 +49,14 @@ public class IntroState : IState
 
     public void DrawWorld()
     {
-        var lineHeight = Globals.Instance.DefaultFont.MeasureString(IntroStoryLines[0]).Y;
+        var lineHeight = Assets.Instance.Monogram24.MeasureString(IntroStoryLines[0]).Y;
         var i = 0;
         var lastY = 0F;
         foreach (var line in IntroStoryLines)
         {
-            var lineSize = Globals.Instance.DefaultFont.MeasureString(line);
+            var lineSize = Assets.Instance.Monogram24.MeasureString(line);
             lastY = 20 + (lineHeight + 5) * i;
-            GameManager.SpriteBatch.DrawString(Globals.Instance.DefaultFont,
+            GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
                 line,
                 new Vector2(GameManager.Resolution.X / 2 - lineSize.X / 2, lastY),
                 Color.White);
@@ -67,8 +64,8 @@ public class IntroState : IState
         }
 
         var pressEnter = "Press Enter to Continue.";
-        var pressEnterSize = Globals.Instance.DefaultFont.MeasureString(pressEnter);
-        GameManager.SpriteBatch.DrawString(Globals.Instance.DefaultFont,
+        var pressEnterSize = Assets.Instance.Monogram24.MeasureString(pressEnter);
+        GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
             pressEnter,
             new Vector2(GameManager.Resolution.X / 2 - pressEnterSize.X / 2, lastY + (GameManager.Resolution.Y - lastY) / 2 - pressEnterSize.Y / 2),
             Color.Orange);
@@ -80,9 +77,9 @@ public class IntroState : IState
 
     public void Update(GameTime gameTime)
     {
-        if (GameManager.FramesKeysHeld[Keys.Enter] == 1)
+        if (InputManager.Instance.IsKeyPressed(InputAction.MenuSelect))
         {
-            StateManager.Instance.PushState<OverworldState>();
+            GameStateManager.Instance.PushState<OverworldState>();
         }
     }
 }
