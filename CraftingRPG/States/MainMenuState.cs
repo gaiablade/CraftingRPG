@@ -1,8 +1,9 @@
-﻿using CraftingRPG.Entities;
-using CraftingRPG.Global;
+﻿using CraftingRPG.AssetManagement;
+using CraftingRPG.Enums;
+using CraftingRPG.GameStateManagement;
+using CraftingRPG.InputManagement;
 using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 
 namespace CraftingRPG.States;
 
@@ -10,28 +11,20 @@ public class MainMenuState : IState
 {
     public MainMenuState()
     {
-        if (GameManager.FramesKeysHeld.ContainsKey(Keys.Enter))
-        {
-            GameManager.FramesKeysHeld[Keys.Enter] = 0;
-        }
-        else
-        {
-            GameManager.FramesKeysHeld.Add(Keys.Enter, 0);
-        }
     }
 
     public void DrawWorld()
     {
         var gameTitle = "Crafting RPG";
-        var titleSize = Globals.Instance.DefaultFont.MeasureString(gameTitle);
-        GameManager.SpriteBatch.DrawString(Globals.Instance.DefaultFont,
+        var titleSize = Assets.Instance.Monogram24.MeasureString(gameTitle);
+        GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
             gameTitle,
             new Vector2(GameManager.Resolution.X / 2 - titleSize.X / 2, 50),
             Color.White);
 
         var pressEnter = "Press Enter to Start!";
-        var pressEnterSize = Globals.Instance.DefaultFont.MeasureString(pressEnter);
-        GameManager.SpriteBatch.DrawString(Globals.Instance.DefaultFont,
+        var pressEnterSize = Assets.Instance.Monogram24.MeasureString(pressEnter);
+        GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
             pressEnter,
             new Vector2(GameManager.Resolution.X / 2 - pressEnterSize.X / 2, GameManager.Resolution.Y / 2 - pressEnterSize.Y / 2),
             Color.Orange);
@@ -43,9 +36,9 @@ public class MainMenuState : IState
 
     public void Update(GameTime gameTime)
     {
-        if (GameManager.FramesKeysHeld[Keys.Enter] == 1)
+        if (InputManager.Instance.GetKeyPressState(InputAction.MenuSelect) == KeyPressState.Pressed)
         {
-            StateManager.Instance.PushState<IntroState>();
+            GameStateManager.Instance.PushState<IntroState>();
         }
     }
 }

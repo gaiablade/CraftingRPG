@@ -2,10 +2,12 @@
 using CraftingRPG.Entities;
 using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using System.Linq;
 using CraftingRPG.AssetManagement;
+using CraftingRPG.Enums;
+using CraftingRPG.GameStateManagement;
 using CraftingRPG.Global;
+using CraftingRPG.InputManagement;
 using CraftingRPG.MapManagement;
 using CraftingRPG.Timers;
 
@@ -24,11 +26,8 @@ public class OverworldState : IState
 
     public OverworldState()
     {
-        GameManager.AddKeysIfNotExists(Keys.Left, Keys.Right, Keys.Up, Keys.Down, Keys.Z, Keys.X, Keys.C, Keys.I,
-            Keys.Q);
-
-        Globals.Instance.Player = new PlayerInstance(GameManager.PlayerInfo);
-        Player = Globals.Instance.Player;
+        Globals.Player = new PlayerInstance(GameManager.PlayerInfo);
+        Player = Globals.Player;
         Player.Position = new Vector2(100, 100);
 
         MapManager.Instance.LoadDefaultMap();
@@ -44,7 +43,7 @@ public class OverworldState : IState
 
     public void DrawUI()
     {
-        var player = Globals.Instance.Player;
+        var player = Globals.Player;
         var resolution = GameManager.Resolution;
         var woodUi = Assets.Instance.WoodUISpriteSheet;
         
@@ -81,7 +80,7 @@ public class OverworldState : IState
 
         MapManager.Instance.Update(gameTime);
 
-        var player = Globals.Instance.Player;
+        var player = Globals.Player;
 
         if (player.IsAboveDrop && !PreviousIsAboveDrop)
         {
@@ -94,17 +93,17 @@ public class OverworldState : IState
 
         PreviousIsAboveDrop = player.IsAboveDrop;
 
-        if (GameManager.FramesKeysHeld[Keys.C] == 1)
+        if (InputManager.Instance.IsKeyPressed(InputAction.OpenCraftingMenu))
         {
-            StateManager.Instance.PushState<CraftingMenuState>(true);
+            GameStateManager.Instance.PushState<CraftingMenuState>(true);
         }
-        else if (GameManager.FramesKeysHeld[Keys.I] == 1)
+        if (InputManager.Instance.IsKeyPressed(InputAction.OpenInventoryMenu))
         {
-            StateManager.Instance.PushState<InventoryState>(true);
+            GameStateManager.Instance.PushState<InventoryState>(true);
         }
-        else if (GameManager.FramesKeysHeld[Keys.Q] == 1)
+        if (InputManager.Instance.IsKeyPressed(InputAction.OpenQuestsMenu))
         {
-            StateManager.Instance.PushState<QuestMenuState>(true);
+            GameStateManager.Instance.PushState<QuestMenuState>(true);
         }
     }
 }

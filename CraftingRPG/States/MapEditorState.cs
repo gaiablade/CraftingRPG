@@ -3,8 +3,9 @@ using CraftingRPG.Entities;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using System.IO;
+using CraftingRPG.Enums;
+using CraftingRPG.InputManagement;
 
 namespace CraftingRPG.States;
 
@@ -25,9 +26,6 @@ public class MapEditorState : IState
         var rows = GameManager.Resolution.Y / 32;
         Dimensions = new Point(columns, rows);
         Map = new OverworldMap(columns, rows);
-
-        GameManager.AddKeysIfNotExists(Keys.Left, Keys.Right, Keys.Up, Keys.Down, Keys.Z, Keys.Space, Keys.X,
-            Keys.Q, Keys.W, Keys.O, Keys.P, Keys.L, Keys.K, Keys.Delete, Keys.Enter, Keys.M);
     }
 
     public void DrawWorld()
@@ -115,7 +113,7 @@ public class MapEditorState : IState
 
     public void Update(GameTime gameTime)
     {
-        if (GameManager.FramesKeysHeld[Keys.M] == 1)
+        if (InputManager.Instance.IsKeyPressed(InputAction.OpenInventoryMenu))
         {
             if (Mode == 0)
             {
@@ -127,24 +125,24 @@ public class MapEditorState : IState
             }
         }
 
-        if (GameManager.FramesKeysHeld[Keys.Left] == 1)
+        if (InputManager.Instance.IsKeyPressed(InputAction.MoveWest))
         {
             Position.X = CustomMath.WrapAround(Position.X - 1, 0, Dimensions.X - 1);
         }
-        else if (GameManager.FramesKeysHeld[Keys.Right] == 1)
+        else if (InputManager.Instance.IsKeyPressed(InputAction.MoveEast))
         {
             Position.X = CustomMath.WrapAround(Position.X + 1, 0, Dimensions.X - 1);
         }
-        else if (GameManager.FramesKeysHeld[Keys.Down] == 1)
+        else if (InputManager.Instance.IsKeyPressed(InputAction.MoveSouth))
         {
             Position.Y = CustomMath.WrapAround(Position.Y + 1, 0, Dimensions.Y - 1);
         }
-        else if (GameManager.FramesKeysHeld[Keys.Up] == 1)
+        else if (InputManager.Instance.IsKeyPressed(InputAction.MoveNorth))
         {
             Position.Y = CustomMath.WrapAround(Position.Y - 1, 0, Dimensions.Y - 1);
         }
 
-        if (GameManager.FramesKeysHeld[Keys.Q] == 1)
+        if (InputManager.Instance.IsKeyPressed(InputAction.OpenQuestsMenu))
         {
             if (Mode == 0)
             {
@@ -155,7 +153,7 @@ public class MapEditorState : IState
                 CurrentCollision = CustomMath.WrapAround(CurrentCollision - 1, 1, 2);
             }
         }
-        else if (GameManager.FramesKeysHeld[Keys.W] == 1)
+        else if (InputManager.Instance.IsKeyPressed(InputAction.Attack))
         {
             if (Mode == 0)
             {
@@ -167,25 +165,25 @@ public class MapEditorState : IState
             }
         }
 
-        if (GameManager.FramesKeysHeld[Keys.O] == 1)
+        if (InputManager.Instance.IsKeyPressed(InputAction.Attack))
         {
             CursorWidth--;
         }
-        else if (GameManager.FramesKeysHeld[Keys.P] == 1)
+        else if (InputManager.Instance.IsKeyPressed(InputAction.Attack))
         {
             CursorWidth++;
         }
 
-        if (GameManager.FramesKeysHeld[Keys.K] == 1)
+        if (InputManager.Instance.IsKeyPressed(InputAction.Attack))
         {
             CursorHeight--;
         }
-        else if (GameManager.FramesKeysHeld[Keys.L] == 1)
+        else if (InputManager.Instance.IsKeyPressed(InputAction.Attack))
         {
             CursorHeight++;
         }
 
-        if (GameManager.FramesKeysHeld[Keys.Z] == 1)
+        if (InputManager.Instance.IsKeyPressed(InputAction.Attack))
         {
             if (Mode == 0)
             {
@@ -209,7 +207,7 @@ public class MapEditorState : IState
             }
         }
 
-        if (GameManager.FramesKeysHeld[Keys.Enter] == 1)
+        if (InputManager.Instance.IsKeyPressed(InputAction.Attack))
         {
             // save
             var json = Map.Serialize();

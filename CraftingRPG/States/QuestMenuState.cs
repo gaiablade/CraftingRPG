@@ -3,11 +3,11 @@ using CraftingRPG.Entities;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Linq;
 using CraftingRPG.AssetManagement;
-using CraftingRPG.Global;
+using CraftingRPG.Enums;
+using CraftingRPG.InputManagement;
 using CraftingRPG.Timers;
 
 namespace CraftingRPG.States;
@@ -24,7 +24,6 @@ public class QuestMenuState : IState
 
     public QuestMenuState()
     {
-        GameManager.AddKeysIfNotExists(Keys.LeftControl, Keys.Up, Keys.Down);
         TransitionTimer = new EaseOutTimer(0.4);
     }
 
@@ -97,8 +96,8 @@ public class QuestMenuState : IState
 
         var questStatus = questInstance.IsComplete() ? "COMPLETE" : "IN PROGRESS";
         var color = questStatus == "COMPLETE" ? Color.LightGreen : Color.Yellow;
-        var questStatusSize = Globals.Instance.Fnt12.MeasureString(questStatus);
-        GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
+        var questStatusSize = Assets.Instance.Monogram24.MeasureString(questStatus);
+        GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
             questStatus,
             new Vector2(GameManager.Resolution.X / 2 + 25, 10 + HeaderSize.Y + 10),
             color);
@@ -110,7 +109,7 @@ public class QuestMenuState : IState
         while (index < allWords.Length)
         {
             if (index + numberOfWords - 1 < allWords.Length &&
-                Globals.Instance.Fnt12.MeasureString(string.Join(' ', allWords.Skip(index).Take(numberOfWords))).X <
+                Assets.Instance.Monogram24.MeasureString(string.Join(' ', allWords.Skip(index).Take(numberOfWords))).X <
                 GameManager.Resolution.X / 2 - 50)
             {
                 numberOfWords++;
@@ -123,10 +122,10 @@ public class QuestMenuState : IState
             }
         }
 
-        var lineHeight = Globals.Instance.Fnt12.MeasureString("A").Y;
+        var lineHeight = Assets.Instance.Monogram24.MeasureString("A").Y;
         for (var i = 0; i < descLines.Count; i++)
         {
-            GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
+            GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
                 descLines[i],
                 new Vector2((int)(GameManager.Resolution.X / 2 + 25),
                     (int)(10 + HeaderSize.Y + 10 + questStatusSize.Y + 10 + (10 + lineHeight) * i)),
@@ -136,8 +135,8 @@ public class QuestMenuState : IState
         var y = 10 + HeaderSize.Y + 10 + questStatusSize.Y + 10 + (10 + lineHeight) * descLines.Count + 10;
 
         var details = "Details";
-        var detailsSize = Globals.Instance.Fnt12.MeasureString(details);
-        GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
+        var detailsSize = Assets.Instance.Monogram24.MeasureString(details);
+        GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
             details,
             new Vector2((int)(GameManager.Resolution.X / 2 + GameManager.Resolution.X / 4 - detailsSize.X / 2), y),
             Color.White);
@@ -156,9 +155,9 @@ public class QuestMenuState : IState
                 var quest = fetchQuest.GetFetchQuest();
                 var requestedQty = quest.GetRequiredItems()[itemId];
                 itemName += $" {qty}/{requestedQty}";
-                var itemNameSize = Globals.Instance.Fnt12.MeasureString(itemName);
+                var itemNameSize = Assets.Instance.Monogram24.MeasureString(itemName);
                 color = qty >= requestedQty ? Color.LightGreen : Color.White;
-                GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
+                GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
                     itemName,
                     new Vector2(GameManager.Resolution.X / 2 + 10 + 32 + 5, (int)y + 16 - itemNameSize.Y / 2),
                     color);
@@ -181,18 +180,18 @@ public class QuestMenuState : IState
             return;
         }
 
-        if (GameManager.FramesKeysHeld[Keys.Up] == 1)
+        if (InputManager.Instance.IsKeyPressed(InputAction.MoveNorth))
         {
             GameManager.MenuHoverSfx01.Play(0.3F, 0F, 0F);
             Cursor = CustomMath.WrapAround(Cursor - 1, 0, GameManager.PlayerInfo.Quests.Count - 1);
         }
-        else if (GameManager.FramesKeysHeld[Keys.Down] == 1)
+        else if (InputManager.Instance.IsKeyPressed(InputAction.MoveSouth))
         {
             GameManager.MenuHoverSfx01.Play(0.3F, 0F, 0F);
             Cursor = CustomMath.WrapAround(Cursor + 1, 0, GameManager.PlayerInfo.Quests.Count - 1);
         }
 
-        if (GameManager.FramesKeysHeld[Keys.LeftControl] == 1)
+        if (InputManager.Instance.IsKeyPressed(InputAction.ExitMenu))
         {
             TransitionTimer.SetReverse();
             MenuClosed = true;

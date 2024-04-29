@@ -1,10 +1,11 @@
 ﻿using CraftingRPG.Interfaces;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using System.Linq;
 using CraftingRPG.AssetManagement;
+using CraftingRPG.Enums;
 using CraftingRPG.Global;
+using CraftingRPG.InputManagement;
 using CraftingRPG.SpriteAnimation;
 using CraftingRPG.Timers;
 
@@ -31,8 +32,6 @@ public class InventoryState : IState
 
     public InventoryState()
     {
-        GameManager.AddKeysIfNotExists(Keys.LeftControl, Keys.Left, Keys.Right, Keys.Down, Keys.Up);
-
         TransitionTimer = new EaseOutTimer(0.5);
         CursorAnimation = new Animation(4, 0.4, new Point(32, 32));
     }
@@ -58,7 +57,7 @@ public class InventoryState : IState
         DrawEquipment();
         DrawItems();
 
-        if (Globals.Instance.Player.Info.Inventory.Items.Count > 0)
+        if (Globals.Player.Info.Inventory.Items.Count > 0)
         {
             DrawCursor();
         }
@@ -89,7 +88,7 @@ public class InventoryState : IState
         const int weaponNameX = 265;
         const int weaponNameY = 180;
 
-        var weapon = Globals.Instance.Player.Info.Equipment.Weapon;
+        var weapon = Globals.Player.Info.Equipment.Weapon;
         var weaponName = weapon != null ? weapon.GetName() : "None";
         var weaponNameDimensions = Assets.Instance.Monogram24.MeasureString(weaponName);
 
@@ -114,7 +113,7 @@ public class InventoryState : IState
 
         const int inventoryX = 416;
         const int inventoryY = 128;
-        var inventory = Globals.Instance.Player.Info.Inventory;
+        var inventory = Globals.Player.Info.Inventory;
 
         var i = 0;
         foreach (var (itemId, quantity) in inventory.Items)
@@ -148,13 +147,13 @@ public class InventoryState : IState
 
     public void DrawSelectedItemName()
     {
-        var inventory = Globals.Instance.Player.Info.Inventory;
+        var inventory = Globals.Player.Info.Inventory;
         var cursorFlat = Cursor.Y * NumberOfColumns + Cursor.X;
         var (itemId, qty) = inventory.Items.ElementAt(cursorFlat);
         var itemInfo = GameManager.ItemInfo[itemId];
         var itemName = itemInfo.GetName() + " x" + qty;
-        var itemNameSize = Globals.Instance.Fnt12.MeasureString(itemName);
-        GameManager.SpriteBatch.DrawString(Globals.Instance.Fnt12,
+        var itemNameSize = Assets.Instance.Monogram24.MeasureString(itemName);
+        GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
             itemName,
             new Vector2(CenterX + CenterX / 2 - itemNameSize.X / 2, 100),
             Color.White);
@@ -175,25 +174,25 @@ public class InventoryState : IState
             return;
         }
 
-        if (GameManager.FramesKeysHeld[Keys.LeftControl] == 1)
+        if (InputManager.Instance.IsKeyPressed(InputAction.ExitMenu))
         {
             MenuClosed = true;
             TransitionTimer.SetReverse();
         }
 
-        if (GameManager.FramesKeysHeld[Keys.Left] == 1)
+        if (InputManager.Instance.IsKeyPressed(InputAction.MoveSouth))
         {
             Cursor.X = CustomMath.WrapAround(Cursor.X - 1, 0, NumberOfColumns - 1);
         }
-        else if (GameManager.FramesKeysHeld[Keys.Right] == 1)
+        else if (InputManager.Instance.IsKeyPressed(InputAction.MoveEast))
         {
             Cursor.X = CustomMath.WrapAround(Cursor.X + 1, 0, NumberOfColumns - 1);
         }
-        else if (GameManager.FramesKeysHeld[Keys.Down] == 1)
+        else if (InputManager.Instance.IsKeyPressed(InputAction.MoveSouth))
         {
             Cursor.Y++;
         }
-        else if (GameManager.FramesKeysHeld[Keys.Up] == 1)
+        else if (InputManager.Instance.IsKeyPressed(InputAction.MoveNorth))
         {
             Cursor.Y--;
         }
@@ -203,7 +202,7 @@ public class InventoryState : IState
 
     private void NormalizeCursor()
     {
-        var inventory = Globals.Instance.Player.Info.Inventory;
+        var inventory = Globals.Player.Info.Inventory;
         var numRows = inventory.Items.Count / NumberOfColumns + 1;
         while (Cursor.Y >= numRows)
         {

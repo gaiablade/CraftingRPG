@@ -1,12 +1,12 @@
-﻿using CraftingRPG.Entities;
-using CraftingRPG.Enums;
+﻿using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Linq;
 using CraftingRPG.AssetManagement;
+using CraftingRPG.GameStateManagement;
+using CraftingRPG.InputManagement;
 using CraftingRPG.Timers;
 
 namespace CraftingRPG.States;
@@ -27,7 +27,6 @@ public class CraftingMenuState : IState
             .Recipes
             .OrderBy(x => x.Value.GetId())
             .ToDictionary(x => x.Key, x => x.Value);
-        GameManager.AddKeyIfNotExists(Keys.LeftControl);
         TransitionTimer = new EaseOutTimer(0.5);
     }
 
@@ -164,18 +163,18 @@ public class CraftingMenuState : IState
 
         if (!MenuClosed)
         {
-            if (GameManager.FramesKeysHeld[Keys.Down] == 1)
+            if (InputManager.Instance.GetKeyPressState(InputAction.MoveSouth) == KeyPressState.Pressed)
             {
                 GameManager.MenuHoverSfx01.Play(0.3F, 0F, 0F);
                 Cursor = CustomMath.WrapAround(Cursor + 1, 0, Recipes.Count - 1);
             }
-            else if (GameManager.FramesKeysHeld[Keys.Up] == 1)
+            else if (InputManager.Instance.GetKeyPressState(InputAction.MoveNorth) == KeyPressState.Pressed)
             {
                 GameManager.MenuHoverSfx01.Play(0.3F, 0F, 0F);
                 Cursor = CustomMath.WrapAround(Cursor - 1, 0, Recipes.Count - 1);
             }
 
-            if (GameManager.FramesKeysHeld[Keys.Z] == 1)
+            if (InputManager.Instance.GetKeyPressState(InputAction.MenuSelect) == KeyPressState.Pressed)
             {
                 var recipe = Recipes.ElementAt(Cursor);
                 if (CanRecipeBeCrafted(recipe.Value))
@@ -191,7 +190,7 @@ public class CraftingMenuState : IState
                 }
             }
 
-            if (GameManager.FramesKeysHeld[Keys.LeftControl] == 1)
+            if (InputManager.Instance.GetKeyPressState(InputAction.ExitMenu) == KeyPressState.Pressed)
             {
                 MenuClosed = true;
                 TransitionTimer.SetReverse();
@@ -201,7 +200,7 @@ public class CraftingMenuState : IState
         {
             if (TransitionTimer.IsDone())
             {
-                StateManager.Instance.PopState();
+                GameStateManager.Instance.PopState();
             }
         }
     }

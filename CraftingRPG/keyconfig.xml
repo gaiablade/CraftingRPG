@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KeyConfig>
+    <Action Name="MoveNorth">
+        <Key>ArrowUp</Key>
+    </Action>
+    <Action Name="MoveSouth">
+        <Key>ArrowDown</Key>
+    </Action>
+    <Action Name="MoveEast">
+        <Key>ArrowRight</Key>
+    </Action>
+    <Action Name="MoveWest">
+        <Key>ArrowLeft</Key>
+    </Action>
+    <Action Name="Attack">
+        <Key>Z</Key>
+    </Action>
+    <Action Name="OpenCraftingMenu">
+        <Key>C</Key>
+    </Action>
+    <Action Name="OpenQuestsMenu">
+        <Key>Q</Key>
+    </Action>
+    <Action Name="OpenInventoryMenu">
+        <Key>I</Key>
+    </Action>
+    <Action Name="MenuSelect">
+        <Key>Z</Key>
+    </Action>
+    <Action Name="ExitMenu">
+        <Key>LeftCtrl</Key>
+    </Action>
+</KeyConfig>
