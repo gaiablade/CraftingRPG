@@ -2,6 +2,7 @@
 using CraftingRPG.Interfaces;
 using System.Collections.Generic;
 using CraftingRPG.AssetManagement;
+using CraftingRPG.Constants;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -28,5 +29,5 @@ public class IronSwordItem : IWeapon
         return new Rectangle(0, 864, 32, 32);
     }
 
-    public string GetName() => "Iron Sword";
+    public string GetName() => ItemName.IronSword;
 }

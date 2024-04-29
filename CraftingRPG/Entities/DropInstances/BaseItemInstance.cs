@@ -1,6 +1,6 @@
 using CraftingRPG.AssetManagement;
 using CraftingRPG.Interfaces;
-using CraftingRPG.Quests;
+using CraftingRPG.QuestManagement;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;

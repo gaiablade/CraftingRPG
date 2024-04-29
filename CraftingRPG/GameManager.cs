@@ -36,7 +36,7 @@ namespace CraftingRPG
         public static Point PlayerSpriteSize = new Point(48, 48);
 
         public static GameStateManager StateManager { get; private set; } = GameStateManager.Instance;
-        public static GlobalFlags GlobalFlags { get; private set; } = new();
+        public static Flags Flags { get; private set; } = new();
 
         public GameManager()
         {

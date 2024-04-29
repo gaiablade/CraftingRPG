@@ -2,6 +2,7 @@
 using CraftingRPG.Interfaces;
 using System.Collections.Generic;
 using CraftingRPG.AssetManagement;
+using CraftingRPG.Constants;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -26,5 +27,5 @@ public class SmallHealthPotionItem : IItem
         return new Rectangle(160, 544, 32, 32);
     }
 
-    public string GetName() => "Small Health Potion";
+    public string GetName() => ItemName.SmallHealthPotion;
 }

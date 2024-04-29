@@ -2,6 +2,7 @@
 using CraftingRPG.Interfaces;
 using System.Collections.Generic;
 using CraftingRPG.AssetManagement;
+using CraftingRPG.Constants;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -26,5 +27,5 @@ public class IronChunkItem : IItem
         return new Rectangle(288, 1920, 32, 32);
     }
 
-    public string GetName() => "Iron Chunk";
+    public string GetName() => ItemName.IronChunk;
 }

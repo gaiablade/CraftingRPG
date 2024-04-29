@@ -1,8 +1,9 @@
 ﻿using CraftingRPG.Interfaces;
 using CraftingRPG.Items;
-using CraftingRPG.Quests;
 using CraftingRPG.Recipes;
 using System.Collections.Generic;
+using CraftingRPG.QuestManagement;
+using CraftingRPG.QuestManagement.Quests;
 using CraftingRPG.RecipeBookManagement;
 
 namespace CraftingRPG.Entities;

@@ -7,7 +7,7 @@ using System.Linq;
 using CraftingRPG.AssetManagement;
 using CraftingRPG.Enums;
 using CraftingRPG.InputManagement;
-using CraftingRPG.Quests;
+using CraftingRPG.QuestManagement;
 using CraftingRPG.Timers;
 
 namespace CraftingRPG.States;

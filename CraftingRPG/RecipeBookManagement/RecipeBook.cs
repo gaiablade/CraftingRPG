@@ -15,6 +15,8 @@ public class RecipeBook
         NumberCrafted = new Dictionary<RecipeId, int>();
     }
 
+    public bool HasRecipe(RecipeId Id) => Recipes.ContainsKey(Id);
+
     public void AddRecipe(RecipeId Id, IRecipe Recipe)
     {
         Recipes.Add(Id, Recipe);

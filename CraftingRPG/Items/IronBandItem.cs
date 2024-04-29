@@ -2,6 +2,7 @@
 using CraftingRPG.Interfaces;
 using System.Collections.Generic;
 using CraftingRPG.AssetManagement;
+using CraftingRPG.Constants;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -26,5 +27,5 @@ public class IronBandItem : IItem
         return new Rectangle(0, 1600, 0, 0);
     }
 
-    public string GetName() => "Iron Band";
+    public string GetName() => ItemName.IronBand;
 }
