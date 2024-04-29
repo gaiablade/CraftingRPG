@@ -1,5 +1,4 @@
 ﻿using System;
-using CraftingRPG.Entities;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
@@ -8,6 +7,7 @@ using System.Linq;
 using CraftingRPG.AssetManagement;
 using CraftingRPG.Enums;
 using CraftingRPG.InputManagement;
+using CraftingRPG.Quests;
 using CraftingRPG.Timers;
 
 namespace CraftingRPG.States;
