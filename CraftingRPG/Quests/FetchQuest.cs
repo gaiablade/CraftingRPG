@@ -1,8 +1,8 @@
-﻿using CraftingRPG.Enums;
+﻿using System.Collections.Generic;
+using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
-using System.Collections.Generic;
 
-namespace CraftingRPG.Entities;
+namespace CraftingRPG.Quests;
 
 public abstract class BaseFetchQuest : IQuest
 {
