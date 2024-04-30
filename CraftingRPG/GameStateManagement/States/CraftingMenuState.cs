@@ -1,21 +1,23 @@
-﻿using CraftingRPG.Enums;
-using CraftingRPG.Interfaces;
-using CraftingRPG.Utility;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using CraftingRPG.AssetManagement;
-using CraftingRPG.GameStateManagement;
+using CraftingRPG.Enums;
+using CraftingRPG.Extensions;
+using CraftingRPG.Global;
 using CraftingRPG.InputManagement;
+using CraftingRPG.Interfaces;
+using CraftingRPG.QuestManagement;
 using CraftingRPG.Timers;
+using CraftingRPG.Utility;
+using Microsoft.Xna.Framework;
 
-namespace CraftingRPG.States;
+namespace CraftingRPG.GameStateManagement.States;
 
-public class CraftingMenuState : IState
+public class CraftingMenuState : BaseState
 {
-    private IDictionary<RecipeId, IRecipe> Recipes;
     private int Cursor = 0;
     private bool MenuClosed = false;
+    private IDictionary<RecipeId, IRecipe> Recipes;
     private double TransitionInTimer = 0;
     private double TransitionOutTimer = 0;
 
@@ -30,11 +32,11 @@ public class CraftingMenuState : IState
         TransitionTimer = new EaseOutTimer(0.5);
     }
 
-    public void DrawWorld()
+    public override void DrawWorld()
     {
     }
 
-    public void DrawUI()
+    public override void DrawUI()
     {
         var percent = (float)TransitionTimer.GetPercent();
 
@@ -63,8 +65,7 @@ public class CraftingMenuState : IState
         const int listX = 208;
         const int listY = 100;
 
-        var i = 0;
-        foreach (var (id, recipe) in Recipes)
+        foreach (var ((id, recipe), i) in Recipes.WithIndex())
         {
             var canBeCrafted = CanRecipeBeCrafted(recipe);
             var color = Cursor == i ? Color.DarkRed : canBeCrafted ? Color.White : Color.DarkGray;
@@ -77,7 +78,6 @@ public class CraftingMenuState : IState
                 new Vector2(listX - nameSize.X / 2,
                     (int)(-GameManager.Resolution.Y + displacement + listY + (nameSize.Y + 5) * i)),
                 color);
-            i++;
         }
     }
 
@@ -112,8 +112,8 @@ public class CraftingMenuState : IState
         var ingredientNameY = ingredientsLabelY + ingredientsLabelSize.Y + 15;
         
         var ingredients = recipe.GetIngredients();
-        var i = 0;
-        foreach (var (itemId, requiredQty) in ingredients)
+        
+        foreach (var ((itemId, requiredQty), i) in ingredients.WithIndex())
         {
             var itemInfo = GameManager.ItemInfo[itemId];
             var playersItemCount = GameManager.PlayerInfo.Inventory[itemId];
@@ -137,8 +137,6 @@ public class CraftingMenuState : IState
                         -GameManager.Resolution.Y + displacement + ingredientNameY + itemsReqSize.Y * i),
                     Color.DarkGreen);
             }
-
-            i++;
         }
     }
 
@@ -157,7 +155,7 @@ public class CraftingMenuState : IState
         return true;
     }
 
-    public void Update(GameTime gameTime)
+    public override void Update(GameTime gameTime)
     {
         TransitionTimer.Update(gameTime);
 
@@ -185,7 +183,18 @@ public class CraftingMenuState : IState
                     }
 
                     var itemId = recipe.Value.GetCraftedItem();
-                    GameManager.PlayerInfo.Inventory[itemId]++;
+                    Globals.Player.Info.Inventory[itemId]++;
+                    Globals.Player.Info.RecipeBook.NumberCrafted[recipe.Key]++;
+                    
+                    // Check for crafting quests
+                    foreach (var questInstance in Globals.Player.Info.QuestBook.GetActiveQuests())
+                    {
+                        if (questInstance is CraftQuestInstance craftQuestInstance)
+                        {
+                            craftQuestInstance.ItemCrafted(itemId);
+                        }
+                    }
+                    
                     GameManager.MenuConfirmSfx01.Play(0.3F, 0F, 0F);
                 }
             }

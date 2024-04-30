@@ -1,21 +1,20 @@
 ﻿using System;
-using CraftingRPG.Entities;
-using CraftingRPG.Interfaces;
-using Microsoft.Xna.Framework;
 using System.Linq;
 using CraftingRPG.AssetManagement;
+using CraftingRPG.Entities;
 using CraftingRPG.Enums;
-using CraftingRPG.GameStateManagement;
 using CraftingRPG.Global;
 using CraftingRPG.InputManagement;
+using CraftingRPG.Interfaces;
 using CraftingRPG.MapManagement;
 using CraftingRPG.Timers;
+using Microsoft.Xna.Framework;
 
 // I love you
 
-namespace CraftingRPG.States;
+namespace CraftingRPG.GameStateManagement.States;
 
-public class OverworldState : IState
+public class OverworldState : BaseState
 {
     private PlayerInstance Player;
 
@@ -36,12 +35,12 @@ public class OverworldState : IState
         DroppedItemLabelTimer.Update(new GameTime(TimeSpan.Zero, TimeSpan.MaxValue));
     }
 
-    public void DrawWorld()
+    public override void DrawWorld()
     {
         DrawMap();
     }
 
-    public void DrawUI()
+    public override void DrawUI()
     {
         var player = Globals.Player;
         var resolution = GameManager.Resolution;
@@ -69,12 +68,7 @@ public class OverworldState : IState
             Color.Black);
     }
 
-    private void DrawMap()
-    {
-        MapManager.Instance.Draw(GameManager.SpriteBatch);
-    }
-
-    public void Update(GameTime gameTime)
+    public override void Update(GameTime gameTime)
     {
         DroppedItemLabelTimer.Update(gameTime);
 
@@ -105,5 +99,10 @@ public class OverworldState : IState
         {
             GameStateManager.Instance.PushState<QuestMenuState>(true);
         }
+    }
+    
+    private void DrawMap()
+    {
+        MapManager.Instance.Draw(GameManager.SpriteBatch);
     }
 }

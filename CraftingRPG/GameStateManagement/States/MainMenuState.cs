@@ -1,19 +1,18 @@
 ﻿using CraftingRPG.AssetManagement;
 using CraftingRPG.Enums;
-using CraftingRPG.GameStateManagement;
 using CraftingRPG.InputManagement;
 using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 
-namespace CraftingRPG.States;
+namespace CraftingRPG.GameStateManagement.States;
 
-public class MainMenuState : IState
+public class MainMenuState : BaseState
 {
     public MainMenuState()
     {
     }
 
-    public void DrawWorld()
+    public override void DrawWorld()
     {
         var gameTitle = "Crafting RPG";
         var titleSize = Assets.Instance.Monogram24.MeasureString(gameTitle);
@@ -30,11 +29,11 @@ public class MainMenuState : IState
             Color.Orange);
     }
 
-    public void DrawUI()
+    public override void DrawUI()
     {
     }
 
-    public void Update(GameTime gameTime)
+    public override void Update(GameTime gameTime)
     {
         if (InputManager.Instance.GetKeyPressState(InputAction.MenuSelect) == KeyPressState.Pressed)
         {
