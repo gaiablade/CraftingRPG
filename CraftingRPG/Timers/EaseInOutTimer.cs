@@ -3,17 +3,17 @@ using CraftingRPG.EasingFunctions;
 
 namespace CraftingRPG.Timers;
 
-public class EaseOutTimer : BaseTimer
+public class EaseInOutTimer : BaseTimer
 {
-    public EaseOutTimer(double duration, bool reverse = false)
+    public EaseInOutTimer(double duration, bool reverse = false)
     {
         Duration = duration;
         IsReverse = reverse;
         CurrentTime = 0;
     }
-
+    
     public override double GetPercent()
     {
-        return Math.Min(1.0, Easing.EaseOutSine(CurrentTime / Duration));
+        return Math.Min(1.0, Easing.EaseInOutSine(CurrentTime / Duration));
     }
 }
