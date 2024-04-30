@@ -11,6 +11,6 @@ public static class ItemName
     public const string IronHelmet = "Iron Helmet";
     public const string IronSword = "Iron Sword";
     public const string MageBracelet = "Mage Bracelet";
-    public const string MediumHealthPotion = "Medium Health Potion";
-    public const string SmallHealthPotion = "Small Health Potion";
+    public const string MediumHealthPotion = "M. Health Potion";
+    public const string SmallHealthPotion = "S. Health Potion";
 }

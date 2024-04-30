@@ -12,7 +12,6 @@ using CraftingRPG.GameStateManagement.States;
 using CraftingRPG.Global;
 using CraftingRPG.InputManagement;
 using CraftingRPG.MapManagement;
-using Microsoft.Xna.Framework.Audio;
 
 namespace CraftingRPG
 {
@@ -24,19 +23,12 @@ namespace CraftingRPG
         public static Texture2D SpriteSheet { get; private set; }
         public static Texture2D TileSet { get; private set; }
         public static Texture2D Pixel { get; private set; }
-        public static SoundEffect SwingSfx01 { get; private set; }
-        public static SoundEffect HitSfx01 { get; private set; }
-        public static SoundEffect MaterialGrabSfx01 { get; private set; }
-        public static SoundEffect RecipeGrabSfx01 { get; private set; }
-        public static SoundEffect MenuHoverSfx01 { get; private set; }
-        public static SoundEffect MenuConfirmSfx01 { get; private set; }
         public static Point Resolution { get; private set; }
         public static PlayerInfo PlayerInfo { get; private set; }
         public static Dictionary<ItemId, IItem> ItemInfo { get; private set; }
         public static Point PlayerSpriteSize = new Point(48, 48);
 
         public static GameStateManager StateManager { get; private set; } = GameStateManager.Instance;
-        public static Flags Flags { get; private set; } = new();
 
         public GameManager()
         {
@@ -84,12 +76,6 @@ namespace CraftingRPG
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             SpriteSheet = Content.Load<Texture2D>("textures/crpg_spritesheet");
             TileSet = Content.Load<Texture2D>("textures/crpg_tileset");
-            SwingSfx01 = Content.Load<SoundEffect>("sfx/swoosh_01");
-            HitSfx01 = Content.Load<SoundEffect>("sfx/Pierce_01");
-            MaterialGrabSfx01 = Content.Load<SoundEffect>("sfx/Leather");
-            RecipeGrabSfx01 = Content.Load<SoundEffect>("sfx/Scroll");
-            MenuHoverSfx01 = Content.Load<SoundEffect>("sfx/Hover_04");
-            MenuConfirmSfx01 = Content.Load<SoundEffect>("sfx/Confirm_05");
 
             MapManager.Instance.LoadMapsFromContents(this.Content);
             Assets.Instance.LoadAssets(this.Content);

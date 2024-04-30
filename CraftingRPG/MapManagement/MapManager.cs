@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CraftingRPG.AssetManagement;
 using CraftingRPG.Constants;
 using CraftingRPG.Entities;
 using CraftingRPG.Enums;
@@ -14,7 +15,6 @@ using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using TiledSharp;
 
@@ -89,10 +89,22 @@ public class MapManager
             }
             else if (instance is IEnemyInstance enemyInstance)
             {
-                GameManager.SpriteBatch.Draw(enemyInstance.GetSpriteSheet(),
+                var spriteData = enemyInstance.GetDrawingData();
+                GameManager.SpriteBatch.Draw(spriteData.Texture,
                     new Rectangle(enemyInstance.GetPosition().ToPoint(), enemyInstance.GetSize()),
-                    enemyInstance.GetTextureRectangle(),
-                    Color.White);
+                    spriteData.SourceRectangle,
+                    Color.White,
+                    spriteData.Rotation,
+                    spriteData.Origin,
+                    spriteData.Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+                    0F);
+
+                if (Flags.DebugShowEnemyHitBoxes && enemyInstance.IsAttacking())
+                {
+                    GameManager.SpriteBatch.Draw(GameManager.Pixel,
+                        enemyInstance.GetAttackHitBox(),
+                        Color.Red);
+                }
             }
             else if (instance is MapObject mapObject)
             {
@@ -104,16 +116,33 @@ public class MapManager
             }
             else if (instance is IDropInstance dropInstance)
             {
-                GameManager.SpriteBatch.Draw(dropInstance.GetSpriteSheet(),
+                var spriteData = dropInstance.GetDrawingData();
+                GameManager.SpriteBatch.Draw(spriteData.Texture,
                     new Rectangle(dropInstance.GetPosition().ToPoint(), dropInstance.GetSize()),
-                    dropInstance.GetTextureRectangle(),
-                    Color.White);
+                    spriteData.SourceRectangle,
+                    Color.White,
+                    spriteData.Rotation,
+                    spriteData.Origin,
+                    spriteData.Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+                    0F);
             }
         }
     }
 
+    public void DrawUI()
+    {
+        var stringData =
+            Assets.Instance.Monogram24.GetDrawingData(
+                $"{Globals.Player.HitPoints}/{Globals.Player.Info.Stats.MaxHitPoints}");
+        GameManager.SpriteBatch.DrawTextDrawingData(stringData,
+            new Vector2(10, 10),
+            Color.Red);
+    }
+
     public void Update(GameTime gameTime)
     {
+        Globals.Player.InvulnerabilityTimer.Update(gameTime);
+
         DetectAndHandleInput();
         DetectAndHandleMovement(gameTime);
         DetectAndHandleCollisions();
@@ -123,6 +152,7 @@ public class MapManager
         Globals.Player.UpdateAnimation(gameTime);
         foreach (var enemy in CurrentMap.Enemies)
         {
+            enemy.Update(gameTime);
         }
 
         UpdateDrops();
@@ -238,7 +268,7 @@ public class MapManager
                 player.FacingDirection = Direction.Left;
             }
 
-            player.MovementVector = Vector2.Multiply(player.MovementVector, 
+            player.MovementVector = Vector2.Multiply(player.MovementVector,
                 PlayerInstance.MovementSpeed * (float)Time.Delta);
         }
         else
@@ -252,35 +282,56 @@ public class MapManager
 
     private void DetectAndHandleCollisions()
     {
+        var movingInstances = new List<IInstance>();
+
         // TODO: eventually we would want to check for collisions on all objects that have moved on a given frame.
         var player = Globals.Player;
 
-        var projectedPlayerBounds = player.GetCollisionBox();
-        projectedPlayerBounds.X += player.MovementVector.X;
-        projectedPlayerBounds.Y += player.MovementVector.Y;
-
-        // Check for collision with map objects
-        foreach (var objectLayer in CurrentMap.ObjectLayers)
+        if (player.MovementVector != Vector2.Zero)
         {
-            foreach (var mapObject in objectLayer.Objects)
+            movingInstances.Add(player);
+        }
+
+        foreach (var enemy in CurrentMap.Enemies)
+        {
+            if (enemy.GetMovementVector() != Vector2.Zero)
             {
-                var attr = mapObject.Attributes;
-                var objCBox = mapObject.GetCollisionBox();
+                movingInstances.Add(enemy);
+            }
+        }
 
-                if (!attr.IsSolid || !projectedPlayerBounds.Intersects(objCBox)) continue;
+        foreach (var instance in movingInstances)
+        {
+            var movementVector = instance.GetMovementVector();
+            var projectedBounds = instance.GetCollisionBox();
+            projectedBounds.X += movementVector.X;
+            projectedBounds.Y += movementVector.Y;
 
-                var depth = projectedPlayerBounds.GetIntersectionDepth(objCBox);
-                var absDepth = new Vector2(Math.Abs(depth.X), Math.Abs(depth.Y));
-
-                if (absDepth.Y < absDepth.X)
+            // Check for collision with map objects
+            foreach (var objectLayer in CurrentMap.ObjectLayers)
+            {
+                foreach (var mapObject in objectLayer.Objects)
                 {
-                    player.MovementVector.Y += depth.Y;
-                }
-                else
-                {
-                    player.MovementVector.X += depth.X;
+                    var attr = mapObject.Attributes;
+                    var objCBox = mapObject.GetCollisionBox();
+
+                    if (!attr.IsSolid || !projectedBounds.Intersects(objCBox)) continue;
+
+                    var depth = projectedBounds.GetIntersectionDepth(objCBox);
+                    var absDepth = new Vector2(Math.Abs(depth.X), Math.Abs(depth.Y));
+
+                    if (absDepth.Y < absDepth.X)
+                    {
+                        movementVector.Y += depth.Y;
+                    }
+                    else
+                    {
+                        movementVector.X += depth.X;
+                    }
                 }
             }
+
+            instance.SetPosition(Vector2.Add(instance.GetPosition(), movementVector));
         }
 
         // Check if any drops are colliding
@@ -299,10 +350,6 @@ public class MapManager
                 }
             }
         }
-
-        // Do movement
-        player.Position.X += player.MovementVector.X;
-        player.Position.Y += player.MovementVector.Y;
     }
 
     private void DetectAndHandleDropPickupEvent()
@@ -324,13 +371,15 @@ public class MapManager
     private void DetectAndHandleAttack()
     {
         var player = Globals.Player;
+
+        // Is player attacking enemies?
         if (player.IsAttacking)
         {
             foreach (var inst in CurrentMap.Enemies)
             {
                 if (!AttackedEnemies.Contains(inst) && inst.GetCollisionBox().Intersects(player.AttackRect))
                 {
-                    GameManager.HitSfx01.Play(0.3F, 0F, 0F);
+                    Assets.Instance.HitSfx01.Play(0.3F, 0F, 0F);
                     var damage = player.Info.Equipment.Weapon.GetAttackStat();
                     var isDefeated = inst.IncurDamage(damage);
                     if (!isDefeated)
@@ -386,7 +435,24 @@ public class MapManager
             {
                 player.IsAttacking = true;
                 Globals.ActionKeyPressed = false;
-                GameManager.SwingSfx01.Play(volume: 0.1F, 0F, 0F);
+                Assets.Instance.SwingSfx01.Play(volume: 0.1F, 0F, 0F);
+            }
+        }
+
+        // Are enemies attacking the player?
+        if (player.InvulnerabilityTimer.IsDone())
+        {
+            foreach (var enemy in CurrentMap.Enemies)
+            {
+                if (!enemy.IsAttacking()) continue;
+
+                var hitBox = enemy.GetAttackHitBox();
+                if (player.GetCollisionBox().Intersects(hitBox))
+                {
+                    // Player is hit!
+                    player.InvulnerabilityTimer.Reset();
+                    player.HitPoints--;
+                }
             }
         }
     }
@@ -409,7 +475,7 @@ public class MapManager
         {
             Zoom = 3F
         };
-        
+
         var x = camera.BoundingRectangle;
         var mapWidth = CurrentMap.Width * CurrentMap.TileWidth;
         var mapHeight = CurrentMap.Height * CurrentMap.TileHeight;

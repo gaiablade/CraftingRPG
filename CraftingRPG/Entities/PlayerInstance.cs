@@ -2,10 +2,11 @@
 using CraftingRPG.AssetManagement;
 using CraftingRPG.Constants;
 using CraftingRPG.Enums;
-using CraftingRPG.Global;
+using CraftingRPG.Graphics;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Recipes;
 using CraftingRPG.SpriteAnimation;
+using CraftingRPG.Timers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -28,17 +29,20 @@ public class PlayerInstance : IInstance
     
     #region Public Getters/Setters
     public Vector2 Position = new Vector2();
+    public Vector2 Center => Vector2.Add(Position, new Vector2(24, 36));
 
     public int FacingDirection { get; set; } = Direction.Down;
     public bool IsAttacking { get; set; }
     public bool IsWalking { get; set; }
     public List<IDropInstance> DropsBelowPlayer { get; set; } = new();
+
+    public ITimer InvulnerabilityTimer { get; private set; }
+    public int HitPoints { get; set; }
     #endregion
     
     public Vector2 MovementVector;
     public bool IsAboveDrop = false;
     public RectangleF AttackRect;
-
     
     #region Animation
     private int PreviousFacingDirection;
@@ -80,6 +84,9 @@ public class PlayerInstance : IInstance
         AttackingSideAnimation = new Animation(4, attackInterval, SpriteSize, false, 0, 336);
         AttackingNorthAnimation = new Animation(4, attackInterval, SpriteSize, false, 0, 384);
         CurrentAnimation = IdleSouthAnimation;
+        InvulnerabilityTimer = new LinearTimer(1.0);
+        InvulnerabilityTimer.Set(1.0);
+        HitPoints = Info.Stats.MaxHitPoints;
         
         Info.RecipeBook.AddRecipe(RecipeId.IronSword, new IronSwordRecipe());
         Info.RecipeBook.AddRecipe(RecipeId.MageBracelet, new MageBraceletRecipe());
@@ -102,7 +109,16 @@ public class PlayerInstance : IInstance
     public Rectangle GetBounds() => new Rectangle((int)Position.X, (int)Position.Y, (int)GetSize().X, (int)GetSize().Y);
 
     public RectangleF GetCollisionBox() => new(new Point2(Position.X + 18, Position.Y + 22), new Size2(13, 19));
-    
+    public SpriteDrawingData GetDrawingData()
+    {
+        return new SpriteDrawingData
+        {
+            Texture = GetSpriteSheet(),
+            SourceRectangle = GetSourceRectangle(),
+            Flip = FacingDirection == Direction.Left
+        };
+    }
+
     public Texture2D GetSpriteSheet()
     {
         return Assets.Instance.PlayerSpriteSheet;
@@ -112,6 +128,8 @@ public class PlayerInstance : IInstance
     {
         return CurrentAnimation.GetSourceRectangle();
     }
+
+    public Vector2 GetMovementVector() => MovementVector;
 
     public Vector2 SetPosition(Vector2 position) => Position = position;
 
@@ -231,7 +249,7 @@ public class PlayerInstance : IInstance
         }
     }
 
-    public Rectangle GetSourceRectangle()
+    private Rectangle GetSourceRectangle()
     {
         return CurrentAnimation.GetSourceRectangle();
     }

@@ -261,14 +261,14 @@ public class QuestMenuState : BaseState
         {
             if (InputManager.Instance.IsKeyPressed(InputAction.MoveWest))
             {
-                GameManager.MenuHoverSfx01.Play(0.3F, 0F, 0F);
+                Assets.Instance.MenuHoverSfx01.Play(0.3F, 0F, 0F);
                 Cursor = CustomMath.WrapAround(Cursor - 1, 0,
                     GameManager.PlayerInfo.QuestBook.GetActiveQuestCount() - 1);
                 CursorMovementTimer.Reset();
             }
             else if (InputManager.Instance.IsKeyPressed(InputAction.MoveEast))
             {
-                GameManager.MenuHoverSfx01.Play(0.3F, 0F, 0F);
+                Assets.Instance.MenuHoverSfx01.Play(0.3F, 0F, 0F);
                 Cursor = CustomMath.WrapAround(Cursor + 1, 0,
                     GameManager.PlayerInfo.QuestBook.GetActiveQuestCount() - 1);
                 CursorMovementTimer.Reset();

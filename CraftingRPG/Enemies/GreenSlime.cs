@@ -16,8 +16,6 @@ public class GreenSlime : IEnemy
     };
 
     public EnemyId GetId() => EnemyId.GreenSlime;
-
     public string GetName() => EnemyNames.GreenSlime;
-
     public int GetMaxHitPoints() => 50;
 }

@@ -163,12 +163,12 @@ public class CraftingMenuState : BaseState
         {
             if (InputManager.Instance.GetKeyPressState(InputAction.MoveSouth) == KeyPressState.Pressed)
             {
-                GameManager.MenuHoverSfx01.Play(0.3F, 0F, 0F);
+                Assets.Instance.MenuHoverSfx01.Play(0.3F, 0F, 0F);
                 Cursor = CustomMath.WrapAround(Cursor + 1, 0, Recipes.Count - 1);
             }
             else if (InputManager.Instance.GetKeyPressState(InputAction.MoveNorth) == KeyPressState.Pressed)
             {
-                GameManager.MenuHoverSfx01.Play(0.3F, 0F, 0F);
+                Assets.Instance.MenuHoverSfx01.Play(0.3F, 0F, 0F);
                 Cursor = CustomMath.WrapAround(Cursor - 1, 0, Recipes.Count - 1);
             }
 
@@ -195,7 +195,7 @@ public class CraftingMenuState : BaseState
                         }
                     }
                     
-                    GameManager.MenuConfirmSfx01.Play(0.3F, 0F, 0F);
+                    Assets.Instance.MenuConfirmSfx01.Play(0.3F, 0F, 0F);
                 }
             }
 

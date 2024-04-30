@@ -1,4 +1,5 @@
 using CraftingRPG.AssetManagement;
+using CraftingRPG.Graphics;
 using CraftingRPG.Interfaces;
 using CraftingRPG.QuestManagement;
 using Microsoft.Xna.Framework;
@@ -25,12 +26,22 @@ public abstract class BaseItemInstance : IDropInstance
 
     public virtual RectangleF GetCollisionBox() => new(Position, Size);
 
+    public virtual SpriteDrawingData GetDrawingData()
+    {
+        return new SpriteDrawingData
+        {
+            Texture = GetSpriteSheet(),
+            SourceRectangle = GetTextureRectangle()
+        };
+    }
+
     public virtual Texture2D GetSpriteSheet()
     {
         return Assets.Instance.IconSpriteSheet;
     }
 
     public virtual Rectangle GetTextureRectangle() => Item.GetSourceRectangle();
+    public Vector2 GetMovementVector() => Vector2.Zero;
 
     public virtual bool CanDrop() => true;
 
@@ -51,7 +62,7 @@ public abstract class BaseItemInstance : IDropInstance
         var player = GameManager.PlayerInfo;
 
         player.Inventory[item.GetId()] += quantity;
-        GameManager.MaterialGrabSfx01.Play(0.3F, 0F, 0F);
+        Assets.Instance.MaterialGrabSfx01.Play(0.3F, 0F, 0F);
 
         foreach (var questInstance in player.QuestBook.GetActiveQuests())
         {

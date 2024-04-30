@@ -1,4 +1,5 @@
 using CraftingRPG.Enums;
+using CraftingRPG.Graphics;
 using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -28,6 +29,15 @@ public class MapObject : IInstance
         return new RectangleF((float)(clBx.X + X), (float)(clBx.Y + Y), clBx.Width, clBx.Height);
     }
 
+    public SpriteDrawingData GetDrawingData()
+    {
+        return new SpriteDrawingData
+        {
+            Texture = GetSpriteSheet(),
+            SourceRectangle = GetTextureRectangle()
+        };
+    }
+
     public Texture2D GetSpriteSheet()
     {
         return TileSet.SpriteSheetTexture;
@@ -36,6 +46,11 @@ public class MapObject : IInstance
     public Rectangle GetTextureRectangle()
     {
         return SourceRectangle;
+    }
+
+    public Vector2 GetMovementVector()
+    {
+        return Vector2.Zero;
     }
 
     public Vector2 GetPosition()

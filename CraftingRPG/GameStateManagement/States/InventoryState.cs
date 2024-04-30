@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using CraftingRPG.AssetManagement;
 using CraftingRPG.Enums;
+using CraftingRPG.Extensions;
 using CraftingRPG.Global;
 using CraftingRPG.InputManagement;
 using CraftingRPG.Interfaces;
@@ -16,7 +17,9 @@ public class InventoryState : BaseState
     private const int NumberOfColumns = 5;
 
     private int ActiveTab = 0;
-    private Point Cursor = new(0, 0);
+    private int Cursor;
+
+    private Point CursorGridPosition => new Point(Cursor % NumberOfColumns, Cursor / NumberOfColumns);
 
     // Drawing constants
     private readonly int CenterX = GameManager.Resolution.X / 2;
@@ -56,6 +59,7 @@ public class InventoryState : BaseState
 
         DrawEquipment();
         DrawItems();
+        DrawSelectedItemName();
 
         if (Globals.Player.Info.Inventory.Items.Count > 0)
         {
@@ -133,30 +137,29 @@ public class InventoryState : BaseState
         }
     }
 
-    public void DrawCursor()
+    private void DrawCursor()
     {
         const int inventoryX = 416;
         const int inventoryY = 128;
 
         GameManager.SpriteBatch.Draw(Assets.Instance.WoodCursorSpriteSheet,
-            new Rectangle(new Point(inventoryX + Cursor.X * 64, 
-                    (int)MenuPosition + inventoryY + Cursor.Y * 64), 
+            new Rectangle(new Point(inventoryX + CursorGridPosition.X * 64,
+                    (int)MenuPosition + inventoryY + CursorGridPosition.Y * 64),
                 new Point(32, 32)),
             CursorAnimation.GetSourceRectangle(), Color.White);
     }
 
-    public void DrawSelectedItemName()
+    private void DrawSelectedItemName()
     {
         var inventory = Globals.Player.Info.Inventory;
-        var cursorFlat = Cursor.Y * NumberOfColumns + Cursor.X;
-        var (itemId, qty) = inventory.Items.ElementAt(cursorFlat);
+        var (itemId, qty) = inventory.Items.ElementAt(Cursor);
         var itemInfo = GameManager.ItemInfo[itemId];
-        var itemName = itemInfo.GetName() + " x" + qty;
-        var itemNameSize = Assets.Instance.Monogram24.MeasureString(itemName);
-        GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
-            itemName,
-            new Vector2(CenterX + CenterX / 2 - itemNameSize.X / 2, 100),
-            Color.White);
+        var itemName = itemInfo.GetName();
+        var nameData = Assets.Instance.Monogram24.GetDrawingData(itemName);
+        
+        GameManager.SpriteBatch.DrawTextDrawingData(nameData,
+            new Vector2(560 - nameData.Dimensions.X / 2, (float)MenuPosition + 510),
+            Color.Black);
     }
 
     public override void Update(GameTime gameTime)
@@ -182,46 +185,19 @@ public class InventoryState : BaseState
 
         if (InputManager.Instance.IsKeyPressed(InputAction.MoveSouth))
         {
-            Cursor.X = CustomMath.WrapAround(Cursor.X - 1, 0, NumberOfColumns - 1);
-        }
-        else if (InputManager.Instance.IsKeyPressed(InputAction.MoveEast))
-        {
-            Cursor.X = CustomMath.WrapAround(Cursor.X + 1, 0, NumberOfColumns - 1);
-        }
-        else if (InputManager.Instance.IsKeyPressed(InputAction.MoveSouth))
-        {
-            Cursor.Y++;
+            Cursor = CustomMath.WrapAround(Cursor + NumberOfColumns, 0, Globals.Player.Info.Inventory.Items.Count - 1);
         }
         else if (InputManager.Instance.IsKeyPressed(InputAction.MoveNorth))
         {
-            Cursor.Y--;
+            Cursor = CustomMath.WrapAround(Cursor - NumberOfColumns, 0, Globals.Player.Info.Inventory.Items.Count - 1);
         }
-
-        NormalizeCursor();
-    }
-
-    private void NormalizeCursor()
-    {
-        var inventory = Globals.Player.Info.Inventory;
-        var numRows = inventory.Items.Count / NumberOfColumns + 1;
-        while (Cursor.Y >= numRows)
+        else if (InputManager.Instance.IsKeyPressed(InputAction.MoveEast))
         {
-            Cursor.Y--;
+            Cursor = CustomMath.WrapAround(Cursor + 1, 0, Globals.Player.Info.Inventory.Items.Count - 1);
         }
-
-        if (Cursor.Y < 0)
+        else if (InputManager.Instance.IsKeyPressed(InputAction.MoveWest))
         {
-            Cursor.Y = 0;
-        }
-
-        // If on last row and Cursor.X greater than number of columns in row, set to last
-        if (Cursor.Y == numRows - 1)
-        {
-            var lastRowColumns = inventory.Items.Count % NumberOfColumns;
-            if (Cursor.X > lastRowColumns - 1)
-            {
-                Cursor.X = lastRowColumns - 1;
-            }
+            Cursor = CustomMath.WrapAround(Cursor - 1, 0, Globals.Player.Info.Inventory.Items.Count - 1);
         }
     }
 }

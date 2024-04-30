@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CraftingRPG.Graphics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
@@ -11,6 +12,8 @@ public interface IInstance
     public double GetDepth();
     public Point GetSize();
     public RectangleF GetCollisionBox();
+    public SpriteDrawingData GetDrawingData();
     public Texture2D GetSpriteSheet();
     public Rectangle GetTextureRectangle();
+    public Vector2 GetMovementVector();
 }
