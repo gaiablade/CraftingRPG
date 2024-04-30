@@ -102,7 +102,16 @@ public class PlayerInstance : IInstance
     public Rectangle GetBounds() => new Rectangle((int)Position.X, (int)Position.Y, (int)GetSize().X, (int)GetSize().Y);
 
     public RectangleF GetCollisionBox() => new(new Point2(Position.X + 18, Position.Y + 22), new Size2(13, 19));
-    
+    public SpriteDrawingData GetDrawingData()
+    {
+        return new SpriteDrawingData
+        {
+            Texture = GetSpriteSheet(),
+            SourceRectangle = GetSourceRectangle(),
+            Flip = FacingDirection == Direction.Left
+        };
+    }
+
     public Texture2D GetSpriteSheet()
     {
         return Assets.Instance.PlayerSpriteSheet;
@@ -112,6 +121,8 @@ public class PlayerInstance : IInstance
     {
         return CurrentAnimation.GetSourceRectangle();
     }
+
+    public Vector2 GetMovementVector() => MovementVector;
 
     public Vector2 SetPosition(Vector2 position) => Position = position;
 

@@ -16,6 +16,15 @@ public class GreenSlimeInstance : BaseEnemyInstance
     }
 
     public override RectangleF GetCollisionBox() => new(Position.X + 8, Position.Y + 11, 16, 13);
+    public override SpriteDrawingData GetDrawingData()
+    {
+        return new SpriteDrawingData
+        {
+            Texture = GetSpriteSheet(),
+            SourceRectangle = GetTextureRectangle(),
+            Flip = FacingDirection == Direction.Left
+        };
+    }
 
     public override Texture2D GetSpriteSheet()
     {

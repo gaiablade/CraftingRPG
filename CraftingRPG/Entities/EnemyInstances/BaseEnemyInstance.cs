@@ -15,8 +15,11 @@ public abstract class BaseEnemyInstance : IEnemyInstance
     protected Texture2D SpriteSheet { get; set; }
 
     public abstract RectangleF GetCollisionBox();
+    public abstract SpriteDrawingData GetDrawingData();
+
     public abstract Rectangle GetTextureRectangle();
-    
+    public virtual Vector2 GetMovementVector() => MovementVector;
+
     public virtual Vector2 GetPosition() => Position;
     public virtual double GetDepth() => Depth;
     public virtual Point GetSize() => Size;
@@ -34,4 +37,7 @@ public abstract class BaseEnemyInstance : IEnemyInstance
     public virtual void Update(GameTime gameTime)
     {
     }
+
+    public abstract bool IsAttacking();
+    public abstract Rectangle GetAttackHitBox();
 }

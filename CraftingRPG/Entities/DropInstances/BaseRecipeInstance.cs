@@ -1,5 +1,6 @@
 using CraftingRPG.AssetManagement;
 using CraftingRPG.Global;
+using CraftingRPG.Graphics;
 using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -28,7 +29,19 @@ public abstract class BaseRecipeInstance : IDropInstance
     #endregion
     
     #region Required Overrides
+
+    public SpriteDrawingData GetDrawingData()
+    {
+        return new SpriteDrawingData
+        {
+            Texture = GetSpriteSheet(),
+            SourceRectangle = GetTextureRectangle()
+        };
+    }
+
     public abstract Rectangle GetTextureRectangle();
+    public Vector2 GetMovementVector() => Vector2.Zero;
+
     #endregion
     
     public virtual Vector2 GetPosition() => Position;
@@ -54,7 +67,7 @@ public abstract class BaseRecipeInstance : IDropInstance
     {
         var player = GameManager.PlayerInfo;
 
-        GameManager.RecipeGrabSfx01.Play(0.3F, 0F, 0F);
+        Assets.Instance.RecipeGrabSfx01.Play(0.3F, 0F, 0F);
 
         if (!player.RecipeBook.Recipes.ContainsKey(recipe.GetId()))
         {
