@@ -1,3 +1,4 @@
+using CraftingRPG.Graphics;
 using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,6 +8,8 @@ namespace CraftingRPG.Entities.EnemyInstances;
 
 public abstract class BaseEnemyInstance : IEnemyInstance
 {
+    protected Vector2 MovementVector;
+    
     protected IEnemy EnemyInfo { get; set; }
     protected Vector2 Position { get; set; }
     protected Point Size { get; set; } = new(32, 32);
@@ -26,7 +29,12 @@ public abstract class BaseEnemyInstance : IEnemyInstance
     public virtual Texture2D GetSpriteSheet() => SpriteSheet;
     public virtual IEnemy GetEnemyInfo() => EnemyInfo;
     public virtual int GetCurrentHitPoints() => HitPoints;
-    public virtual Vector2 SetPosition(Vector2 position) => Position = position;
+
+    public virtual Vector2 SetPosition(Vector2 position)
+    {
+        Position = position;
+        return Position;
+    }
     
     public virtual bool IncurDamage(int damage)
     {
