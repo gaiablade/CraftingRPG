@@ -6,7 +6,7 @@ namespace CraftingRPG.QuestManagement.Quests;
 
 public class HealingMushroomFetchQuestInfo : IFetchQuestInfo
 {
-    public string GetDescription() => "Sample Description. Blah Blah Blah Blah Blah Blah. Go get the 'shrooms :)";
+    public string GetDescription() => "Sample Description. Collect 10 Healing Mushrooms!";
 
     public string GetName() => "Obtain 10 Healing Mushrooms!";
 
