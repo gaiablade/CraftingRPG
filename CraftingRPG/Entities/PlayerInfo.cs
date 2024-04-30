@@ -1,5 +1,6 @@
 ﻿using CraftingRPG.Interfaces;
 using CraftingRPG.Items;
+using CraftingRPG.PlayerStatistics;
 using CraftingRPG.Recipes;
 using CraftingRPG.QuestManagement;
 using CraftingRPG.QuestManagement.Quests;
@@ -13,6 +14,7 @@ public class PlayerInfo : IPlayerInfo
     public Inventory Inventory { get; private set; } = new();
     public PlayerEquipment Equipment { get; private set; } = new();
     public QuestBook QuestBook { get; private set; } = new QuestBook();
+    public Statistics Stats { get; private set; } = new Statistics();
 
     public PlayerInfo()
     {
