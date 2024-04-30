@@ -1,4 +1,5 @@
 using System;
+
 namespace CraftingRPG.Timers;
 
 public class LinearTimer : BaseTimer

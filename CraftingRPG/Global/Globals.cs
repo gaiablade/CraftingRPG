@@ -1,5 +1,4 @@
 using CraftingRPG.Entities;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
 namespace CraftingRPG.Global;

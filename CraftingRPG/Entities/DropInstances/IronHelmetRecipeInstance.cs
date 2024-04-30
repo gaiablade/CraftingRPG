@@ -1,4 +1,4 @@
-using CraftingRPG.Recipes;
+using CraftingRPG.RecipeManagement.Recipes;
 using Microsoft.Xna.Framework;
 
 namespace CraftingRPG.Entities.DropInstances;

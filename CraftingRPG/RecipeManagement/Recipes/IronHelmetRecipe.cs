@@ -1,8 +1,8 @@
-﻿using CraftingRPG.Enums;
+﻿using System.Collections.Generic;
+using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
-using System.Collections.Generic;
 
-namespace CraftingRPG.Recipes;
+namespace CraftingRPG.RecipeManagement.Recipes;
 
 public class IronHelmetRecipe : IRecipe
 {

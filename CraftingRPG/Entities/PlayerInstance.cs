@@ -4,15 +4,12 @@ using CraftingRPG.Constants;
 using CraftingRPG.Enums;
 using CraftingRPG.Graphics;
 using CraftingRPG.Interfaces;
-using CraftingRPG.Recipes;
+using CraftingRPG.RecipeManagement.Recipes;
 using CraftingRPG.SpriteAnimation;
 using CraftingRPG.Timers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using Point = Microsoft.Xna.Framework.Point;
-using Rectangle = Microsoft.Xna.Framework.Rectangle;
-using RectangleF = MonoGame.Extended.RectangleF;
 
 namespace CraftingRPG.Entities;
 
