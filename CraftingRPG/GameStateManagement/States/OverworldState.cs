@@ -42,6 +42,8 @@ public class OverworldState : BaseState
 
     public override void DrawUI()
     {
+        MapManager.Instance.DrawUI();
+        
         var player = Globals.Player;
         var resolution = GameManager.Resolution;
         var woodUi = Assets.Instance.WoodUISpriteSheet;
