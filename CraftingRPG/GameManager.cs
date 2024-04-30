@@ -2,13 +2,13 @@
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Items;
-using CraftingRPG.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using CraftingRPG.AssetManagement;
 using CraftingRPG.GameStateManagement;
+using CraftingRPG.GameStateManagement.States;
 using CraftingRPG.Global;
 using CraftingRPG.InputManagement;
 using CraftingRPG.MapManagement;
