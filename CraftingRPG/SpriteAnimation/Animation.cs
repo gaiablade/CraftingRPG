@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace CraftingRPG.SpriteAnimation;
 
@@ -68,4 +67,6 @@ public class Animation
     }
 
     public int GetCurrentFrame() => CurrentAnimationFrame;
+
+    public double GetDuration() => UniqueAnimationFrames * AnimationFrameDuration;
 }
