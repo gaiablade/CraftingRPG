@@ -38,7 +38,7 @@ public abstract class BaseItemInstance : IDropInstance
 
     public virtual void OnObtain()
     {
-        AddItemToInventory(Item, 1);
+        AddItemToInventory(Item);
     }
 
     protected static void AddItemToInventory<T>(int quantity = 1) where T : IItem, new()
@@ -46,14 +46,14 @@ public abstract class BaseItemInstance : IDropInstance
         AddItemToInventory(new T(), quantity);
     }
     
-    protected static void AddItemToInventory(IItem item, int quantity)
+    protected static void AddItemToInventory(IItem item, int quantity = 1)
     {
         var player = GameManager.PlayerInfo;
 
         player.Inventory[item.GetId()] += quantity;
         GameManager.MaterialGrabSfx01.Play(0.3F, 0F, 0F);
 
-        foreach (var questInstance in player.Quests)
+        foreach (var questInstance in player.QuestBook.GetActiveQuests())
         {
             if (questInstance is FetchQuestInstance fetchQuestInstance)
             {

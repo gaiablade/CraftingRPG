@@ -5,25 +5,22 @@ using CraftingRPG.Interfaces;
 
 namespace CraftingRPG.QuestManagement;
 
-public class FetchQuestInstance : IQuestInstance
+public class FetchQuestInstance : BaseQuestInstance
 {
-    private BaseFetchQuest Instance;
     private Dictionary<ItemId, int> CollectedItems;
 
-    public FetchQuestInstance(BaseFetchQuest fetchQuest)
+    public FetchQuestInstance(IFetchQuestInfo fetchQuestInfo)
     {
-        Instance = fetchQuest;
+        QuestInfo = fetchQuestInfo;
         CollectedItems = new();
 
-        foreach (var (itemId, _) in Instance.GetRequiredItems())
+        foreach (var (itemId, _) in fetchQuestInfo.GetRequiredItems())
         {
             CollectedItems.Add(itemId, 0);
         }
     }
 
-    public IQuest GetQuest() => Instance;
-
-    public BaseFetchQuest GetFetchQuest() => Instance;
+    public IFetchQuestInfo GetFetchQuestInfo() => (IFetchQuestInfo)QuestInfo;
 
     public void AddCollectedItem(ItemId itemId, int qty)
     {
@@ -33,7 +30,8 @@ public class FetchQuestInstance : IQuestInstance
         }
     }
 
-    public bool IsComplete() => CollectedItems.All(x => Instance.GetRequiredItems()[x.Key] <= x.Value);
+    public override bool IsComplete() => CollectedItems
+        .All(x => GetFetchQuestInfo().GetRequiredItems()[x.Key] <= x.Value);   
 
     public Dictionary<ItemId, int> GetCollectedItems() => CollectedItems;
 }

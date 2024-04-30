@@ -1,7 +1,6 @@
 ﻿using CraftingRPG.Interfaces;
 using CraftingRPG.Items;
 using CraftingRPG.Recipes;
-using System.Collections.Generic;
 using CraftingRPG.QuestManagement;
 using CraftingRPG.QuestManagement.Quests;
 using CraftingRPG.RecipeBookManagement;
@@ -13,15 +12,21 @@ public class PlayerInfo : IPlayerInfo
     public RecipeBook RecipeBook { get; private set; } = new();
     public Inventory Inventory { get; private set; } = new();
     public PlayerEquipment Equipment { get; private set; } = new();
-    public List<IQuestInstance> Quests { get; private set; } = new();
+    public QuestBook QuestBook { get; private set; } = new QuestBook();
 
     public PlayerInfo()
     {
         Equipment.Weapon = new IronSwordItem();
         Equipment.Helmet = new IronHelmetItem();
 
-        var mushroomQuest = new FetchQuestInstance(new FetchQuestSmallPotionIngredients());
-        Quests.Add(mushroomQuest);
+        var mushroomQuest = new FetchQuestInstance(new HealingMushroomFetchQuestInfo());
+        var mushroomQuest2 = new FetchQuestInstance(new HealingMushroomFetchQuestInfo());
+        var potionQuest = new CraftQuestInstance(new SmallHealthPotionCraftQuestInfo());
+        var slimeQuest = new DefeatEnemyQuestInstance(new DefeatSlimesQuestInfo());
+        QuestBook.AddQuest(mushroomQuest);
+        QuestBook.AddQuest(mushroomQuest2);
+        QuestBook.AddQuest(potionQuest);
+        QuestBook.AddQuest(slimeQuest);
 
         RecipeBook.AddRecipe(new SmallHealthPotionRecipe());
     }

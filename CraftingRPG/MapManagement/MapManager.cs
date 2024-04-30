@@ -9,6 +9,7 @@ using CraftingRPG.Global;
 using CraftingRPG.InputManagement;
 using CraftingRPG.Interfaces;
 using CraftingRPG.MapLoaders;
+using CraftingRPG.QuestManagement;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -362,7 +363,21 @@ public class MapManager
                 }
             }
 
-            CurrentMap.Enemies.RemoveAll(x => x.GetCurrentHitPoints() <= 0);
+            var defeatedEnemies = CurrentMap.Enemies
+                .Where(x => x.GetCurrentHitPoints() <= 0)
+                .ToList();
+            foreach (var enemy in defeatedEnemies)
+            {
+                foreach (var quest in Globals.Player.Info.QuestBook.GetActiveQuests())
+                {
+                    if (quest is DefeatEnemyQuestInstance defeatEnemyQuestInstance)
+                    {
+                        defeatEnemyQuestInstance.OnEnemyDefeated(enemy.GetEnemyInfo());
+                    }
+                }
+
+                CurrentMap.Enemies.Remove(enemy);
+            }
         }
         else
         {

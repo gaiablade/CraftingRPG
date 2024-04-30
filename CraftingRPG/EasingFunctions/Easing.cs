@@ -13,4 +13,14 @@ public static class Easing
     {
         return Math.Sin((x * Math.PI) / 2.0);
     }
+    
+    public static float EaseInOutSine(float x)
+    {
+        return (float)(-(Math.Cos(Math.PI * x) - 1) / 2);
+    }
+    
+    public static double EaseInOutSine(double x)
+    {
+        return -(Math.Cos(Math.PI * x) - 1) / 2;
+    }
 }

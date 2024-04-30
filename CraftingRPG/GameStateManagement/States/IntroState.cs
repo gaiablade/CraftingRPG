@@ -1,15 +1,13 @@
-﻿using CraftingRPG.Interfaces;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using CraftingRPG.AssetManagement;
 using CraftingRPG.Enums;
-using CraftingRPG.GameStateManagement;
 using CraftingRPG.InputManagement;
+using Microsoft.Xna.Framework;
 
-namespace CraftingRPG.States;
+namespace CraftingRPG.GameStateManagement.States;
 
-public class IntroState : IState
+public class IntroState : BaseState
 {
     private List<string> IntroStoryLines;
 
@@ -47,7 +45,7 @@ public class IntroState : IState
         return storyLines;
     }
 
-    public void DrawWorld()
+    public override void DrawWorld()
     {
         var lineHeight = Assets.Instance.Monogram24.MeasureString(IntroStoryLines[0]).Y;
         var i = 0;
@@ -71,11 +69,11 @@ public class IntroState : IState
             Color.Orange);
     }
 
-    public void DrawUI()
+    public override void DrawUI()
     {
     }
 
-    public void Update(GameTime gameTime)
+    public override void Update(GameTime gameTime)
     {
         if (InputManager.Instance.IsKeyPressed(InputAction.MenuSelect))
         {

@@ -1,17 +1,17 @@
-﻿using CraftingRPG.Interfaces;
-using CraftingRPG.Utility;
-using Microsoft.Xna.Framework;
-using System.Linq;
+﻿using System.Linq;
 using CraftingRPG.AssetManagement;
 using CraftingRPG.Enums;
 using CraftingRPG.Global;
 using CraftingRPG.InputManagement;
+using CraftingRPG.Interfaces;
 using CraftingRPG.SpriteAnimation;
 using CraftingRPG.Timers;
+using CraftingRPG.Utility;
+using Microsoft.Xna.Framework;
 
-namespace CraftingRPG.States;
+namespace CraftingRPG.GameStateManagement.States;
 
-public class InventoryState : IState
+public class InventoryState : BaseState
 {
     private const int NumberOfColumns = 5;
 
@@ -36,11 +36,11 @@ public class InventoryState : IState
         CursorAnimation = new Animation(4, 0.4, new Point(32, 32));
     }
 
-    public void DrawWorld()
+    public override void DrawWorld()
     {
     }
 
-    public void DrawUI()
+    public override void DrawUI()
     {
         var percent = TransitionTimer.GetPercent();
         MenuPosition = percent * GameManager.Resolution.Y - GameManager.Resolution.Y;
@@ -159,7 +159,7 @@ public class InventoryState : IState
             Color.White);
     }
 
-    public void Update(GameTime gameTime)
+    public override void Update(GameTime gameTime)
     {
         TransitionTimer.Update(gameTime);
         CursorAnimation.Update(gameTime);
