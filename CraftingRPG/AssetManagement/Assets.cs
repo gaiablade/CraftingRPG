@@ -13,6 +13,7 @@ public class Assets
     public Texture2D CraftingUi { get; private set; }
     public Texture2D InventoryUi { get; private set; }
     public Texture2D QuestUi { get; private set; }
+    public Texture2D QuestDetailsUi { get; private set; }
     public Texture2D IconSpriteSheet { get; private set; }
     public Texture2D PaperNoteSpriteSheet { get; private set; }
     public Texture2D WoodCursorSpriteSheet { get; private set; }
@@ -32,6 +33,7 @@ public class Assets
         CraftingUi = contentManager.Load<Texture2D>("textures/crafting_menu");
         InventoryUi = contentManager.Load<Texture2D>("textures/inventory_menu");
         QuestUi = contentManager.Load<Texture2D>("textures/quest_menu");
+        QuestDetailsUi = contentManager.Load<Texture2D>("textures/quest_details_menu");
         IconSpriteSheet = contentManager.Load<Texture2D>("textures/icons_full_32");
         PaperNoteSpriteSheet = contentManager.Load<Texture2D>("textures/UI_Papernote_Spritesheet");
         WoodCursorSpriteSheet = contentManager.Load<Texture2D>("textures/Spritesheet_UI_Wood_Animation_Select_01");
