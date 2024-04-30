@@ -2,6 +2,6 @@
 
 public interface IQuestInstance
 {
-    public IQuest GetQuest();
+    public IQuestInfo GetQuestInfo();
     public bool IsComplete();
 }
