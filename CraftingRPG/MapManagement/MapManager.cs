@@ -9,6 +9,7 @@ using CraftingRPG.Extensions;
 using CraftingRPG.Global;
 using CraftingRPG.InputManagement;
 using CraftingRPG.Interfaces;
+using CraftingRPG.LerpPath;
 using CraftingRPG.MapLoaders;
 using CraftingRPG.QuestManagement;
 using CraftingRPG.Utility;
@@ -141,7 +142,7 @@ public class MapManager
 
     public void Update(GameTime gameTime)
     {
-        Globals.Player.InvulnerabilityTimer.Update(gameTime);
+        Globals.Player.Update(gameTime);
 
         DetectAndHandleInput();
         DetectAndHandleMovement(gameTime);
@@ -287,7 +288,7 @@ public class MapManager
         // TODO: eventually we would want to check for collisions on all objects that have moved on a given frame.
         var player = Globals.Player;
 
-        if (player.MovementVector != Vector2.Zero)
+        if (player.GetMovementVector() != Vector2.Zero)
         {
             movingInstances.Add(player);
         }
@@ -384,6 +385,12 @@ public class MapManager
                     var isDefeated = inst.IncurDamage(damage);
                     if (!isDefeated)
                     {
+                        var instCenter = inst.GetCollisionBox().Center;
+                        var playerCenter = player.GetCollisionBox().Center;
+                        var knockBackAngle =
+                            CustomMath.UnitVector(Vector2.Subtract(instCenter, playerCenter));
+                        var knockBackPosition = Vector2.Add(inst.GetPosition(), Vector2.Multiply(knockBackAngle, 25));
+                        inst.SetKnockBack(new Vector2LerpPath(inst.GetPosition(), knockBackPosition, 0.1));
                         AttackedEnemies.Add(inst);
                     }
                     else
@@ -452,6 +459,12 @@ public class MapManager
                     // Player is hit!
                     player.InvulnerabilityTimer.Reset();
                     player.HitPoints--;
+                    Assets.Instance.Impact01.Play(0.4F, 0F, 0F);
+
+                    // Knockback
+                    var knockBackAngle = CustomMath.UnitVector(enemy.GetMovementVector());
+                    var knockBackPosition = Vector2.Add(player.Position, Vector2.Multiply(knockBackAngle, 25));
+                    player.KnockBackLerpPath = new Vector2LerpPath(player.Position, knockBackPosition, 0.1);
                 }
             }
         }
