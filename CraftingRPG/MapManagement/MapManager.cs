@@ -6,12 +6,15 @@ using CraftingRPG.Constants;
 using CraftingRPG.Entities;
 using CraftingRPG.Enums;
 using CraftingRPG.Extensions;
+using CraftingRPG.GameStateManagement;
+using CraftingRPG.GameStateManagement.States;
 using CraftingRPG.Global;
 using CraftingRPG.InputManagement;
 using CraftingRPG.Interfaces;
 using CraftingRPG.LerpPath;
 using CraftingRPG.MapLoaders;
 using CraftingRPG.QuestManagement;
+using CraftingRPG.SoundManagement;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -142,15 +145,26 @@ public class MapManager
 
     public void Update(GameTime gameTime)
     {
-        Globals.Player.Update(gameTime);
+        var player = Globals.Player;
+        
+        player.Update(gameTime);
 
+        if (player.IsDead())
+        {
+            if (player.IsDeathAnimationOver())
+            {
+                SoundManager.Instance.PlaySong(Assets.Instance.GameOver02, false);
+                GameStateManager.Instance.PushState(new GameOverState());
+            }
+            return;
+        }
+        
         DetectAndHandleInput();
         DetectAndHandleMovement(gameTime);
         DetectAndHandleCollisions();
         DetectAndHandleDropPickupEvent();
         DetectAndHandleAttack();
 
-        Globals.Player.UpdateAnimation(gameTime);
         foreach (var enemy in CurrentMap.Enemies)
         {
             enemy.Update(gameTime);
@@ -158,8 +172,8 @@ public class MapManager
 
         UpdateDrops();
         CalculateCameraPosition();
-        Globals.Player.IsAboveDrop = IsPlayerAboveDropInstance(out var dropsBelowPlayer);
-        Globals.Player.DropsBelowPlayer = dropsBelowPlayer;
+        player.IsAboveDrop = IsPlayerAboveDropInstance(out var dropsBelowPlayer);
+        player.DropsBelowPlayer = dropsBelowPlayer;
     }
 
     public void AddDrop(IDropInstance drop)
@@ -395,6 +409,7 @@ public class MapManager
                     }
                     else
                     {
+                        Assets.Instance.EnemyDeath02.Play(0.3F, 0F, 0F);
                         var dropTable = inst.GetEnemyInfo().GetDropTable();
                         foreach (var possibleDrop in dropTable)
                         {
@@ -458,13 +473,20 @@ public class MapManager
                 {
                     // Player is hit!
                     player.InvulnerabilityTimer.Reset();
-                    player.HitPoints--;
+                    player.HitPoints -= 5;
                     Assets.Instance.Impact01.Play(0.4F, 0F, 0F);
 
-                    // Knockback
-                    var knockBackAngle = CustomMath.UnitVector(enemy.GetMovementVector());
-                    var knockBackPosition = Vector2.Add(player.Position, Vector2.Multiply(knockBackAngle, 25));
-                    player.KnockBackLerpPath = new Vector2LerpPath(player.Position, knockBackPosition, 0.1);
+                    if (!player.IsDead())
+                    {
+                        // Knockback
+                        var knockBackAngle = CustomMath.UnitVector(enemy.GetMovementVector());
+                        var knockBackPosition = Vector2.Add(player.Position, Vector2.Multiply(knockBackAngle, 25));
+                        player.KnockBackLerpPath = new Vector2LerpPath(player.Position, knockBackPosition, 0.1);
+                    }
+                    else
+                    {
+                        SoundManager.Instance.FadeOut(2.0);
+                    }
                 }
             }
         }
