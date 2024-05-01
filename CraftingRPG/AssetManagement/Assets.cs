@@ -36,9 +36,11 @@ public class Assets
     public SoundEffect MenuConfirmSfx01 { get; private set; }
     public SoundEffect Swoosh02 { get; private set; }
     public SoundEffect Impact01 { get; private set; }
+    public SoundEffect EnemyDeath02 { get; private set; }
     
     // Music
     public Song Field02 { get; private set; }
+    public Song GameOver02 { get; private set; }
     
     public void LoadAssets(ContentManager contentManager)
     {
@@ -69,10 +71,10 @@ public class Assets
         MenuConfirmSfx01 = contentManager.Load<SoundEffect>("sfx/Confirm_05");
         Swoosh02 = contentManager.Load<SoundEffect>("sfx/30_swoosh_03");
         Impact01 = contentManager.Load<SoundEffect>("sfx/09_Impact_01");
+        EnemyDeath02 = contentManager.Load<SoundEffect>("sfx/70_Enemy_death_02");
         
         // Music
         Field02 = contentManager.Load<Song>("music/field_theme_2");
+        GameOver02 = contentManager.Load<Song>("music/Game_Over_2");
     }
-
-
 }
