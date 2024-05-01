@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CraftingRPG.LerpPath;
+using Microsoft.Xna.Framework;
 
 namespace CraftingRPG.Interfaces;
 
@@ -10,4 +11,5 @@ public interface IEnemyInstance : IInstance
     public void Update(GameTime gameTime);
     public bool IsAttacking();
     public Rectangle GetAttackHitBox();
+    public void SetKnockBack(Vector2LerpPath knockBackPath);
 }
