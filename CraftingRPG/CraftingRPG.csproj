@@ -5,13 +5,13 @@
     <RollForward>Major</RollForward>
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
-    <Version>1.12.0</Version>
+    <Version>1.12.1</Version>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
-    <AssemblyVersion>1.12.0</AssemblyVersion>
-    <FileVersion>1.12.0</FileVersion>
+    <AssemblyVersion>1.12.1</AssemblyVersion>
+    <FileVersion>1.12.1</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Icon.ico" />
@@ -74,6 +74,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="keyconfig.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Tmx\enemy_template.tx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Tmx\fences.tsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
