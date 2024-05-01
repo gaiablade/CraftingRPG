@@ -2,7 +2,7 @@
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 
-namespace CraftingRPG.RecipeBookManagement;
+namespace CraftingRPG.RecipeManagement;
 
 public class RecipeBook
 {

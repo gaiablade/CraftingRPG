@@ -1,10 +1,10 @@
 ﻿using CraftingRPG.Interfaces;
 using CraftingRPG.Items;
 using CraftingRPG.PlayerStatistics;
-using CraftingRPG.Recipes;
 using CraftingRPG.QuestManagement;
 using CraftingRPG.QuestManagement.Quests;
-using CraftingRPG.RecipeBookManagement;
+using CraftingRPG.RecipeManagement;
+using CraftingRPG.RecipeManagement.Recipes;
 
 namespace CraftingRPG.Entities;
 

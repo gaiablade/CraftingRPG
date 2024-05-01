@@ -1,7 +1,6 @@
 ﻿using CraftingRPG.AssetManagement;
 using CraftingRPG.Enums;
 using CraftingRPG.InputManagement;
-using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 
 namespace CraftingRPG.GameStateManagement.States;
