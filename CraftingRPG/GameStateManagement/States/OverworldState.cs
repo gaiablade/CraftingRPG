@@ -7,6 +7,7 @@ using CraftingRPG.Global;
 using CraftingRPG.InputManagement;
 using CraftingRPG.Interfaces;
 using CraftingRPG.MapManagement;
+using CraftingRPG.SoundManagement;
 using CraftingRPG.Timers;
 using Microsoft.Xna.Framework;
 
