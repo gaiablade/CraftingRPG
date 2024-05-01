@@ -12,6 +12,7 @@ using CraftingRPG.GameStateManagement.States;
 using CraftingRPG.Global;
 using CraftingRPG.InputManagement;
 using CraftingRPG.MapManagement;
+using CraftingRPG.SoundManagement;
 
 namespace CraftingRPG
 {
@@ -24,6 +25,7 @@ namespace CraftingRPG
         public static Texture2D TileSet { get; private set; }
         public static Texture2D Pixel { get; private set; }
         public static Point Resolution { get; private set; }
+        public static Point ScreenCenter => Vector2.Divide(Resolution.ToVector2(), 2).ToPoint();
         public static PlayerInfo PlayerInfo { get; private set; }
         public static Dictionary<ItemId, IItem> ItemInfo { get; private set; }
         public static Point PlayerSpriteSize = new Point(48, 48);
@@ -90,6 +92,8 @@ namespace CraftingRPG
                 Exit();
 
             Time.Delta = gameTime.ElapsedGameTime.TotalSeconds;
+            
+            SoundManager.Instance.Update(gameTime);
 
             KeyboardState = Keyboard.GetState();
             InputManager.Instance.Update(KeyboardState, gameTime);
