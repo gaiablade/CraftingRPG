@@ -30,6 +30,7 @@ public class OverworldState : BaseState
         Player.Position = new Vector2(100, 100);
 
         MapManager.Instance.LoadDefaultMap();
+        SoundManager.Instance.PlaySong(Assets.Instance.Field02, true, 0.5F);
         
         DroppedItemLabelTimer = new EaseOutTimer(0.4, true);
         DroppedItemLabelTimer.Update(new GameTime(TimeSpan.Zero, TimeSpan.MaxValue));
