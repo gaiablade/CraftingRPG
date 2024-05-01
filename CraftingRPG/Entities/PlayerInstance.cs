@@ -7,6 +7,7 @@ using CraftingRPG.Interfaces;
 using CraftingRPG.LerpPath;
 using CraftingRPG.RecipeManagement.Recipes;
 using CraftingRPG.SpriteAnimation;
+using CraftingRPG.SpriteAnimation.CustomAnimations;
 using CraftingRPG.Timers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -63,6 +64,7 @@ public class PlayerInstance : IInstance
     private Animation AttackingSouthAnimation;
     private Animation AttackingNorthAnimation;
     private Animation AttackingSideAnimation;
+    private PlayerDeathAnimation DeathAnimation;
 
     private Animation CurrentAnimation;
     #endregion
@@ -83,6 +85,7 @@ public class PlayerInstance : IInstance
         AttackingSouthAnimation = new Animation(4, attackInterval, SpriteSize, false, 0, 288);
         AttackingSideAnimation = new Animation(4, attackInterval, SpriteSize, false, 0, 336);
         AttackingNorthAnimation = new Animation(4, attackInterval, SpriteSize, false, 0, 384);
+        DeathAnimation = new PlayerDeathAnimation();
         CurrentAnimation = IdleSouthAnimation;
         InvulnerabilityTimer = new LinearTimer(1.0);
         InvulnerabilityTimer.Set(1.0);
@@ -145,12 +148,18 @@ public class PlayerInstance : IInstance
 
     public void Update(GameTime gameTime)
     {
+        UpdateAnimation(gameTime);
         InvulnerabilityTimer.Update(gameTime);
         KnockBackLerpPath.Update(gameTime);
     }
 
     public void UpdateAnimation(GameTime gameTime)
     {
+        if (HitPoints <= 0)
+        {
+            CurrentAnimation = DeathAnimation;
+        }
+        
         if (IsAttacking && CurrentAnimation.IsAnimationOver())
         {
             IsAttacking = false;
@@ -274,4 +283,7 @@ public class PlayerInstance : IInstance
     {
         return Position.Y + GetSize().Y;
     }
+
+    public bool IsDead() => HitPoints <= 0;
+    public bool IsDeathAnimationOver() => DeathAnimation.IsAnimationOver();
 }
