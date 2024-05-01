@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -82,7 +83,14 @@ public class TiledMapLoader : IMapLoader
             foreach (var tiledObject in tiledObjectLayer.Objects)
             {
                 var mapObject = new MapObject();
-                mapObject.Id = GetMapObjectId(tiledObject.Properties["object_type"]);
+                var idFound = tiledObject.Properties.TryGetValue("object_type", out var id);
+                if (!idFound)
+                {
+                    throw new Exception(
+                        $"Property \"object_type\" not found on object at X = {tiledObject.X}, Y = {tiledObject.Y} ");
+                }
+
+                mapObject.Id = GetMapObjectId(id);
                 var tileSetNo = GetTileSetForGid(tiledObject.Tile.Gid, firstGlobalIdentifiers, tiledTileSets);
                 mapObject.TileSet = gameTileSets[tileSetNo];
                 mapObject.Width = (int)tiledObject.Width;
@@ -149,6 +157,8 @@ public class TiledMapLoader : IMapLoader
         {
             case "tree01":
                 return MapObjectId.Tree01;
+            case "tree02":
+                return MapObjectId.Tree02;
             case "crate01":
                 return MapObjectId.Crate01;
             case "log01":
@@ -167,6 +177,8 @@ public class TiledMapLoader : IMapLoader
                 return MapObjectId.Stone02;
             case "pot01":
                 return MapObjectId.Pot01;
+            case "fence01":
+                return MapObjectId.Fence01;
         }
 
         return MapObjectId.Bench01;
