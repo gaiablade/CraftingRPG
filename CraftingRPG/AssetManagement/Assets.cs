@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 
 namespace CraftingRPG.AssetManagement;
 
@@ -34,6 +35,10 @@ public class Assets
     public SoundEffect MenuHoverSfx01 { get; private set; }
     public SoundEffect MenuConfirmSfx01 { get; private set; }
     public SoundEffect Swoosh02 { get; private set; }
+    public SoundEffect Impact01 { get; private set; }
+    
+    // Music
+    public Song Field02 { get; private set; }
     
     public void LoadAssets(ContentManager contentManager)
     {
@@ -63,6 +68,10 @@ public class Assets
         MenuHoverSfx01 = contentManager.Load<SoundEffect>("sfx/Hover_04");
         MenuConfirmSfx01 = contentManager.Load<SoundEffect>("sfx/Confirm_05");
         Swoosh02 = contentManager.Load<SoundEffect>("sfx/30_swoosh_03");
+        Impact01 = contentManager.Load<SoundEffect>("sfx/09_Impact_01");
+        
+        // Music
+        Field02 = contentManager.Load<Song>("music/field_theme_2");
     }
 
 
