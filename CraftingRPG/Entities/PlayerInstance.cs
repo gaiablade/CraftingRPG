@@ -4,6 +4,7 @@ using CraftingRPG.Constants;
 using CraftingRPG.Enums;
 using CraftingRPG.Graphics;
 using CraftingRPG.Interfaces;
+using CraftingRPG.LerpPath;
 using CraftingRPG.RecipeManagement.Recipes;
 using CraftingRPG.SpriteAnimation;
 using CraftingRPG.Timers;
@@ -35,6 +36,8 @@ public class PlayerInstance : IInstance
 
     public ITimer InvulnerabilityTimer { get; private set; }
     public int HitPoints { get; set; }
+
+    public Vector2LerpPath KnockBackLerpPath { get; set; } = new(Vector2.Zero, Vector2.Zero, 0);
     #endregion
     
     public Vector2 MovementVector;
@@ -126,9 +129,25 @@ public class PlayerInstance : IInstance
         return CurrentAnimation.GetSourceRectangle();
     }
 
-    public Vector2 GetMovementVector() => MovementVector;
+    public Vector2 GetMovementVector()
+    {
+        if (!KnockBackLerpPath.IsDone())
+        {
+            var lerpPosition = KnockBackLerpPath.GetLerpedValue();
+            var knockBackMovementVector = Vector2.Subtract(lerpPosition, Position);
+            return knockBackMovementVector;
+        }
+
+        return MovementVector;
+    }
 
     public Vector2 SetPosition(Vector2 position) => Position = position;
+
+    public void Update(GameTime gameTime)
+    {
+        InvulnerabilityTimer.Update(gameTime);
+        KnockBackLerpPath.Update(gameTime);
+    }
 
     public void UpdateAnimation(GameTime gameTime)
     {

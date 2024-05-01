@@ -57,6 +57,8 @@ public class GreenSlimeInstance : BaseEnemyInstance
             > 0 => Direction.Right,
             _ => FacingDirection
         };
+        
+        base.Update(gameTime);
     }
 
     public override bool IsAttacking() => Behavior.GetBehaviorState() == SlimeActorBehaviorState.Attacking;

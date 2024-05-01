@@ -112,6 +112,12 @@
 /processorParam:TextureFormat=Compressed
 /build:fonts/toriko-15.spritefont
 
+#begin music/field_theme_2.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:music/field_theme_2.wav
+
 #begin sfx/004_Hover_04.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -123,6 +129,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sfx/015_Confirm_05.wav;sfx/Confirm_05.wav
+
+#begin sfx/09_Impact_01.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sfx/09_Impact_01.wav
 
 #begin sfx/24_Pierce_01.wav
 /importer:WavImporter
