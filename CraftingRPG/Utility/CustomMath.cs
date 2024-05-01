@@ -15,4 +15,9 @@ public static class CustomMath
         var magnitude = (float)Math.Sqrt(Math.Pow(v.X, 2) + Math.Pow(v.Y, 2));
         return new Vector2(v.X / magnitude, v.Y / magnitude);
     }
+
+    public static double Lerp(double x, double y, double t)
+    {
+        return x + (y - x) * Math.Clamp(t, 0, 1);
+    }
 }
