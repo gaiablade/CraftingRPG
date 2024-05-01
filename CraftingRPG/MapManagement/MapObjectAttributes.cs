@@ -24,6 +24,7 @@ public class MapObjectAttributes
                 attr.CollisionRectangle.Size = new Point(32, 16);
                 break;
             case MapObjectId.Tree01:
+            case MapObjectId.Tree02:
                 attr.CollisionRectangle = new Rectangle(new Point(12, 43), new Point(24, 15));
                 break;
         }

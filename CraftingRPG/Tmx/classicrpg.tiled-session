@@ -1,0 +1,94 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "map1.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "chest_01.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "decor_16x16.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "decor_8x8.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "grass.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map1.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 351.33333333333326,
+                "y": 335.33333333333326
+            }
+        },
+        "map2.tmx": {
+            "scale": 1.3240625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 320.2265754071277,
+                "y": 320.2265754071277
+            }
+        },
+        "objects.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "objects_32x16.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "objects_48x48.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 5.5
+        },
+        "objects_48x64.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "plains.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 4
+        }
+    },
+    "last.imagePath": "C:/Users/cgand/OneDrive/Documents/Game Dev/Assets/mystic_woods_2.1/sprites/tilesets",
+    "last.objectTemplatePath": "C:/Users/cgand/OneDrive/Documents/Crafting RPG Tiled Project",
+    "map.height": 40,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 40,
+    "openFiles": [
+        "map1.tmx"
+    ],
+    "project": "classicrpg.tiled-project",
+    "property.type": "string",
+    "recentFiles": [
+        "map1.tmx",
+        "map2.tmx",
+        "objects_32x16.tsx",
+        "plains.tsx",
+        "objects_48x64.tsx",
+        "objects.tsx",
+        "grass.tsx",
+        "objects_48x48.tsx",
+        "decor_8x8.tsx",
+        "chest_01.tsx",
+        "decor_16x16.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}

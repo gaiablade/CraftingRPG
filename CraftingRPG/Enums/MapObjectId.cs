@@ -3,6 +3,7 @@ namespace CraftingRPG.Enums;
 public enum MapObjectId
 {
     Tree01,
+    Tree02,
     Crate01,
     Log01,
     Log02,
@@ -11,5 +12,6 @@ public enum MapObjectId
     Bench01,
     Stone01,
     Stone02,
-    Pot01
+    Pot01,
+    Fence01
 }
