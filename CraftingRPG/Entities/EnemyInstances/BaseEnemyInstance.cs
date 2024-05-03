@@ -1,7 +1,6 @@
 using CraftingRPG.AssetManagement;
 using CraftingRPG.Graphics;
 using CraftingRPG.Interfaces;
-using CraftingRPG.Lerpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -18,7 +17,7 @@ public abstract class BaseEnemyInstance : IEnemyInstance
     protected int HitPoints { get; set; }
     protected double Depth { get; set; }
     protected Texture2D SpriteSheet { get; set; }
-    protected Vector2Lerper KnockBackPath { get; set; }
+    protected ILerper<Vector2> KnockBackPath { get; set; }
 
     public abstract RectangleF GetCollisionBox();
     public abstract SpriteDrawingData GetDrawingData();
@@ -51,7 +50,7 @@ public abstract class BaseEnemyInstance : IEnemyInstance
     public abstract bool IsAttacking();
     public abstract Rectangle GetAttackHitBox();
 
-    public virtual void SetKnockBack(Vector2Lerper knockBackPath) => KnockBackPath = knockBackPath;
+    public virtual void SetKnockBack(ILerper<Vector2> knockBackPath) => KnockBackPath = knockBackPath;
     public virtual Vector2 GetAttackAngle()
     {
         return Vector2.One;

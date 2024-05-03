@@ -391,7 +391,7 @@ public class MapManager
                 IgnoreLoadingZone = true;
                 break;
             case MapManagerState.TransitioningIn:
-                TransitionInLerper = new FloatLerper(1F, 0F, 1.0);
+                TransitionInLerper = new LinearFloatLerper(1F, 0F, 1.0);
                 break;
         }
     }
@@ -426,8 +426,8 @@ public class MapManager
             ScreenFadeTimer = new LinearTimer(1),
             MoveOut = loadingZone.MoveOut,
             MoveIn = loadingZone.MoveIn,
-            MoveOutLerper = new Vector2Lerper(player.GetPosition(), player.GetPosition() + moveOutDestination, 1),
-            MoveInLerper = new Vector2Lerper(loadingZone.ToPosition + moveInSource, loadingZone.ToPosition, 1)
+            MoveOutLerper = new LinearVector2Lerper(player.GetPosition(), player.GetPosition() + moveOutDestination, 1),
+            MoveInLerper = new LinearVector2Lerper(loadingZone.ToPosition + moveInSource, loadingZone.ToPosition, 1)
         };
     }
 

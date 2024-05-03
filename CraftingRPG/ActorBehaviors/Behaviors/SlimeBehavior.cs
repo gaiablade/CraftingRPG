@@ -2,7 +2,6 @@ using System;
 using CraftingRPG.AssetManagement;
 using CraftingRPG.Global;
 using CraftingRPG.Interfaces;
-using CraftingRPG.Lerpers;
 using CraftingRPG.SpriteAnimation;
 using CraftingRPG.Timers;
 using CraftingRPG.Utility;
@@ -51,7 +50,7 @@ public class SlimeBehavior : BaseBehavior
     private Vector2 AttackAngle;
 
     // KnockBack
-    private Vector2Lerper KnockBackPath;
+    private ILerper<Vector2> KnockBackPath;
     private bool IsKnockedBack = false;
 
     public SlimeBehavior()
@@ -275,7 +274,7 @@ public class SlimeBehavior : BaseBehavior
 
     public Vector2 GetAttackAngle() => AttackAngle;
 
-    public void SetKnockBackPath(Vector2Lerper path)
+    public void SetKnockBackPath(ILerper<Vector2> path)
     {
         KnockBackPath = path;
         IsKnockedBack = true;

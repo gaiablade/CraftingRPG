@@ -39,7 +39,7 @@ public class PlayerInstance : IInstance
     public ITimer InvulnerabilityTimer { get; private set; }
     public int HitPoints { get; set; }
 
-    public Vector2Lerper KnockBackLerper { get; set; } = new(Vector2.Zero, Vector2.Zero, 0);
+    public ILerper<Vector2> KnockBackLerper { get; set; } = new LinearVector2Lerper(Vector2.Zero, Vector2.Zero, 0);
     #endregion
     
     public Vector2 MovementVector;
