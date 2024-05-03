@@ -9,6 +9,7 @@ using CraftingRPG.SoundManagement;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 
 namespace CraftingRPG
 {
@@ -21,7 +22,6 @@ namespace CraftingRPG
         public static Point Resolution { get; private set; }
         public static Rectangle WindowBounds { get; private set; }
         public static Point ScreenCenter => Vector2.Divide(Resolution.ToVector2(), 2).ToPoint();
-        // public static Dictionary<ItemId, IItem> ItemInfo { get; private set; }
         public static Point PlayerSpriteSize = new Point(48, 48);
 
         public static GameStateManager StateManager { get; private set; } = GameStateManager.Instance;
@@ -42,24 +42,10 @@ namespace CraftingRPG
             Resolution = new Point(GraphicsDevice.PresentationParameters.BackBufferWidth,
                 GraphicsDevice.PresentationParameters.BackBufferHeight);
             WindowBounds = new Rectangle(Point.Zero, Resolution);
+            Globals.Camera = new OrthographicCamera(GraphicsDevice);
 
             Pixel = new Texture2D(GraphicsDevice, 1, 1);
             Pixel.SetData(new[] { Color.White });
-
-            // ItemInfo = new Dictionary<ItemId, IItem>
-            // {
-            //     { ItemId.EmptyBottle, new EmptyBottleItem() },
-            //     { ItemId.HealingMushroom, new HealingMushroomItem() },
-            //     { ItemId.HeartyFlower, new HeartyFlowerItem() },
-            //     { ItemId.SmallHealthPotion, new SmallHealthPotionItem() },
-            //     { ItemId.MediumHealthPotion, new MediumHealthPotionItem() },
-            //     { ItemId.IronSword, new IronSwordItem() },
-            //     { ItemId.IronChunk, new IronChunkItem() },
-            //     { ItemId.IronHelmet, new IronHelmetItem() },
-            //     { ItemId.IronBand, new IronBandItem() },
-            //     { ItemId.ArcaneFlower, new ArcaneFlowerItem() },
-            //     { ItemId.MageBracelet, new MageBraceletItem() },
-            // };
 
             Globals.PlayerInfo = new PlayerInfo();
             Globals.Player = new PlayerInstance(Globals.PlayerInfo);
@@ -76,7 +62,7 @@ namespace CraftingRPG
             MapManager.Instance.LoadMapsFromContents(this.Content);
             Assets.Instance.LoadAssets(this.Content);
 
-            StateManager.PushState<OverWorldGameState>(true);
+            StateManager.PushState<MainMenuGameState>(true);
         }
 
         protected override void Update(GameTime gameTime)

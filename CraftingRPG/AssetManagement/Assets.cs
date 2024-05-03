@@ -20,6 +20,7 @@ public class Assets
     public Texture2D PaperNoteSpriteSheet { get; private set; }
     public Texture2D WoodCursorSpriteSheet { get; private set; }
     public Texture2D PlayerSpriteSheet { get; set; }
+    public Texture2D TitleUi { get; set; }
     
     // Fonts //
     public SpriteFont Toriko10 { get; private set; }
@@ -55,6 +56,7 @@ public class Assets
         PaperNoteSpriteSheet = contentManager.Load<Texture2D>("textures/UI_Papernote_Spritesheet");
         WoodCursorSpriteSheet = contentManager.Load<Texture2D>("textures/Spritesheet_UI_Wood_Animation_Select_01");
         PlayerSpriteSheet = contentManager.Load<Texture2D>("textures/player");
+        TitleUi = contentManager.Load<Texture2D>("textures/title_background");
         
         // Fonts
         Toriko10 = contentManager.Load<SpriteFont>("fonts/toriko-10");

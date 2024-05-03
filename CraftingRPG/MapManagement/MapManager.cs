@@ -26,7 +26,8 @@ public class MapManager
     private readonly string[] MapsToLoad =
     {
         "Tmx/map1.tmx",
-        "Tmx/map2.tmx"
+        "Tmx/map2.tmx",
+        "Tmx/map3.tmx"
     };
 
     #endregion
@@ -215,9 +216,13 @@ public class MapManager
         else if (State == MapManagerState.TransitioningOut)
         {
             CalculateCameraPosition();
-            
+
             QueuedMapTransition.ScreenFadeTimer.Update(gameTime);
-            if (QueuedMapTransition.ScreenFadeTimer.IsDone())
+            QueuedMapTransition.MoveOutLerper.Update(gameTime);
+
+            Globals.Player.SetPosition(QueuedMapTransition.MoveOutLerper.GetLerpedValue());
+
+            if (QueuedMapTransition.ScreenFadeTimer.IsDone() && QueuedMapTransition.MoveOutLerper.IsDone())
             {
                 SwitchMap();
                 SetState(MapManagerState.TransitioningIn);
@@ -226,9 +231,13 @@ public class MapManager
         else if (State == MapManagerState.TransitioningIn)
         {
             CalculateCameraPosition();
-            
+
+            QueuedMapTransition.MoveInLerper.Update(gameTime);
             TransitionInLerper.Update(gameTime);
-            if (TransitionInLerper.IsDone())
+
+            Globals.Player.SetPosition(QueuedMapTransition.MoveInLerper.GetLerpedValue());
+
+            if (TransitionInLerper.IsDone() && QueuedMapTransition.MoveInLerper.IsDone())
             {
                 SetState(MapManagerState.Normal);
             }
@@ -364,8 +373,7 @@ public class MapManager
 
                 if (playerCollider.Intersects(loadingZoneCollider))
                 {
-                    var map = Maps[loadingZone.ToMap];
-                    QueueMapTransition(map, loadingZone.ToPosition);
+                    QueueMapTransition(loadingZone);
                 }
             }
         }
@@ -388,14 +396,38 @@ public class MapManager
         }
     }
 
-    private void QueueMapTransition(GameMap map, Vector2 position)
+    private void QueueMapTransition(LoadingZone loadingZone)
     {
         SetState(MapManagerState.TransitioningOut);
+        var player = Globals.Player;
+
+        var moveOutDestination = loadingZone.MoveOut switch
+        {
+            Direction.Up => new Vector2(0, -32),
+            Direction.Down => new Vector2(0, 32),
+            Direction.Left => new Vector2(-32, 0),
+            Direction.Right => new Vector2(32, 0),
+            _ => Vector2.Zero
+        };
+
+        var moveInSource = loadingZone.MoveIn switch
+        {
+            Direction.Up => new Vector2(0, 32),
+            Direction.Down => new Vector2(0, -32),
+            Direction.Left => new Vector2(32, 0),
+            Direction.Right => new Vector2(-32, 0),
+            _ => Vector2.Zero
+        };
+
         QueuedMapTransition = new MapTransition
         {
-            Map = map,
-            ToPosition = position,
-            ScreenFadeTimer = new LinearTimer(1)
+            Map = Maps[loadingZone.ToMap],
+            ToPosition = loadingZone.ToPosition,
+            ScreenFadeTimer = new LinearTimer(1),
+            MoveOut = loadingZone.MoveOut,
+            MoveIn = loadingZone.MoveIn,
+            MoveOutLerper = new Vector2Lerper(player.GetPosition(), player.GetPosition() + moveOutDestination, 1),
+            MoveInLerper = new Vector2Lerper(loadingZone.ToPosition + moveInSource, loadingZone.ToPosition, 1)
         };
     }
 
@@ -418,7 +450,11 @@ public class MapManager
     {
         public GameMap Map { get; set; }
         public Vector2 ToPosition { get; set; }
+        public int MoveOut { get; set; }
+        public int MoveIn { get; set; }
 
         public ITimer ScreenFadeTimer { get; set; }
+        public ILerper<Vector2> MoveOutLerper { get; set; }
+        public ILerper<Vector2> MoveInLerper { get; set; }
     }
 }

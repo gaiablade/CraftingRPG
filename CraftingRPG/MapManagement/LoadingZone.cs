@@ -8,6 +8,8 @@ public class LoadingZone
     public Vector2 ToPosition { get; set; }
     public Point Position { get; set; }
     public Point Size { get; set; }
+    public int MoveOut { get; set; }
+    public int MoveIn { get; set; }
 
     public Rectangle GetCollider() => new(Position, Size);
 }

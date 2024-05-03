@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CraftingRPG.Constants;
 using CraftingRPG.Entities.EnemyInstances;
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
@@ -145,6 +146,32 @@ public class TiledMapLoader : IMapLoader
                     Size = new Point((int)tiledLoadingZone.Width, (int)tiledLoadingZone.Height),
                     Position = new Point((int)tiledLoadingZone.X, (int)tiledLoadingZone.Y)
                 };
+
+                var moveOutFound = tiledLoadingZone.Properties.TryGetValue("moveOut", out var moveOut);
+                var moveInFound = tiledLoadingZone.Properties.TryGetValue("moveIn", out var moveIn);
+                if (moveOutFound)
+                {
+                    loadingZone.MoveOut = moveOut switch
+                    {
+                        "west" => Direction.Left,
+                        "east" => Direction.Right,
+                        "north" => Direction.Up,
+                        "south" => Direction.Down,
+                        _ => Direction.Up
+                    };
+                }
+                if (moveInFound)
+                {
+                    loadingZone.MoveIn = moveIn switch
+                    {
+                        "west" => Direction.Left,
+                        "east" => Direction.Right,
+                        "north" => Direction.Up,
+                        "south" => Direction.Down,
+                        _ => Direction.Up
+                    };
+                }
+                
                 loadingZones.Add(loadingZone);
             }
         }
