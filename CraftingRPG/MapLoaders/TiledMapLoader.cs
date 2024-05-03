@@ -24,9 +24,10 @@ public class TiledMapLoader : IMapLoader
 
         var tiledTileSets = tmxMap.Tilesets;
         var tiledTileLayers = tmxMap.Layers;
-        var tiledObjectLayers = tmxMap.ObjectGroups.Where(x => x.Name != "Enemies");
+        var tiledObjectLayers = tmxMap.ObjectGroups.Where(x => x.Name != "Enemies" && x.Name != "Loading Zones");
         var tiledMapProperties = tmxMap.Properties;
         var tiledEnemyLayers = tmxMap.ObjectGroups.Where(x => x.Name == "Enemies");
+        var tiledLoadingZoneLayers = tmxMap.ObjectGroups.Where(x => x.Name == "Loading Zones");
 
         var firstGlobalIdentifiers = tiledTileSets
             .Select(x => x.FirstGid)
@@ -61,6 +62,7 @@ public class TiledMapLoader : IMapLoader
             var tiles = new List<Tile>();
             foreach (var tiledTile in tiledTileLayer.Tiles)
             {
+                if (tiledTile.Gid == 0) continue;
                 var tile = new Tile();
                 var tileSetNo = GetTileSetForGid(tiledTile.Gid, firstGlobalIdentifiers, tiledTileSets);
                 tile.X = tiledTile.X;
@@ -129,10 +131,29 @@ public class TiledMapLoader : IMapLoader
             }
         }
 
+        var loadingZones = new List<LoadingZone>();
+        foreach (var loadingZoneLayer in tiledLoadingZoneLayers)
+        {
+            foreach (var tiledLoadingZone in loadingZoneLayer.Objects)
+            {
+                var x = float.Parse(tiledLoadingZone.Properties["toX"]);
+                var y = float.Parse(tiledLoadingZone.Properties["toY"]);
+                var loadingZone = new LoadingZone
+                {
+                    ToMap = tiledLoadingZone.Properties["map"],
+                    ToPosition = new Vector2(x, y),
+                    Size = new Point((int)tiledLoadingZone.Width, (int)tiledLoadingZone.Height),
+                    Position = new Point((int)tiledLoadingZone.X, (int)tiledLoadingZone.Y)
+                };
+                loadingZones.Add(loadingZone);
+            }
+        }
+
         gameMap.TileSets = gameTileSets;
         gameMap.TileLayers = gameTileLayers;
         gameMap.ObjectLayers = objectLayers;
         gameMap.Enemies = enemies;
+        gameMap.LoadingZones = loadingZones;
 
         return gameMap;
     }
