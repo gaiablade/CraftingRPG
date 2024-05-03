@@ -24,7 +24,7 @@ public class KeybindingsGameState : BaseGameState
         BackgroundFadeLerper = new LinearFloatLerper(0F, 0.75F, 0.5);
     }
 
-    public override void DrawUI()
+    public override void DrawUi()
     {
         var position = MenuPositionLerper.GetLerpedValue();
         

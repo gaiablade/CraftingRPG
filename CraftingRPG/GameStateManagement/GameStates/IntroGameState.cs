@@ -56,7 +56,7 @@ public class IntroGameState : BaseGameState
             lastY = 20 + (lineHeight + 5) * i;
             GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
                 line,
-                new Vector2(GameManager.Resolution.X / 2 - lineSize.X / 2, lastY),
+                new Vector2(GameManager.Resolution.X / 2F - lineSize.X / 2, lastY),
                 Color.White);
             i++;
         }
@@ -65,11 +65,11 @@ public class IntroGameState : BaseGameState
         var pressEnterSize = Assets.Instance.Monogram24.MeasureString(pressEnter);
         GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
             pressEnter,
-            new Vector2(GameManager.Resolution.X / 2 - pressEnterSize.X / 2, lastY + (GameManager.Resolution.Y - lastY) / 2 - pressEnterSize.Y / 2),
+            new Vector2(GameManager.Resolution.X / 2F - pressEnterSize.X / 2, lastY + (GameManager.Resolution.Y - lastY) / 2 - pressEnterSize.Y / 2),
             Color.Orange);
     }
 
-    public override void DrawUI()
+    public override void DrawUi()
     {
     }
 

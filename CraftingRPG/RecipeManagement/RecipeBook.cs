@@ -6,21 +6,15 @@ namespace CraftingRPG.RecipeManagement;
 
 public class RecipeBook
 {
-    public Dictionary<RecipeId, IRecipe> Recipes { get; private set; }
-    public Dictionary<RecipeId, int> NumberCrafted { get; private set; }
+    public Dictionary<RecipeId, IRecipe> Recipes { get; private set; } = new();
+    public Dictionary<RecipeId, int> NumberCrafted { get; private set; } = new();
 
-    public RecipeBook()
+    public bool HasRecipe(RecipeId id) => Recipes.ContainsKey(id);
+
+    public void AddRecipe(RecipeId id, IRecipe recipe)
     {
-        Recipes = new Dictionary<RecipeId, IRecipe>();
-        NumberCrafted = new Dictionary<RecipeId, int>();
-    }
-
-    public bool HasRecipe(RecipeId Id) => Recipes.ContainsKey(Id);
-
-    public void AddRecipe(RecipeId Id, IRecipe Recipe)
-    {
-        Recipes.Add(Id, Recipe);
-        NumberCrafted.Add(Id, 0);
+        Recipes.Add(id, recipe);
+        NumberCrafted.Add(id, 0);
     }
 
     public void AddRecipe(IRecipe recipe)

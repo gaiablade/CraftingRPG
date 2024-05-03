@@ -21,7 +21,7 @@ public class MainMenuGameState : BaseGameState
     {
     }
 
-    public override void DrawUI()
+    public override void DrawUi()
     {
         GameManager.SpriteBatch.Draw(Assets.Instance.TitleUi,
             GameManager.WindowBounds,

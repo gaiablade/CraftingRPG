@@ -63,12 +63,12 @@ public class OverWorldGameState : BaseGameState
         DrawMap();
     }
 
-    public override void DrawUI()
+    public override void DrawUi()
     {
         MapManager.Instance.DrawUi();
 
         var windowBounds = GameManager.WindowBounds;
-        var woodUi = Assets.Instance.WoodUISpriteSheet;
+        var woodUi = Assets.Instance.WoodUiSpriteSheet;
 
         var position = (int)Label.Lerper.GetLerpedValue();
 
@@ -471,7 +471,7 @@ public class OverWorldGameState : BaseGameState
         }
 
         movingInstances.AddRange(MapManager.Instance.GetEnemyInstances()
-            .Where(enemy => enemy.GetMovementVector() != Vector2.Zero).Cast<IInstance>());
+            .Where(enemy => enemy.GetMovementVector() != Vector2.Zero));
 
         return movingInstances;
     }

@@ -104,7 +104,7 @@ namespace CraftingRPG
             
             foreach (var state in StateManager.States.Reverse())
             {
-                state.DrawUI();
+                state.DrawUi();
             }
             
             SpriteBatch.End();

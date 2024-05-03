@@ -13,7 +13,7 @@ public abstract class BaseGameState : IGameState
     {
     }
 
-    public virtual void DrawUI()
+    public virtual void DrawUi()
     {
     }
 }

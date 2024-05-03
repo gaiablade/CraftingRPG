@@ -42,12 +42,11 @@ public class MapManager
     private List<IDropInstance> Drops = new();
     private List<Vector2> DropInitialPositions = new();
     private List<int> DropHoverTimers = new();
-    private List<IEnemyInstance> AttackedEnemies = new();
 
     private MapManagerState State = MapManagerState.Normal;
-    private MapTransition QueuedMapTransition = null;
-    private bool IgnoreLoadingZone = false;
-    private ILerper<float> TransitionInLerper = null;
+    private MapTransition QueuedMapTransition;
+    private bool IgnoreLoadingZone;
+    private ILerper<float> TransitionInLerper;
 
     #region Getters/Setters
 
@@ -126,13 +125,16 @@ public class MapManager
                     spriteData.Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
                     0F);
 
+                #pragma warning disable CS0162 // Unreachable code detected
                 if (Flags.DebugShowEnemyHitBoxes && enemyInstance.IsAttacking())
                 {
                     GameManager.SpriteBatch.Draw(GameManager.Pixel,
                         enemyInstance.GetAttackHitBox(),
                         Color.Red);
                 }
+                #pragma warning restore CS0162 // Unreachable code detected
             }
+            
             else if (instance is MapObject mapObject)
             {
                 GameManager.SpriteBatch.Draw(mapObject.TileSet.SpriteSheetTexture,
@@ -308,8 +310,8 @@ public class MapManager
 
         var cameraPos = Vector2.Zero;
         // Center the player
-        cameraPos.X = player.Position.X + player.GetSize().X / 2;
-        cameraPos.Y = player.Position.Y + player.GetSize().Y / 2;
+        cameraPos.X = player.Position.X + player.GetSize().X / 2F;
+        cameraPos.Y = player.Position.Y + player.GetSize().Y / 2F;
 
         if (cameraPos.X - x.Width / 2 < 0)
         {

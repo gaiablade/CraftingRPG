@@ -6,7 +6,7 @@ namespace CraftingRPG.GameStateManagement.GameStates;
 
 public class GameOverGameState : BaseGameState
 {
-    public override void DrawUI()
+    public override void DrawUi()
     {
         var textData = Assets.Instance.Monogram24.GetDrawingData("GAME OVER");
         var screenCenter = GameManager.ScreenCenter;
@@ -14,6 +14,6 @@ public class GameOverGameState : BaseGameState
         GameManager.SpriteBatch.DrawTextDrawingData(textData,
             position,
             Color.Red);
-        base.DrawUI();
+        base.DrawUi();
     }
 }

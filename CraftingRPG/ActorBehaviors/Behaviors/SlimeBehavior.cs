@@ -43,7 +43,7 @@ public class SlimeBehavior : BaseBehavior
     public Animation CurrentAnimation { get; private set; }
 
     // Attacking
-    private bool AttackSoundPlayed = false;
+    private bool AttackSoundPlayed;
     private Vector2 AttackTarget = Vector2.Zero;
     private BehaviorPath AttackPath;
     private ITimer AttackTimer;
@@ -51,7 +51,7 @@ public class SlimeBehavior : BaseBehavior
 
     // KnockBack
     private ILerper<Vector2> KnockBackPath;
-    private bool IsKnockedBack = false;
+    private bool IsKnockedBack;
 
     public SlimeBehavior()
     {

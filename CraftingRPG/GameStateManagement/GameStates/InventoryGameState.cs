@@ -16,16 +16,9 @@ public class InventoryGameState : BaseGameState
 {
     private const int NumberOfColumns = 5;
 
-    private int ActiveTab = 0;
     private int Cursor;
 
     private Point CursorGridPosition => new Point(Cursor % NumberOfColumns, Cursor / NumberOfColumns);
-
-    // Drawing constants
-    private readonly int CenterX = GameManager.Resolution.X / 2;
-    private readonly int ItemWidthAndGap = 32 + 30;
-    private readonly int ItemHeightAndGap = 32 + 10;
-    private readonly int GridTop = 150;
 
     private ITimer TransitionTimer;
     private double MenuPosition;
@@ -43,7 +36,7 @@ public class InventoryGameState : BaseGameState
     {
     }
 
-    public override void DrawUI()
+    public override void DrawUi()
     {
         var percent = TransitionTimer.GetPercent();
         MenuPosition = percent * GameManager.Resolution.Y - GameManager.Resolution.Y;

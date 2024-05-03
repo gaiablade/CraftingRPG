@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Items;
 

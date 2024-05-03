@@ -13,7 +13,7 @@ public class Animation : IAnimation
     protected int CurrentAnimationFrame;
     protected readonly Point StartingPosition;
     protected double FrameTimer;
-    protected bool IsOver = false;
+    protected bool IsOver;
     
     public Animation(int frames, double interval, Point size, bool loop = true, int x = 0, int y = 0)
     {

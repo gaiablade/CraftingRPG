@@ -28,7 +28,7 @@ public class PlayerInstance : IInstance
     #endregion
     
     #region Public Getters/Setters
-    public Vector2 Position = new Vector2();
+    public Vector2 Position;
     public Vector2 Center => Vector2.Add(Position, new Vector2(24, 36));
 
     public int FacingDirection { get; set; } = Direction.Down;
@@ -50,8 +50,8 @@ public class PlayerInstance : IInstance
     private int PreviousFacingDirection;
     private int CurrentFacingDirection = Direction.Down;
     
-    private bool PreviousIsAttacking = false;
-    private bool CurrentIsAttacking = false;
+    private bool PreviousIsAttacking;
+    private bool CurrentIsAttacking;
     
     private bool PreviousIsWalking;
     private bool CurrentIsWalking;
@@ -77,7 +77,7 @@ public class PlayerInstance : IInstance
         const double attackInterval = 0.1;
         
         Info = info;
-        IdleSouthAnimation = new Animation(6, idleInterval, SpriteSize, true, 0, 0);
+        IdleSouthAnimation = new Animation(6, idleInterval, SpriteSize);
         IdleSideAnimation = new Animation(6, idleInterval, SpriteSize, true, 0, 48);
         IdleNorthAnimation = new Animation(6, idleInterval, SpriteSize, true, 0, 96);
         WalkingSouthAnimation = new Animation(6, walkInterval, SpriteSize, true, 0, 144);
@@ -102,7 +102,7 @@ public class PlayerInstance : IInstance
     public Vector2 GetPosition() => Position;
 
     public Point GetSize() => Size;
-    public Rectangle GetBounds() => new Rectangle((int)Position.X, (int)Position.Y, (int)GetSize().X, (int)GetSize().Y);
+    public Rectangle GetBounds() => new Rectangle((int)Position.X, (int)Position.Y, GetSize().X, GetSize().Y);
 
     public RectangleF GetCollisionBox() => new(new Point2(Position.X + 18, Position.Y + 22), new Size2(13, 19));
     public SpriteDrawingData GetDrawingData()

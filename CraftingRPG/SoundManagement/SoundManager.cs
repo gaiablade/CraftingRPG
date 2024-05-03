@@ -12,7 +12,7 @@ public class SoundManager
     public static SoundManager Instance = new();
 
     private Song CurrentSong;
-    private bool IsSongFading = false;
+    private bool IsSongFading;
     private ITimer FadeTimer;
 
     public Song GetCurrentSong() => CurrentSong;
