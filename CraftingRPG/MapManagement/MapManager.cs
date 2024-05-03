@@ -7,7 +7,9 @@ using CraftingRPG.Entities;
 using CraftingRPG.Extensions;
 using CraftingRPG.Global;
 using CraftingRPG.Interfaces;
+using CraftingRPG.Lerpers;
 using CraftingRPG.MapLoaders;
+using CraftingRPG.Timers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,17 +20,22 @@ namespace CraftingRPG.MapManagement;
 public class MapManager
 {
     public static readonly MapManager Instance = new();
-    
+
     #region Constants
+
     private readonly string[] MapsToLoad =
     {
-        "Tmx/map1.tmx"
+        "Tmx/map1.tmx",
+        "Tmx/map2.tmx"
     };
+
     #endregion
-    
+
     #region Loaded Maps
+
     private Dictionary<string, GameMap> Maps = new();
     private GameMap CurrentMap;
+
     #endregion
 
     private List<IDropInstance> Drops = new();
@@ -36,7 +43,13 @@ public class MapManager
     private List<int> DropHoverTimers = new();
     private List<IEnemyInstance> AttackedEnemies = new();
 
+    private MapManagerState State = MapManagerState.Normal;
+    private MapTransition QueuedMapTransition = null;
+    private bool IgnoreLoadingZone = false;
+    private ILerper<float> TransitionInLerper = null;
+
     #region Getters/Setters
+
     public GameMap GetMap(string key) => Maps[key];
     public GameMap GetCurrentMap() => CurrentMap;
     public IList<IEnemyInstance> GetEnemyInstances() => CurrentMap.Enemies;
@@ -50,6 +63,7 @@ public class MapManager
         DropInitialPositions.RemoveAt(i);
         DropHoverTimers.RemoveAt(i);
     }
+
     #endregion
 
     #region Public Methods
@@ -141,7 +155,7 @@ public class MapManager
         }
     }
 
-    public void DrawUI()
+    public void DrawUi()
     {
         var stringData =
             Assets.Instance.Monogram24.GetDrawingData(
@@ -155,29 +169,68 @@ public class MapManager
         GameManager.SpriteBatch.DrawTextDrawingData(stringData,
             new Vector2(10, 30),
             Color.White);
+
+        if (State == MapManagerState.TransitioningOut)
+        {
+            GameManager.SpriteBatch.Draw(GameManager.Pixel,
+                GameManager.WindowBounds,
+                Color.Black * (float)QueuedMapTransition.ScreenFadeTimer.GetPercent());
+        }
+        else if (State == MapManagerState.TransitioningIn)
+        {
+            GameManager.SpriteBatch.Draw(GameManager.Pixel,
+                GameManager.WindowBounds,
+                Color.Black * TransitionInLerper.GetLerpedValue());
+        }
     }
 
     public void Update(GameTime gameTime)
     {
-        CalculateCameraPosition();
-
-        UpdateDrops();
-        Globals.Player.IsAboveDrop = IsPlayerAboveDropInstance(out var dropsBelowPlayer);
-        Globals.Player.DropsBelowPlayer = dropsBelowPlayer;
-        
-        for (var i = 0; i < Drops.Count - 1; i++)
+        if (State == MapManagerState.Normal)
         {
-            var cb1 = Drops[i].GetCollisionBox();
-            for (int j = i + 1; j < Drops.Count; j++)
+            CalculateCameraPosition();
+
+            UpdateDrops();
+            Globals.Player.IsAboveDrop = IsPlayerAboveDropInstance(out var dropsBelowPlayer);
+            Globals.Player.DropsBelowPlayer = dropsBelowPlayer;
+
+            for (var i = 0; i < Drops.Count - 1; i++)
             {
-                var cb2 = Drops[j].GetCollisionBox();
-                if (cb2.Intersects(cb1))
+                var cb1 = Drops[i].GetCollisionBox();
+                for (int j = i + 1; j < Drops.Count; j++)
                 {
-                    var pos1 = Drops[i].GetPosition();
-                    var pos2 = Drops[j].GetPosition();
-                    Drops[i].SetPosition(new Vector2(pos1.X - 1, pos1.Y));
-                    Drops[j].SetPosition(new Vector2(pos2.X + 1, pos2.Y));
+                    var cb2 = Drops[j].GetCollisionBox();
+                    if (cb2.Intersects(cb1))
+                    {
+                        var pos1 = Drops[i].GetPosition();
+                        var pos2 = Drops[j].GetPosition();
+                        Drops[i].SetPosition(new Vector2(pos1.X - 1, pos1.Y));
+                        Drops[j].SetPosition(new Vector2(pos2.X + 1, pos2.Y));
+                    }
                 }
+            }
+
+            CheckIfLoadingZoneTriggered();
+        }
+        else if (State == MapManagerState.TransitioningOut)
+        {
+            CalculateCameraPosition();
+            
+            QueuedMapTransition.ScreenFadeTimer.Update(gameTime);
+            if (QueuedMapTransition.ScreenFadeTimer.IsDone())
+            {
+                SwitchMap();
+                SetState(MapManagerState.TransitioningIn);
+            }
+        }
+        else if (State == MapManagerState.TransitioningIn)
+        {
+            CalculateCameraPosition();
+            
+            TransitionInLerper.Update(gameTime);
+            if (TransitionInLerper.IsDone())
+            {
+                SetState(MapManagerState.Normal);
             }
         }
     }
@@ -188,6 +241,9 @@ public class MapManager
         DropHoverTimers.Add(0);
         DropInitialPositions.Add(drop.GetPosition());
     }
+
+    public bool IsMapTransitioning() => QueuedMapTransition != null;
+
     #endregion
 
     #region Private Methods
@@ -287,5 +343,82 @@ public class MapManager
         return drops.Count > 0;
     }
 
+    private void CheckIfLoadingZoneTriggered()
+    {
+        var playerCollider = Globals.Player.GetCollisionBox();
+
+        if (IgnoreLoadingZone)
+        {
+            if (CurrentMap.LoadingZones.Any(loadingZone => playerCollider.Intersects(loadingZone.GetCollider())))
+            {
+                return;
+            }
+
+            IgnoreLoadingZone = false;
+        }
+        else
+        {
+            foreach (var loadingZone in CurrentMap.LoadingZones)
+            {
+                var loadingZoneCollider = loadingZone.GetCollider();
+
+                if (playerCollider.Intersects(loadingZoneCollider))
+                {
+                    var map = Maps[loadingZone.ToMap];
+                    QueueMapTransition(map, loadingZone.ToPosition);
+                }
+            }
+        }
+    }
+
+    private void SetState(MapManagerState state)
+    {
+        State = state;
+        switch (state)
+        {
+            case MapManagerState.Normal:
+                QueuedMapTransition = null;
+                break;
+            case MapManagerState.TransitioningOut:
+                IgnoreLoadingZone = true;
+                break;
+            case MapManagerState.TransitioningIn:
+                TransitionInLerper = new FloatLerper(1F, 0F, 1.0);
+                break;
+        }
+    }
+
+    private void QueueMapTransition(GameMap map, Vector2 position)
+    {
+        SetState(MapManagerState.TransitioningOut);
+        QueuedMapTransition = new MapTransition
+        {
+            Map = map,
+            ToPosition = position,
+            ScreenFadeTimer = new LinearTimer(1)
+        };
+    }
+
+    private void SwitchMap()
+    {
+        CurrentMap = QueuedMapTransition.Map;
+        Globals.Player.SetPosition(QueuedMapTransition.ToPosition);
+    }
+
     #endregion
+
+    private enum MapManagerState
+    {
+        Normal,
+        TransitioningOut,
+        TransitioningIn
+    }
+
+    private class MapTransition
+    {
+        public GameMap Map { get; set; }
+        public Vector2 ToPosition { get; set; }
+
+        public ITimer ScreenFadeTimer { get; set; }
+    }
 }
