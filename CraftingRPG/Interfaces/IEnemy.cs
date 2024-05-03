@@ -10,4 +10,5 @@ public interface IEnemy
     public string GetName();
     public List<EnemyDrop> GetDropTable();
     public int GetMaxHitPoints();
+    public int GetAttackDamage();
 }
