@@ -63,6 +63,8 @@ public class MapObject : IInstance
         return Vector2.Zero;
     }
 
+    public Vector2 Move(Vector2 movementVector) => SetPosition(Vector2.Add(GetPosition(), movementVector));
+
     public double GetDepth()
     {
         return GetCollisionBox().Y + GetCollisionBox().Height;

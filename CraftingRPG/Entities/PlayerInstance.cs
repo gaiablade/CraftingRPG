@@ -4,7 +4,8 @@ using CraftingRPG.Constants;
 using CraftingRPG.Enums;
 using CraftingRPG.Graphics;
 using CraftingRPG.Interfaces;
-using CraftingRPG.LerpPath;
+using CraftingRPG.Items;
+using CraftingRPG.Lerpers;
 using CraftingRPG.RecipeManagement.Recipes;
 using CraftingRPG.SpriteAnimation;
 using CraftingRPG.SpriteAnimation.CustomAnimations;
@@ -38,12 +39,12 @@ public class PlayerInstance : IInstance
     public ITimer InvulnerabilityTimer { get; private set; }
     public int HitPoints { get; set; }
 
-    public Vector2LerpPath KnockBackLerpPath { get; set; } = new(Vector2.Zero, Vector2.Zero, 0);
+    public Vector2Lerper KnockBackLerper { get; set; } = new(Vector2.Zero, Vector2.Zero, 0);
     #endregion
     
     public Vector2 MovementVector;
     public bool IsAboveDrop = false;
-    public RectangleF AttackRect;
+    public RectangleF HitBox;
     
     #region Animation
     private int PreviousFacingDirection;
@@ -126,9 +127,9 @@ public class PlayerInstance : IInstance
 
     public Vector2 GetMovementVector()
     {
-        if (!KnockBackLerpPath.IsDone())
+        if (!KnockBackLerper.IsDone())
         {
-            var lerpPosition = KnockBackLerpPath.GetLerpedValue();
+            var lerpPosition = KnockBackLerper.GetLerpedValue();
             var knockBackMovementVector = Vector2.Subtract(lerpPosition, Position);
             return knockBackMovementVector;
         }
@@ -136,13 +137,39 @@ public class PlayerInstance : IInstance
         return MovementVector;
     }
 
+    public void SetMovementVector(Vector2 movementVector)
+    {
+        MovementVector = movementVector;
+
+        if (IsWalking)
+        {
+            if (movementVector.Y > 0)
+            {
+                FacingDirection = Direction.Down;
+            }
+            else if (movementVector.Y < 0)
+            {
+                FacingDirection = Direction.Up;
+            }
+            else if (movementVector.X > 0)
+            {
+                FacingDirection = Direction.Right;
+            }
+            else if (movementVector.X < 0)
+            {
+                FacingDirection = Direction.Left;
+            }
+        }
+    }
+
     public Vector2 SetPosition(Vector2 position) => Position = position;
+    public Vector2 Move(Vector2 movementVector) => SetPosition(Vector2.Add(GetPosition(), movementVector));
 
     public void Update(GameTime gameTime)
     {
         UpdateAnimation(gameTime);
         InvulnerabilityTimer.Update(gameTime);
-        KnockBackLerpPath.Update(gameTime);
+        KnockBackLerper.Update(gameTime);
     }
 
     public void UpdateAnimation(GameTime gameTime)
@@ -222,46 +249,46 @@ public class PlayerInstance : IInstance
         
         if (FacingDirection == Direction.Left)
         {
-            AttackRect = animFrame switch
+            HitBox = animFrame switch
             {
                 0 => new Rectangle(new Point(0, 0), new Point(0, 0)),
                 1 => new Rectangle(new Point(pPos.X + 6, pPos.Y + 33), new Point(13, 14)),
                 2 => new Rectangle(0, 0, 0, 0),
                 3 => new Rectangle(0, 0, 0, 0),
-                _ => AttackRect
+                _ => HitBox
             };
         }
         else if (FacingDirection == Direction.Right)
         {
-            AttackRect = animFrame switch
+            HitBox = animFrame switch
             {
                 0 => new Rectangle(new Point(0, 0), new Point(0, 0)),
                 1 => new Rectangle(new Point(pPos.X + 32, pPos.Y + 32), new Point(13, 14)),
                 2 => new Rectangle(0, 0, 0, 0),
                 3 => new Rectangle(0, 0, 0, 0),
-                _ => AttackRect
+                _ => HitBox
             };
         }
         else if (FacingDirection == Direction.Down)
         {
-            AttackRect = animFrame switch
+            HitBox = animFrame switch
             {
                 0 => new Rectangle(new Point(0, 0), new Point(0, 0)),
                 1 => new Rectangle(pPos.X + 17, pPos.Y + 37, 22, 11),
                 2 => new Rectangle(0, 0, 0, 0),
                 3 => new Rectangle(0, 0, 0, 0),
-                _ => AttackRect
+                _ => HitBox
             };
         }
         else if (FacingDirection == Direction.Up)
         {
-            AttackRect = animFrame switch
+            HitBox = animFrame switch
             {
                 0 => new Rectangle(new Point(0, 0), new Point(0, 0)),
                 1 => new Rectangle(pPos.X + 11, pPos.Y + 22, 22, 11),
                 2 => new Rectangle(0, 0, 0, 0),
                 3 => new Rectangle(0, 0, 0, 0),
-                _ => AttackRect
+                _ => HitBox
             };
         }
     }
@@ -278,4 +305,6 @@ public class PlayerInstance : IInstance
 
     public bool IsDead() => HitPoints <= 0;
     public bool IsDeathAnimationOver() => DeathAnimation.IsAnimationOver();
+
+    public RectangleF GetHitBox() => HitBox;
 }
