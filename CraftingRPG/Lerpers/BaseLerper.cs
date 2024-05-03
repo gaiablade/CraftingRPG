@@ -1,23 +1,24 @@
 using System;
+using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 
-namespace CraftingRPG.LerpPath;
+namespace CraftingRPG.Lerpers;
 
-public abstract class BaseLerpPath<T>
+public abstract class BaseLerper<T> : ILerper<T>
 {
     protected T Start { get; set; }
     protected T End { get; set; }
     protected double Duration { get; set; } = 0;
     protected double Time { get; set; } = 0;
 
-    public BaseLerpPath(T start, T end, double duration)
+    protected BaseLerper(T start, T end, double duration)
     {
         Start = start;
         End = end;
         Duration = duration;
     }
 
-    public bool IsDone() => Time >= Duration;
+    public virtual bool IsDone() => Time >= Duration;
 
     public abstract T GetLerpedValue();
 
@@ -25,4 +26,11 @@ public abstract class BaseLerpPath<T>
     {
         Time = Math.Min(Time + gameTime.ElapsedGameTime.TotalSeconds, Duration);
     }
+
+    public virtual T GetStart() => Start;
+    public virtual T GetEnd() => End;
+
+    public void SetTime(double time) => Time = time;
+
+    protected virtual double GetPercent() => Time / Duration;
 }
