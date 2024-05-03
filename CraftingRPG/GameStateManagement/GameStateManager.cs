@@ -7,7 +7,7 @@ public class GameStateManager
 {
     private class StateAddRequest
     {
-        public IState State;
+        public IGameState GameState;
         public bool KeepPreviousState;
     }
     private Queue<StateAddRequest> StateAddRequests = new();
@@ -15,22 +15,18 @@ public class GameStateManager
 
     public static GameStateManager Instance = new();
 
-    public Stack<IState> States { get; set; } = new();
+    public Stack<IGameState> States { get; set; } = new();
 
-    public IState CurrentState => States.Peek();
+    public IGameState CurrentGameState => States.Peek();
 
-    public GameStateManager()
+    public void PushState(IGameState newGameState, bool keepPreviousState = false)
     {
+        StateAddRequests.Enqueue(new StateAddRequest { GameState = newGameState, KeepPreviousState = keepPreviousState });
     }
 
-    public void PushState(IState newState, bool keepPreviousState = false)
+    public void PushState<T>(bool keepPreviousState = false) where T : IGameState, new()
     {
-        StateAddRequests.Enqueue(new StateAddRequest { State = newState, KeepPreviousState = keepPreviousState });
-    }
-
-    public void PushState<T>(bool keepPreviousState = false) where T : IState, new()
-    {
-        StateAddRequests.Enqueue(new StateAddRequest { State = new T(), KeepPreviousState = keepPreviousState });
+        StateAddRequests.Enqueue(new StateAddRequest { GameState = new T(), KeepPreviousState = keepPreviousState });
     }
 
     public void PopState()
@@ -47,7 +43,7 @@ public class GameStateManager
             {
                 States.Pop();
             }
-            States.Push(request.State);
+            States.Push(request.GameState);
         }
 
         while (StatePopRequests > 0)

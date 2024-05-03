@@ -2,9 +2,9 @@ using CraftingRPG.AssetManagement;
 using CraftingRPG.Extensions;
 using Microsoft.Xna.Framework;
 
-namespace CraftingRPG.GameStateManagement.States;
+namespace CraftingRPG.GameStateManagement.GameStates;
 
-public class GameOverState : BaseState
+public class GameOverGameState : BaseGameState
 {
     public override void DrawUI()
     {
