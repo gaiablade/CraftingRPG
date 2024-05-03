@@ -25,19 +25,27 @@
             "scaleInEditor": 1
         },
         "map1.tmx": {
-            "scale": 1.5,
+            "expandedObjectLayers": [
+                2,
+                4
+            ],
+            "scale": 5.5,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 351.33333333333326,
-                "y": 335.33333333333326
+                "x": 440.72727272727275,
+                "y": 32.18181818181819
             }
         },
         "map2.tmx": {
-            "scale": 1.3240625,
-            "selectedLayer": 0,
+            "expandedObjectLayers": [
+                3,
+                4
+            ],
+            "scale": 3,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 320.2265754071277,
-                "y": 320.2265754071277
+                "x": 504.33333333333326,
+                "y": 601
             }
         },
         "objects.tsx": {
@@ -72,7 +80,7 @@
         "map1.tmx"
     ],
     "project": "classicrpg.tiled-project",
-    "property.type": "string",
+    "property.type": "float",
     "recentFiles": [
         "map1.tmx",
         "map2.tmx",
