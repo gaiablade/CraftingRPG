@@ -418,6 +418,18 @@
 /processorParam:TextureFormat=Color
 /build:textures/Spritesheet_UI_Wood_Animation_Select_01.png
 
+#begin textures/title_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/title_background.png
+
 #begin textures/UI_Papernote_Spritesheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
