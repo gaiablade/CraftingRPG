@@ -1,8 +1,9 @@
+using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 
 namespace CraftingRPG.SpriteAnimation;
 
-public class Animation
+public class Animation : IAnimation
 {
     protected int UniqueAnimationFrames { get; set; }
     protected double AnimationFrameDuration { get; set; }
