@@ -10,6 +10,8 @@ namespace CraftingRPG.Items
 {
     public class EmptyBottleItem : IItem
     {
+        public static readonly EmptyBottleItem Instance = new();
+        
         public ItemId GetId() => ItemId.EmptyBottle;
 
         public ISet<ItemCategory> GetItemCategories() => new HashSet<ItemCategory>

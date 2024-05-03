@@ -3,14 +3,10 @@ using CraftingRPG.Enums;
 using CraftingRPG.InputManagement;
 using Microsoft.Xna.Framework;
 
-namespace CraftingRPG.GameStateManagement.States;
+namespace CraftingRPG.GameStateManagement.GameStates;
 
-public class MainMenuState : BaseState
+public class MainMenuGameState : BaseGameState
 {
-    public MainMenuState()
-    {
-    }
-
     public override void DrawWorld()
     {
         var gameTitle = "Crafting RPG";
@@ -36,7 +32,7 @@ public class MainMenuState : BaseState
     {
         if (InputManager.Instance.GetKeyPressState(InputAction.MenuSelect) == KeyPressState.Pressed)
         {
-            GameStateManager.Instance.PushState<IntroState>();
+            GameStateManager.Instance.PushState<IntroGameState>();
         }
     }
 }

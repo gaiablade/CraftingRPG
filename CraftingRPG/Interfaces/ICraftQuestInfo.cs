@@ -5,5 +5,5 @@ namespace CraftingRPG.Interfaces;
 
 public interface ICraftQuestInfo : IQuestInfo
 {
-    public Dictionary<ItemId, int> GetRequiredItemsToCraft();
+    public Dictionary<IItem, int> GetRequiredItemsToCraft();
 }

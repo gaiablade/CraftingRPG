@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace CraftingRPG.GameStateManagement;
 
-public abstract class BaseState : IState
+public abstract class BaseGameState : IGameState
 {
     public virtual void Update(GameTime gameTime)
     {

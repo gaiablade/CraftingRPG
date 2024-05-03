@@ -3,6 +3,7 @@ using CraftingRPG.AssetManagement;
 using CraftingRPG.Constants;
 using CraftingRPG.Enemies;
 using CraftingRPG.Graphics;
+using CraftingRPG.Lerpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -64,4 +65,28 @@ public class GreenSlimeInstance : BaseEnemyInstance
     public override bool IsAttacking() => Behavior.GetBehaviorState() == SlimeActorBehaviorState.Attacking;
 
     public override Rectangle GetAttackHitBox() => Behavior.GetAttackHitBox();
+
+    public override Vector2 GetAttackAngle() => Behavior.GetAttackAngle();
+
+    public override void SetKnockBack(Vector2Lerper knockBackPath)
+    {
+        KnockBackPath = knockBackPath;
+        Behavior.SetKnockBackPath(knockBackPath);
+    }
+
+    public override void IncurDamage(int damage)
+    {
+        base.IncurDamage(damage);
+        if (HitPoints <= 0)
+        {
+            Assets.Instance.EnemyDeath02.Play(0.3F, 0F, 0F);
+            Behavior.SetDeathState();
+        }
+    }
+
+    public override bool IsDefeated() => Behavior.IsDeathAnimationOver();
+
+    public override void OnDeath()
+    {
+    }
 }

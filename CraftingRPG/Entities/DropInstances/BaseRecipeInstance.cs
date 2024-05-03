@@ -46,6 +46,7 @@ public abstract class BaseRecipeInstance : IDropInstance
     
     public virtual Vector2 GetPosition() => Position;
     public virtual IDroppable GetDroppable() => Droppable;
+    public Vector2 Move(Vector2 movementVector) => SetPosition(Vector2.Add(GetPosition(), movementVector));
     public virtual double GetDepth() => Depth;
     public virtual Point GetSize() => Size;
     public virtual RectangleF GetCollisionBox() => new(Position, Size);
@@ -65,7 +66,7 @@ public abstract class BaseRecipeInstance : IDropInstance
     
     protected static void AddToRecipeBook(IRecipe recipe)
     {
-        var player = GameManager.PlayerInfo;
+        var player = Globals.PlayerInfo;
 
         Assets.Instance.RecipeGrabSfx01.Play(0.3F, 0F, 0F);
 

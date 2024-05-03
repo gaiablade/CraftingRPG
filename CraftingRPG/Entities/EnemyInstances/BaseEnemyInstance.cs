@@ -1,6 +1,7 @@
+using CraftingRPG.AssetManagement;
 using CraftingRPG.Graphics;
 using CraftingRPG.Interfaces;
-using CraftingRPG.LerpPath;
+using CraftingRPG.Lerpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -17,25 +18,14 @@ public abstract class BaseEnemyInstance : IEnemyInstance
     protected int HitPoints { get; set; }
     protected double Depth { get; set; }
     protected Texture2D SpriteSheet { get; set; }
-    protected Vector2LerpPath KnockBackPath { get; set; }
+    protected Vector2Lerper KnockBackPath { get; set; }
 
     public abstract RectangleF GetCollisionBox();
     public abstract SpriteDrawingData GetDrawingData();
-
     public abstract Rectangle GetTextureRectangle();
-    public virtual Vector2 GetMovementVector()
-    {
-        if (KnockBackPath != null && !KnockBackPath.IsDone())
-        {
-            var lerpPosition = KnockBackPath.GetLerpedValue();
-            var knockBackMovementVector = Vector2.Subtract(lerpPosition, Position);
-            return knockBackMovementVector;
-        }
-
-        return MovementVector;
-    }
-
+    public virtual Vector2 GetMovementVector() => MovementVector;
     public virtual Vector2 GetPosition() => Position;
+    public Vector2 Move(Vector2 movementVector) => SetPosition(Vector2.Add(GetPosition(), movementVector));
     public virtual double GetDepth() => Depth;
     public virtual Point GetSize() => Size;
     public virtual Texture2D GetSpriteSheet() => SpriteSheet;
@@ -47,12 +37,8 @@ public abstract class BaseEnemyInstance : IEnemyInstance
         Position = position;
         return Position;
     }
-    
-    public virtual bool IncurDamage(int damage)
-    {
-        HitPoints -= damage;
-        return HitPoints <= 0;
-    }
+
+    public virtual void IncurDamage(int damage) => HitPoints -= damage;
 
     public virtual void Update(GameTime gameTime)
     {
@@ -65,5 +51,16 @@ public abstract class BaseEnemyInstance : IEnemyInstance
     public abstract bool IsAttacking();
     public abstract Rectangle GetAttackHitBox();
 
-    public void SetKnockBack(Vector2LerpPath knockBackPath) => KnockBackPath = knockBackPath;
+    public virtual void SetKnockBack(Vector2Lerper knockBackPath) => KnockBackPath = knockBackPath;
+    public virtual Vector2 GetAttackAngle()
+    {
+        return Vector2.One;
+    }
+
+    public virtual bool IsDefeated() => GetCurrentHitPoints() <= 0;
+
+    public virtual void OnDeath()
+    {
+        Assets.Instance.EnemyDeath02.Play(0.3F, 0F, 0F);
+    }
 }

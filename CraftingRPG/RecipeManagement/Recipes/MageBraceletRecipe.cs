@@ -1,20 +1,24 @@
 ﻿using System.Collections.Generic;
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
+using CraftingRPG.Items;
 
 namespace CraftingRPG.RecipeManagement.Recipes;
 
-public class MageBraceletRecipe : IRecipe
+public class MageBraceletRecipe : BaseRecipe
 {
-    public ItemId GetCraftedItem() => ItemId.MageBracelet;
+    public override RecipeId GetId() => RecipeId.MageBracelet;
 
-    public RecipeId GetId() => RecipeId.MageBracelet;
-
-    public Dictionary<ItemId, int> GetIngredients() => new Dictionary<ItemId, int>
+    public override IDictionary<IItem, int> GetIngredients() => new Dictionary<IItem, int>
     {
-        { ItemId.IronBand, 1 },
-        { ItemId.ArcaneFlower, 2 }
+        { IronBandItem.Instance, 1 },
+        { ArcaneFlowerItem.Instance, 2 }
     };
 
-    public string GetName() => "Mage Bracelet";
+    public override IItem GetCraftedItem() => MageBraceletItem.Instance;
+
+    public override string GetName()
+    {
+        throw new System.NotImplementedException();
+    }
 }

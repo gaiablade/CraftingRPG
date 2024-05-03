@@ -7,7 +7,7 @@ namespace CraftingRPG.QuestManagement;
 
 public class FetchQuestInstance : BaseQuestInstance
 {
-    private Dictionary<ItemId, int> CollectedItems;
+    private Dictionary<IItem, int> CollectedItems;
 
     public FetchQuestInstance(IFetchQuestInfo fetchQuestInfo)
     {
@@ -22,16 +22,16 @@ public class FetchQuestInstance : BaseQuestInstance
 
     public IFetchQuestInfo GetFetchQuestInfo() => (IFetchQuestInfo)QuestInfo;
 
-    public void AddCollectedItem(ItemId itemId, int qty)
+    public void AddCollectedItem(IItem itemInfo, int qty)
     {
-        if (CollectedItems.ContainsKey(itemId))
+        if (CollectedItems.ContainsKey(itemInfo))
         {
-            CollectedItems[itemId] += qty;
+            CollectedItems[itemInfo] += qty;
         }
     }
 
     public override bool IsComplete() => CollectedItems
         .All(x => GetFetchQuestInfo().GetRequiredItems()[x.Key] <= x.Value);   
 
-    public Dictionary<ItemId, int> GetCollectedItems() => CollectedItems;
+    public Dictionary<IItem, int> GetCollectedItems() => CollectedItems;
 }

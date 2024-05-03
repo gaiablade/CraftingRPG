@@ -7,8 +7,8 @@ namespace CraftingRPG.QuestManagement;
 
 public class CraftQuestInstance : BaseQuestInstance
 {
-    private readonly Dictionary<ItemId, int> CraftedItems = new();
-    private readonly Dictionary<ItemId, int> RequiredItemsToCraft;
+    private readonly Dictionary<IItem, int> CraftedItems = new();
+    private readonly Dictionary<IItem, int> RequiredItemsToCraft;
 
     public CraftQuestInstance(ICraftQuestInfo craftQuestInfo)
     {
@@ -23,15 +23,15 @@ public class CraftQuestInstance : BaseQuestInstance
 
     public ICraftQuestInfo GetCraftQuestInfo() => (ICraftQuestInfo)QuestInfo;
     
-    public void ItemCrafted(ItemId id)
+    public void ItemCrafted(IItem itemInfo)
     {
-        if (RequiredItemsToCraft.ContainsKey(id))
+        if (RequiredItemsToCraft.ContainsKey(itemInfo))
         {
-            CraftedItems[id]++;
+            CraftedItems[itemInfo]++;
         }
     }
 
-    public int GetCraftedCount(ItemId id) => CraftedItems[id];
+    public int GetCraftedCount(IItem itemInfo) => CraftedItems[itemInfo];
 
     public override bool IsComplete()
     {

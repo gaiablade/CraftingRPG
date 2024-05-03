@@ -1,4 +1,5 @@
 using CraftingRPG.AssetManagement;
+using CraftingRPG.Global;
 using CraftingRPG.Graphics;
 using CraftingRPG.Interfaces;
 using CraftingRPG.QuestManagement;
@@ -17,15 +18,11 @@ public abstract class BaseItemInstance : IDropInstance
     protected IItem Item { get; set; }
 
     public virtual Vector2 GetPosition() => Position;
-
     public virtual Vector2 SetPosition(Vector2 position) => Position = position;
-
+    public Vector2 Move(Vector2 movementVector) => SetPosition(Vector2.Add(GetPosition(), movementVector));
     public virtual double GetDepth() => Depth;
-
     public virtual Point GetSize() => Size;
-
     public virtual RectangleF GetCollisionBox() => new(Position, Size);
-
     public virtual SpriteDrawingData GetDrawingData()
     {
         return new SpriteDrawingData
@@ -57,18 +54,18 @@ public abstract class BaseItemInstance : IDropInstance
         AddItemToInventory(new T(), quantity);
     }
     
-    protected static void AddItemToInventory(IItem item, int quantity = 1)
+    protected static void AddItemToInventory(IItem itemInfo, int quantity = 1)
     {
-        var player = GameManager.PlayerInfo;
+        var playerInfo = Globals.PlayerInfo;
 
-        player.Inventory[item.GetId()] += quantity;
+        playerInfo.Inventory.AddQuantity(itemInfo, quantity);
         Assets.Instance.MaterialGrabSfx01.Play(0.3F, 0F, 0F);
 
-        foreach (var questInstance in player.QuestBook.GetActiveQuests())
+        foreach (var questInstance in playerInfo.QuestBook.GetActiveQuests())
         {
             if (questInstance is FetchQuestInstance fetchQuestInstance)
             {
-                fetchQuestInstance.AddCollectedItem(item.GetId(), quantity);
+                fetchQuestInstance.AddCollectedItem(itemInfo, quantity);
             }
         }
     }

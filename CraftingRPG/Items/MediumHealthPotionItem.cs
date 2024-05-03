@@ -10,6 +10,8 @@ namespace CraftingRPG.Items;
 
 public class MediumHealthPotionItem : IItem
 {
+    public static readonly MediumHealthPotionItem Instance = new();
+    
     public ItemId GetId() => ItemId.MediumHealthPotion;
 
     public ISet<ItemCategory> GetItemCategories() => new HashSet<ItemCategory>

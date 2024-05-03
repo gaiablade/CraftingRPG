@@ -12,9 +12,9 @@ using CraftingRPG.Timers;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
 
-namespace CraftingRPG.GameStateManagement.States;
+namespace CraftingRPG.GameStateManagement.GameStates;
 
-public class QuestMenuState : BaseState
+public class QuestMenuGameState : BaseGameState
 {
     // Menu Transition
     private readonly ITimer MenuTransitionTimer;
@@ -26,7 +26,7 @@ public class QuestMenuState : BaseState
     private readonly ITimer CursorHoverTimer;
     private readonly ITimer CursorMovementTimer;
     private Vector2 CursorPosition;
-    private int Cursor = 0;
+    private int Cursor;
 
     // Menu State
     private const int QuestMenu = 0;
@@ -37,7 +37,7 @@ public class QuestMenuState : BaseState
     private const int QuestNoteX = 84;
     private const int QuestNoteY = 112;
 
-    public QuestMenuState()
+    public QuestMenuGameState()
     {
         MenuTransitionTimer = new EaseOutTimer(0.4);
         CursorHoverTimer = new EaseInOutTimer(1.0);
@@ -71,7 +71,7 @@ public class QuestMenuState : BaseState
         
         const int maxCharsPerLine = 13;
 
-        var questBook = GameManager.PlayerInfo.QuestBook;
+        var questBook = Globals.PlayerInfo.QuestBook;
         foreach (var (questInstance, i) in questBook.GetActiveQuests().WithIndex())
         {
             var x = i % 3;
@@ -146,23 +146,21 @@ public class QuestMenuState : BaseState
             var detailsY = (int)(descY + descHeight + 25);
             if (selectedQuest is CraftQuestInstance craftQuestInstance)
             {
-                var craftQuestInfo = craftQuestInstance.GetCraftQuestInfo();
                 var requiredItemsToCraft = craftQuestInstance.GetCraftQuestInfo().GetRequiredItemsToCraft();
-                foreach (var ((itemId, qty), i) in requiredItemsToCraft.WithIndex())
+                foreach (var ((itemInfo, qty), i) in requiredItemsToCraft.WithIndex())
                 {
-                    var item = GameManager.ItemInfo[itemId];
-                    GameManager.SpriteBatch.Draw(item.GetTileSet(),
+                    GameManager.SpriteBatch.Draw(itemInfo.GetTileSet(),
                         new Rectangle(new Point(descX, detailsY + i * 32), new Point(32, 32)),
-                        item.GetSourceRectangle(),
+                        itemInfo.GetSourceRectangle(),
                         Color.White);
 
-                    var itemDrawingData = Assets.Instance.Monogram24.GetDrawingData(item.GetName());
+                    var itemDrawingData = Assets.Instance.Monogram24.GetDrawingData(itemInfo.GetName());
                     GameManager.SpriteBatch.DrawString(itemDrawingData.Font,
                         itemDrawingData.Message,
                         new Vector2(descX + 40, detailsY + i * 32),
                         Color.Black);
 
-                    var itemAmount = craftQuestInstance.GetCraftedCount(itemId);
+                    var itemAmount = craftQuestInstance.GetCraftedCount(itemInfo);
                     var requiredAmount = qty;
                     var quantityString = $"{itemAmount}/{requiredAmount}";
                     var quantityColor = itemAmount >= requiredAmount ? Color.DarkGreen : Color.DarkRed;
@@ -175,23 +173,21 @@ public class QuestMenuState : BaseState
             }
             else if (selectedQuest is FetchQuestInstance fetchQuestInstance)
             {
-                var fetchQuestInfo = fetchQuestInstance.GetFetchQuestInfo();
                 var requiredItemsToGet = fetchQuestInstance.GetFetchQuestInfo().GetRequiredItems();
-                foreach (var ((itemId, qty), i) in requiredItemsToGet.WithIndex())
+                foreach (var ((itemInfo, qty), i) in requiredItemsToGet.WithIndex())
                 {
-                    var item = GameManager.ItemInfo[itemId];
-                    GameManager.SpriteBatch.Draw(item.GetTileSet(),
+                    GameManager.SpriteBatch.Draw(itemInfo.GetTileSet(),
                         new Rectangle(new Point(descX, detailsY + i * 32), new Point(32, 32)),
-                        item.GetSourceRectangle(),
+                        itemInfo.GetSourceRectangle(),
                         Color.White);
 
-                    var itemNameDimensions = Assets.Instance.Monogram24.MeasureString(item.GetName());
+                    var itemNameDimensions = Assets.Instance.Monogram24.MeasureString(itemInfo.GetName());
                     GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
-                        item.GetName(),
+                        itemInfo.GetName(),
                         new Vector2(descX + 40, detailsY + i * 32),
                         Color.Black);
 
-                    var itemAmount = fetchQuestInstance.GetCollectedItems()[itemId];
+                    var itemAmount = fetchQuestInstance.GetCollectedItems()[itemInfo];
                     var requiredAmount = qty;
                     var quantityString = $"{itemAmount}/{requiredAmount}";
                     var quantityColor = itemAmount >= requiredAmount ? Color.DarkGreen : Color.DarkRed;
@@ -207,7 +203,7 @@ public class QuestMenuState : BaseState
                 var questInfo = defeatEnemyQuestInstance.GetDefeatEnemyQuestInfo();
                 var requiredEnemies = questInfo.GetRequiredEnemiesToDefeat();
 
-                foreach (var ((enemyId, qty), i) in requiredEnemies.WithIndex())
+                foreach (var ((enemyId, _), i) in requiredEnemies.WithIndex())
                 {
                     var enemyInfo = EnemyInfo.Instance.GetEnemy(enemyId);
 
@@ -263,14 +259,14 @@ public class QuestMenuState : BaseState
             {
                 Assets.Instance.MenuHoverSfx01.Play(0.3F, 0F, 0F);
                 Cursor = CustomMath.WrapAround(Cursor - 1, 0,
-                    GameManager.PlayerInfo.QuestBook.GetActiveQuestCount() - 1);
+                    Globals.PlayerInfo.QuestBook.GetActiveQuestCount() - 1);
                 CursorMovementTimer.Reset();
             }
             else if (InputManager.Instance.IsKeyPressed(InputAction.MoveEast))
             {
                 Assets.Instance.MenuHoverSfx01.Play(0.3F, 0F, 0F);
                 Cursor = CustomMath.WrapAround(Cursor + 1, 0,
-                    GameManager.PlayerInfo.QuestBook.GetActiveQuestCount() - 1);
+                    Globals.PlayerInfo.QuestBook.GetActiveQuestCount() - 1);
                 CursorMovementTimer.Reset();
             }
             else if (InputManager.Instance.IsKeyPressed(InputAction.MenuSelect))
@@ -295,7 +291,7 @@ public class QuestMenuState : BaseState
     private string[] BreakUpString(string s, int charsPerLine)
     {
         var list = new List<string>();
-        var currentIndex = 0;
+        int currentIndex;
         var lastWrap = 0;
 
         do

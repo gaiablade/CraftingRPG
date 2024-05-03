@@ -5,13 +5,13 @@ using CraftingRPG.Enums;
 using CraftingRPG.InputManagement;
 using Microsoft.Xna.Framework;
 
-namespace CraftingRPG.GameStateManagement.States;
+namespace CraftingRPG.GameStateManagement.GameStates;
 
-public class IntroState : BaseState
+public class IntroGameState : BaseGameState
 {
     private List<string> IntroStoryLines;
 
-    public IntroState()
+    public IntroGameState()
     {
         IntroStoryLines = GetStoryLines();
     }
@@ -77,7 +77,7 @@ public class IntroState : BaseState
     {
         if (InputManager.Instance.IsKeyPressed(InputAction.MenuSelect))
         {
-            GameStateManager.Instance.PushState<OverworldState>();
+            GameStateManager.Instance.PushState<OverWorldGameState>();
         }
     }
 }

@@ -10,6 +10,8 @@ namespace CraftingRPG.Items;
 
 public class HealingMushroomItem : IItem
 {
+    public static readonly HealingMushroomItem Instance = new();
+    
     public ItemId GetId() => ItemId.HealingMushroom;
 
     public ISet<ItemCategory> GetItemCategories() => new HashSet<ItemCategory>

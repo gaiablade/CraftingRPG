@@ -9,6 +9,7 @@ public interface IInstance
 {
     public Vector2 GetPosition();
     public Vector2 SetPosition(Vector2 position);
+    public Vector2 Move(Vector2 movementVector);
     public double GetDepth();
     public Point GetSize();
     public RectangleF GetCollisionBox();

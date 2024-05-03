@@ -18,6 +18,7 @@ public class InputManager
     public Dictionary<InputAction, Keys> Keybindings { get; private set; } = new();
     public Dictionary<Keys, double> DurationHeld { get; private set; } = new();
     public Dictionary<Keys, KeyPressState> KeyPressStates { get; private set; } = new();
+    public ISet<Keys> IgnoreUntilNotPressed { get; private set; } = new HashSet<Keys>();
 
     public double GetDurationHeld(InputAction action)
     {
@@ -49,10 +50,18 @@ public class InputManager
         return KeyPressStates[actionKey] == KeyPressState.NotPressed;
     }
 
+    public void Debounce(InputAction action)
+    {
+        var actionKey = Keybindings[action];
+        DurationHeld[actionKey] = 0;
+        KeyPressStates[actionKey] = KeyPressState.NotPressed;
+        IgnoreUntilNotPressed.Add(actionKey);
+    }
+
     public void Update(KeyboardState keyState, GameTime gameTime)
     {
         var pressedKeys = keyState.GetPressedKeys();
-        
+
         foreach (var key in Keybindings.Values.Distinct())
         {
             var keyIsPressed = false;
@@ -61,20 +70,29 @@ public class InputManager
                 if (pressedKey == key)
                 {
                     keyIsPressed = true;
-                    if (DurationHeld[key] == 0)
+
+                    if (!IgnoreUntilNotPressed.Contains(key))
                     {
-                        KeyPressStates[key] = KeyPressState.Pressed;
+                        if (DurationHeld[key] == 0)
+                        {
+                            KeyPressStates[key] = KeyPressState.Pressed;
+                        }
+                        else
+                        {
+                            KeyPressStates[key] = KeyPressState.Held;
+                        }
+
+                        DurationHeld[key] += gameTime.ElapsedGameTime.TotalSeconds;
                     }
-                    else
-                    {
-                        KeyPressStates[key] = KeyPressState.Held;
-                    }
-                    DurationHeld[key] += gameTime.ElapsedGameTime.TotalSeconds;
                 }
             }
 
             if (!keyIsPressed)
             {
+                if (IgnoreUntilNotPressed.Contains(key))
+                {
+                    IgnoreUntilNotPressed.Remove(key);
+                }
                 DurationHeld[key] = 0;
                 KeyPressStates[key] = KeyPressState.NotPressed;
             }
@@ -91,7 +109,7 @@ public class InputManager
         {
             throw new ArgumentOutOfRangeException();
         }
-        
+
         foreach (var config in keyConfig.Items)
         {
             var key = GetKeyForConfiguredName(config.Key);
@@ -109,12 +127,12 @@ public class InputManager
     private Keys GetKeyForConfiguredName(string keyName)
     {
         var couldParse = Enum.TryParse(typeof(Keys), keyName, true, out var key);
-        
+
         if (couldParse && key != null)
         {
             return (Keys)key;
         }
-        
+
         switch (keyName)
         {
             case "ArrowLeft":

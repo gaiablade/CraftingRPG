@@ -1,21 +1,23 @@
 ﻿using System.Collections.Generic;
+using CraftingRPG.Constants;
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
+using CraftingRPG.Items;
 
 namespace CraftingRPG.RecipeManagement.Recipes;
 
-public class MediumHealthPotionRecipe : IRecipe
+public class MediumHealthPotionRecipe : BaseRecipe
 {
-    public ItemId GetCraftedItem() => ItemId.MediumHealthPotion;
+    public override RecipeId GetId() => RecipeId.MediumHealthPotion;
 
-    public RecipeId GetId() => RecipeId.MediumHealthPotion;
-
-    public Dictionary<ItemId, int> GetIngredients() => new Dictionary<ItemId, int>
+    public override IDictionary<IItem, int> GetIngredients() => new Dictionary<IItem, int>
     {
-        { ItemId.EmptyBottle, 1 },
-        { ItemId.HealingMushroom, 1 },
-        { ItemId.HeartyFlower, 1 }
+        { EmptyBottleItem.Instance, 1 },
+        { HealingMushroomItem.Instance, 1 },
+        { HeartyFlowerItem.Instance, 1 }
     };
 
-    public string GetName() => "Medium Health Potion";
+    public override IItem GetCraftedItem() => MediumHealthPotionItem.Instance;
+
+    public override string GetName() => ItemName.MediumHealthPotion;
 }
