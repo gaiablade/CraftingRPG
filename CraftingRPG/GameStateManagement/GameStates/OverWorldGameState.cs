@@ -87,7 +87,6 @@ public class OverWorldGameState : BaseGameState
 
                 if (MapManager.Instance.IsMapTransitioning())
                 {
-                    Globals.Player.IsWalking = false;
                     HandleInstanceUpdates(gameTime);
                     MapManager.Instance.Update(gameTime);
                     HandleItemLabel();
