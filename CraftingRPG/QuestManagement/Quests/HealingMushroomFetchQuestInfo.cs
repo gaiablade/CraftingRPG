@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
+using CraftingRPG.Items;
 
 namespace CraftingRPG.QuestManagement.Quests;
 
@@ -10,8 +11,8 @@ public class HealingMushroomFetchQuestInfo : IFetchQuestInfo
 
     public string GetName() => "Obtain 10 Healing Mushrooms!";
 
-    public Dictionary<ItemId, int> GetRequiredItems() => new()
+    public Dictionary<IItem, int> GetRequiredItems() => new()
     {
-        { ItemId.HealingMushroom, 10 }
+        { HealingMushroomItem.Instance, 10 }
     };
 }

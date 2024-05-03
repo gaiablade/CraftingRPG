@@ -10,6 +10,8 @@ namespace CraftingRPG.Items;
 
 public class IronHelmetItem : IItem
 {
+    public static readonly IronHelmetItem Instance = new();
+    
     public ItemId GetId() => ItemId.IronHelmet;
 
     public ISet<ItemCategory> GetItemCategories() => new HashSet<ItemCategory>

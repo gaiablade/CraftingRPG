@@ -6,8 +6,8 @@ namespace CraftingRPG.Interfaces;
 public interface IRecipe
 {
     public RecipeId GetId();
-    public Dictionary<ItemId, int> GetIngredients();
-    public ItemId GetCraftedItem();
+    public IDictionary<IItem, int> GetIngredients();
+    public IItem GetCraftedItem();
 
     public string GetName();
 }

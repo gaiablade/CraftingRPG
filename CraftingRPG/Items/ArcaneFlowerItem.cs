@@ -10,6 +10,8 @@ namespace CraftingRPG.Items;
 
 public class ArcaneFlowerItem : IItem
 {
+    public static readonly ArcaneFlowerItem Instance = new();
+    
     public ItemId GetId() => ItemId.ArcaneFlower;
 
     public ISet<ItemCategory> GetItemCategories() => new HashSet<ItemCategory>

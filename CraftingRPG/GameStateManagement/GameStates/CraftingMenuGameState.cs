@@ -11,9 +11,9 @@ using CraftingRPG.Timers;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
 
-namespace CraftingRPG.GameStateManagement.States;
+namespace CraftingRPG.GameStateManagement.GameStates;
 
-public class CraftingMenuState : BaseState
+public class CraftingMenuGameState : BaseGameState
 {
     private int Cursor = 0;
     private bool MenuClosed = false;
@@ -23,9 +23,9 @@ public class CraftingMenuState : BaseState
 
     private ITimer TransitionTimer;
 
-    public CraftingMenuState()
+    public CraftingMenuGameState()
     {
-        Recipes = GameManager.PlayerInfo.RecipeBook
+        Recipes = Globals.PlayerInfo.RecipeBook
             .Recipes
             .OrderBy(x => x.Value.GetId())
             .ToDictionary(x => x.Key, x => x.Value);
@@ -69,8 +69,7 @@ public class CraftingMenuState : BaseState
         {
             var canBeCrafted = CanRecipeBeCrafted(recipe);
             var color = Cursor == i ? Color.DarkRed : canBeCrafted ? Color.White : Color.DarkGray;
-            var itemId = recipe.GetCraftedItem();
-            var itemInfo = GameManager.ItemInfo[itemId];
+            var itemInfo = recipe.GetCraftedItem();
             var itemName = $"{itemInfo.GetName()}";
             var nameSize = Assets.Instance.Monogram24.MeasureString(itemName);
             GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram24,
@@ -89,7 +88,7 @@ public class CraftingMenuState : BaseState
         var selection = Recipes.ElementAt(Cursor);
         var recipe = selection.Value;
 
-        var craftedItem = GameManager.ItemInfo[recipe.GetCraftedItem()];
+        var craftedItem = recipe.GetCraftedItem();
         var name = craftedItem.GetName();
 
         var nameSize = Assets.Instance.Monogram12.MeasureString(name);
@@ -113,10 +112,9 @@ public class CraftingMenuState : BaseState
         
         var ingredients = recipe.GetIngredients();
         
-        foreach (var ((itemId, requiredQty), i) in ingredients.WithIndex())
+        foreach (var ((itemInfo, requiredQty), i) in ingredients.WithIndex())
         {
-            var itemInfo = GameManager.ItemInfo[itemId];
-            var playersItemCount = GameManager.PlayerInfo.Inventory[itemId];
+            var playersItemCount = Globals.PlayerInfo.Inventory.GetItemCount(itemInfo);
             var color = playersItemCount >= requiredQty ? Color.Black : Color.Red * 0.5F;
             var itemsReq = $"{itemInfo.GetName()} x{requiredQty}";
             var itemsReqSize = Assets.Instance.Monogram18.MeasureString(itemsReq);
@@ -142,12 +140,12 @@ public class CraftingMenuState : BaseState
 
     private bool CanRecipeBeCrafted(IRecipe recipe)
     {
-        var inventory = GameManager.PlayerInfo.Inventory;
+        var inventory = Globals.PlayerInfo.Inventory;
         var ingredientList = recipe.GetIngredients();
 
-        foreach (var (itemId, requiredQty) in ingredientList)
+        foreach (var (itemInfo, requiredQty) in ingredientList)
         {
-            var ownedQty = inventory[itemId];
+            var ownedQty = inventory.GetItemCount(itemInfo);
             if (ownedQty < requiredQty)
                 return false;
         }
@@ -177,13 +175,13 @@ public class CraftingMenuState : BaseState
                 var recipe = Recipes.ElementAt(Cursor);
                 if (CanRecipeBeCrafted(recipe.Value))
                 {
-                    foreach (var (ingredientId, qty) in recipe.Value.GetIngredients())
+                    foreach (var (ingredientInfo, qty) in recipe.Value.GetIngredients())
                     {
-                        GameManager.PlayerInfo.Inventory[ingredientId] -= qty;
+                        Globals.PlayerInfo.Inventory.AddQuantity(ingredientInfo, -qty);
                     }
 
-                    var itemId = recipe.Value.GetCraftedItem();
-                    Globals.Player.Info.Inventory[itemId]++;
+                    var itemInfo = recipe.Value.GetCraftedItem();
+                    Globals.Player.Info.Inventory.AddQuantity(itemInfo, 1);
                     Globals.Player.Info.RecipeBook.NumberCrafted[recipe.Key]++;
                     
                     // Check for crafting quests
@@ -191,7 +189,7 @@ public class CraftingMenuState : BaseState
                     {
                         if (questInstance is CraftQuestInstance craftQuestInstance)
                         {
-                            craftQuestInstance.ItemCrafted(itemId);
+                            craftQuestInstance.ItemCrafted(itemInfo);
                         }
                     }
                     

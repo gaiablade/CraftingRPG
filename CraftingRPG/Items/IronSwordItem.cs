@@ -10,6 +10,8 @@ namespace CraftingRPG.Items;
 
 public class IronSwordItem : IWeapon
 {
+    public static readonly IronSwordItem Instance = new();
+    
     public int GetAttackStat() => 20;
 
     public ItemId GetId() => ItemId.IronSword;

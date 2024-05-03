@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
+using CraftingRPG.Items;
 
 namespace CraftingRPG.QuestManagement.Quests;
 
@@ -10,8 +11,8 @@ public class SmallHealthPotionCraftQuestInfo : ICraftQuestInfo
 
     public string GetDescription() => "Craft 1 Small Health Potion";
 
-    public Dictionary<ItemId, int> GetRequiredItemsToCraft() => new()
+    public Dictionary<IItem, int> GetRequiredItemsToCraft() => new()
     {
-        { ItemId.SmallHealthPotion, 1 }
+        { SmallHealthPotionItem.Instance, 1 }
     };
 }

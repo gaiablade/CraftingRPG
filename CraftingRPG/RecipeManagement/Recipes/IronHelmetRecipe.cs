@@ -1,19 +1,20 @@
 ﻿using System.Collections.Generic;
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
+using CraftingRPG.Items;
 
 namespace CraftingRPG.RecipeManagement.Recipes;
 
-public class IronHelmetRecipe : IRecipe
+public class IronHelmetRecipe : BaseRecipe
 {
-    public ItemId GetCraftedItem() => ItemId.IronHelmet;
+    public override IItem GetCraftedItem() => IronHelmetItem.Instance;
 
-    public RecipeId GetId() => RecipeId.IronHelmet;
+    public override RecipeId GetId() => RecipeId.IronHelmet;
 
-    public Dictionary<ItemId, int> GetIngredients() => new Dictionary<ItemId, int>
+    public override IDictionary<IItem, int> GetIngredients() => new Dictionary<IItem, int>
     {
-        { ItemId.IronChunk, 2 }
+        { IronChunkItem.Instance, 2 }
     };
 
-    public string GetName() => "Iron Helmet";
+    public override string GetName() => "Iron Helmet";
 }

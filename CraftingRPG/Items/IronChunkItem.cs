@@ -10,6 +10,8 @@ namespace CraftingRPG.Items;
 
 public class IronChunkItem : IItem
 {
+    public static readonly IronChunkItem Instance = new();
+
     public ItemId GetId() => ItemId.IronChunk;
 
     public ISet<ItemCategory> GetItemCategories() => new HashSet<ItemCategory>

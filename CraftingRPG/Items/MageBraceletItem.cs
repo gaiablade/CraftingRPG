@@ -10,6 +10,8 @@ namespace CraftingRPG.Items;
 
 public class MageBraceletItem : IItem
 {
+    public static readonly MageBraceletItem Instance = new();
+    
     public ItemId GetId() => ItemId.MageBracelet;
 
     public ISet<ItemCategory> GetItemCategories() => new HashSet<ItemCategory>

@@ -10,9 +10,9 @@ using CraftingRPG.Timers;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
 
-namespace CraftingRPG.GameStateManagement.States;
+namespace CraftingRPG.GameStateManagement.GameStates;
 
-public class InventoryState : BaseState
+public class InventoryGameState : BaseGameState
 {
     private const int NumberOfColumns = 5;
 
@@ -33,7 +33,7 @@ public class InventoryState : BaseState
 
     private Animation CursorAnimation;
 
-    public InventoryState()
+    public InventoryGameState()
     {
         TransitionTimer = new EaseOutTimer(0.5);
         CursorAnimation = new Animation(4, 0.4, new Point(32, 32));
@@ -61,7 +61,7 @@ public class InventoryState : BaseState
         DrawItems();
         DrawSelectedItemName();
 
-        if (Globals.Player.Info.Inventory.Items.Count > 0)
+        if (Globals.Player.Info.Inventory.ItemQuantities.Count > 0)
         {
             DrawCursor();
         }
@@ -120,10 +120,8 @@ public class InventoryState : BaseState
         var inventory = Globals.Player.Info.Inventory;
 
         var i = 0;
-        foreach (var (itemId, quantity) in inventory.Items)
+        foreach (var (itemInfo, _) in inventory.ItemQuantities)
         {
-            var itemInfo = GameManager.ItemInfo[itemId];
-
             var gridX = i % 5;
             var gridY = i / 5;
 
@@ -152,11 +150,10 @@ public class InventoryState : BaseState
     private void DrawSelectedItemName()
     {
         var inventory = Globals.Player.Info.Inventory;
-        var (itemId, qty) = inventory.Items.ElementAt(Cursor);
-        var itemInfo = GameManager.ItemInfo[itemId];
+        var (itemInfo, _) = inventory.ItemQuantities.ElementAt(Cursor);
         var itemName = itemInfo.GetName();
         var nameData = Assets.Instance.Monogram24.GetDrawingData(itemName);
-        
+
         GameManager.SpriteBatch.DrawTextDrawingData(nameData,
             new Vector2(560 - nameData.Dimensions.X / 2, (float)MenuPosition + 510),
             Color.Black);
@@ -185,19 +182,21 @@ public class InventoryState : BaseState
 
         if (InputManager.Instance.IsKeyPressed(InputAction.MoveSouth))
         {
-            Cursor = CustomMath.WrapAround(Cursor + NumberOfColumns, 0, Globals.Player.Info.Inventory.Items.Count - 1);
+            Cursor = CustomMath.WrapAround(Cursor + NumberOfColumns, 0,
+                Globals.Player.Info.Inventory.ItemQuantities.Count - 1);
         }
         else if (InputManager.Instance.IsKeyPressed(InputAction.MoveNorth))
         {
-            Cursor = CustomMath.WrapAround(Cursor - NumberOfColumns, 0, Globals.Player.Info.Inventory.Items.Count - 1);
+            Cursor = CustomMath.WrapAround(Cursor - NumberOfColumns, 0,
+                Globals.Player.Info.Inventory.ItemQuantities.Count - 1);
         }
         else if (InputManager.Instance.IsKeyPressed(InputAction.MoveEast))
         {
-            Cursor = CustomMath.WrapAround(Cursor + 1, 0, Globals.Player.Info.Inventory.Items.Count - 1);
+            Cursor = CustomMath.WrapAround(Cursor + 1, 0, Globals.Player.Info.Inventory.ItemQuantities.Count - 1);
         }
         else if (InputManager.Instance.IsKeyPressed(InputAction.MoveWest))
         {
-            Cursor = CustomMath.WrapAround(Cursor - 1, 0, Globals.Player.Info.Inventory.Items.Count - 1);
+            Cursor = CustomMath.WrapAround(Cursor - 1, 0, Globals.Player.Info.Inventory.ItemQuantities.Count - 1);
         }
     }
 }

@@ -94,16 +94,8 @@ public class PlayerInstance : IInstance
         Info.RecipeBook.AddRecipe(RecipeId.IronSword, new IronSwordRecipe());
         Info.RecipeBook.AddRecipe(RecipeId.MageBracelet, new MageBraceletRecipe());
 
-        Info.Inventory[ItemId.HealingMushroom]++;
-        Info.Inventory[ItemId.IronSword]++;
-        Info.Inventory[ItemId.EmptyBottle]++;
-        Info.Inventory[ItemId.MageBracelet]++;
-        Info.Inventory[ItemId.ArcaneFlower]++;
-        Info.Inventory[ItemId.SmallHealthPotion]++;
-        Info.Inventory[ItemId.HeartyFlower]++;
-        Info.Inventory[ItemId.IronHelmet]++;
-        Info.Inventory[ItemId.IronChunk]++;
-        Info.Inventory[ItemId.MediumHealthPotion]++;
+        Info.Inventory.AddQuantity<HealingMushroomItem>(5);
+        Info.Inventory.AddQuantity<EmptyBottleItem>(5);
     }
 
     public Vector2 GetPosition() => Position;
