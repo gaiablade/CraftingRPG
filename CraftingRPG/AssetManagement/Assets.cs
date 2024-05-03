@@ -10,7 +10,7 @@ public class Assets
     public static Assets Instance = new();
 
     // Textures //
-    public Texture2D WoodUISpriteSheet { get; private set; }
+    public Texture2D WoodUiSpriteSheet { get; private set; }
     public Texture2D SlimeSpriteSheet { get; private set; }
     public Texture2D CraftingUi { get; private set; }
     public Texture2D InventoryUi { get; private set; }
@@ -47,7 +47,7 @@ public class Assets
     public void LoadAssets(ContentManager contentManager)
     {
         // Textures
-        WoodUISpriteSheet = contentManager.Load<Texture2D>("textures/wood_ui");
+        WoodUiSpriteSheet = contentManager.Load<Texture2D>("textures/wood_ui");
         SlimeSpriteSheet = contentManager.Load<Texture2D>("textures/slime");
         CraftingUi = contentManager.Load<Texture2D>("textures/crafting_menu");
         InventoryUi = contentManager.Load<Texture2D>("textures/inventory_menu");

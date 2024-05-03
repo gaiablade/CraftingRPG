@@ -15,13 +15,11 @@ namespace CraftingRPG.GameStateManagement.GameStates;
 
 public class CraftingMenuGameState : BaseGameState
 {
-    private int Cursor = 0;
-    private bool MenuClosed = false;
-    private IDictionary<RecipeId, IRecipe> Recipes;
-    private double TransitionInTimer = 0;
-    private double TransitionOutTimer = 0;
+    private int Cursor;
+    private bool MenuClosed;
+    private readonly IDictionary<RecipeId, IRecipe> Recipes;
 
-    private ITimer TransitionTimer;
+    private readonly ITimer TransitionTimer;
 
     public CraftingMenuGameState()
     {
@@ -36,7 +34,7 @@ public class CraftingMenuGameState : BaseGameState
     {
     }
 
-    public override void DrawUI()
+    public override void DrawUi()
     {
         var percent = (float)TransitionTimer.GetPercent();
 
@@ -65,7 +63,7 @@ public class CraftingMenuGameState : BaseGameState
         const int listX = 208;
         const int listY = 100;
 
-        foreach (var ((id, recipe), i) in Recipes.WithIndex())
+        foreach (var ((_, recipe), i) in Recipes.WithIndex())
         {
             var canBeCrafted = CanRecipeBeCrafted(recipe);
             var color = Cursor == i ? Color.DarkRed : canBeCrafted ? Color.White : Color.DarkGray;
@@ -128,7 +126,6 @@ public class CraftingMenuGameState : BaseGameState
             if (playersItemCount > 0)
             {
                 var playersItemCountDisplay = $"({playersItemCount})";
-                var itemCountDisplaySize = Assets.Instance.Monogram18.MeasureString(playersItemCountDisplay);
                 GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram18,
                     playersItemCountDisplay,
                     new Vector2(ingredientNameX + itemsReqSize.X + 10, 

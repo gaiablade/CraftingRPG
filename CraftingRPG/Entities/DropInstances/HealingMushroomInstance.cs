@@ -8,11 +8,9 @@ namespace CraftingRPG.Entities.DropInstances;
 
 public class HealingMushroomInstance : BaseItemInstance
 {
-    private HealingMushroomItem Item;
-
     public HealingMushroomInstance()
     {
-        Item = new();
+        Item = new HealingMushroomItem();
     }
     
     public override Vector2 GetPosition()

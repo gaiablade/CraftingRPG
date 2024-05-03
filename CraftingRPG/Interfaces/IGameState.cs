@@ -6,5 +6,5 @@ public interface IGameState
 {
     public void Update(GameTime gameTime);
     public void DrawWorld();
-    public void DrawUI();
+    public void DrawUi();
 }

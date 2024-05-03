@@ -8,8 +8,8 @@ public abstract class BaseLerper<T> : ILerper<T>
 {
     protected T Start { get; set; }
     protected T End { get; set; }
-    protected double Duration { get; set; } = 0;
-    protected double Time { get; set; } = 0;
+    protected double Duration { get; set; }
+    protected double Time { get; set; }
 
     protected BaseLerper(T start, T end, double duration)
     {

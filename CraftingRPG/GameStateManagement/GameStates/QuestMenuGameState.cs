@@ -45,7 +45,7 @@ public class QuestMenuGameState : BaseGameState
         CursorMovementTimer.MaxOut();
     }
 
-    public override void DrawUI()
+    public override void DrawUi()
     {
         var percent = (float)MenuTransitionTimer.GetPercent();
         MenuPosition = percent * GameManager.Resolution.Y - GameManager.Resolution.Y;

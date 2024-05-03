@@ -10,10 +10,10 @@ public class GameStateManager
         public IGameState GameState;
         public bool KeepPreviousState;
     }
-    private Queue<StateAddRequest> StateAddRequests = new();
-    private int StatePopRequests = 0;
+    private readonly Queue<StateAddRequest> StateAddRequests = new();
+    private int StatePopRequests;
 
-    public static GameStateManager Instance = new();
+    public static readonly GameStateManager Instance = new();
 
     public Stack<IGameState> States { get; set; } = new();
 
