@@ -30,4 +30,7 @@
     <Action Name="ExitMenu">
         <Key>LeftCtrl</Key>
     </Action>
+    <Action Name="OpenKeybindings">
+        <Key>K</Key>
+    </Action>
 </KeyConfig>
