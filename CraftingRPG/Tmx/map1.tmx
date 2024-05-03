@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="300">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="304">
  <tileset firstgid="1" source="grass.tsx"/>
  <tileset firstgid="2" source="objects_48x64.tsx"/>
  <tileset firstgid="6" source="plains.tsx"/>
@@ -1117,6 +1117,15 @@
   <object id="299" gid="2" x="608" y="112" width="48" height="64">
    <properties>
     <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="Loading Zones">
+  <object id="303" x="400" y="0" width="80" height="1.45455">
+   <properties>
+    <property name="map" value="Tmx/map2.tmx"/>
+    <property name="toX" type="float" value="455"/>
+    <property name="toY" type="float" value="600"/>
    </properties>
   </object>
  </objectgroup>

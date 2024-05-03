@@ -10,7 +10,6 @@ using CraftingRPG.InputManagement;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Lerpers;
 using CraftingRPG.MapManagement;
-using CraftingRPG.QuestManagement;
 using CraftingRPG.SoundManagement;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
@@ -53,7 +52,7 @@ public class OverWorldGameState : BaseGameState
 
     public override void DrawUI()
     {
-        MapManager.Instance.DrawUI();
+        MapManager.Instance.DrawUi();
 
         var windowBounds = GameManager.WindowBounds;
         var woodUi = Assets.Instance.WoodUISpriteSheet;
@@ -70,13 +69,12 @@ public class OverWorldGameState : BaseGameState
             new Vector2(windowBounds.Center.X - itemNameData.Dimensions.X / 2, 25 + position),
             Color.Black);
 
-        if (CurrentState == OverWorldState.PlayerDead)
-        {
-            var opacity = GameOverFadeLerper.GetLerpedValue();
-            GameManager.SpriteBatch.Draw(GameManager.Pixel,
-                GameManager.WindowBounds,
-                Color.Black * opacity);
-        }
+        if (CurrentState != OverWorldState.PlayerDead) return;
+        
+        var opacity = GameOverFadeLerper.GetLerpedValue();
+        GameManager.SpriteBatch.Draw(GameManager.Pixel,
+            GameManager.WindowBounds,
+            Color.Black * opacity);
     }
 
     public override void Update(GameTime gameTime)
@@ -86,6 +84,15 @@ public class OverWorldGameState : BaseGameState
             case OverWorldState.ControllingPlayer:
             {
                 Label.Lerper.Update(gameTime);
+
+                if (MapManager.Instance.IsMapTransitioning())
+                {
+                    Globals.Player.IsWalking = false;
+                    HandleInstanceUpdates(gameTime);
+                    MapManager.Instance.Update(gameTime);
+                    HandleItemLabel();
+                    return;
+                }
 
                 CalculateMovement();
                 DetectCollisionsAndPerformMovement();
@@ -111,10 +118,12 @@ public class OverWorldGameState : BaseGameState
 
                 break;
             }
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
-    private void DrawMap()
+    private static void DrawMap()
     {
         MapManager.Instance.Draw(GameManager.SpriteBatch);
     }
@@ -144,7 +153,7 @@ public class OverWorldGameState : BaseGameState
         Player.SetMovementVector(movementVector);
     }
 
-    private void CalculateInputMovementVector(ref Vector2 movementVector)
+    private static void CalculateInputMovementVector(ref Vector2 movementVector)
     {
         if (InputManager.Instance.GetDurationHeld(InputAction.MoveEast) > 0)
         {
@@ -165,7 +174,7 @@ public class OverWorldGameState : BaseGameState
         }
     }
 
-    private void DetectCollisionsAndPerformMovement()
+    private static void DetectCollisionsAndPerformMovement()
     {
         var movingInstances = GetMovingInstances();
 
@@ -290,7 +299,7 @@ public class OverWorldGameState : BaseGameState
         }
     }
 
-    private void HandleDefeatedEnemies()
+    private static void HandleDefeatedEnemies()
     {
         var enemies = MapManager.Instance.GetEnemyInstances();
         var defeatedEnemies = GetDefeatedEnemies(enemies);
@@ -298,7 +307,7 @@ public class OverWorldGameState : BaseGameState
         foreach (var enemy in defeatedEnemies)
         {
             var enemyInfo = enemy.GetEnemyInfo();
-            
+
             enemy.OnDeath();
 
             foreach (var quest in Globals.Player.Info.QuestBook.GetDefeatEnemyQuests())
@@ -310,39 +319,29 @@ public class OverWorldGameState : BaseGameState
             foreach (var possibleDrop in dropTable)
             {
                 var randomNumber = Random.Shared.Next() % 100;
-                if (randomNumber < possibleDrop.DropRate)
+
+                if (randomNumber >= possibleDrop.DropRate) continue;
+
+                var dropInstance = possibleDrop.CreateDropInstance();
+
+                if (!dropInstance.CanDrop())
                 {
-                    var dropInstance = possibleDrop.CreateDropInstance();
-
-                    if (!dropInstance.CanDrop())
-                    {
-                        continue;
-                    }
-
-                    var dropPosition = Vector2.Subtract(enemy.GetCollisionBox().Center, new Vector2(16, 16));
-                    dropInstance.SetPosition(dropPosition);
-
-                    MapManager.Instance.AddDrop(dropInstance);
+                    continue;
                 }
+
+                var dropPosition = Vector2.Subtract(enemy.GetCollisionBox().Center, new Vector2(16, 16));
+                dropInstance.SetPosition(dropPosition);
+
+                MapManager.Instance.AddDrop(dropInstance);
             }
 
             enemies.Remove(enemy);
         }
     }
 
-    private IList<IEnemyInstance> GetDefeatedEnemies(IList<IEnemyInstance> enemies)
+    private static IEnumerable<IEnemyInstance> GetDefeatedEnemies(IEnumerable<IEnemyInstance> enemies)
     {
-        var list = new List<IEnemyInstance>();
-
-        foreach (var enemy in enemies)
-        {
-            if (enemy.IsDefeated())
-            {
-                list.Add(enemy);
-            }
-        }
-
-        return list;
+        return enemies.Where(enemy => enemy.IsDefeated()).ToList();
     }
 
     private void HandleInstanceUpdates(GameTime gameTime)
@@ -381,7 +380,7 @@ public class OverWorldGameState : BaseGameState
         Label.PreviousIsAboveDrop = Player.IsAboveDrop;
     }
 
-    private void CheckForMenuOpened()
+    private static void CheckForMenuOpened()
     {
         if (InputManager.Instance.IsKeyPressed(InputAction.OpenCraftingMenu))
         {
@@ -397,7 +396,7 @@ public class OverWorldGameState : BaseGameState
         }
     }
 
-    private IList<IInstance> GetMovingInstances()
+    private static IEnumerable<IInstance> GetMovingInstances()
     {
         var movingInstances = new List<IInstance>();
         if (Globals.Player.GetMovementVector() != Vector2.Zero)
@@ -405,13 +404,8 @@ public class OverWorldGameState : BaseGameState
             movingInstances.Add(Globals.Player);
         }
 
-        foreach (var enemy in MapManager.Instance.GetEnemyInstances())
-        {
-            if (enemy.GetMovementVector() != Vector2.Zero)
-            {
-                movingInstances.Add(enemy);
-            }
-        }
+        movingInstances.AddRange(MapManager.Instance.GetEnemyInstances()
+            .Where(enemy => enemy.GetMovementVector() != Vector2.Zero).Cast<IInstance>());
 
         return movingInstances;
     }
@@ -427,6 +421,8 @@ public class OverWorldGameState : BaseGameState
                 SoundManager.Instance.FadeOut(2.0);
                 GameOverFadeLerper = new FloatLerper(0F, 1F, 1.5);
                 break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
