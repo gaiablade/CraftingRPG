@@ -124,6 +124,8 @@ public class InputManager
         }
     }
 
+    public Keys GetKeyForAction(InputAction action) => Keybindings[action];
+
     private Keys GetKeyForConfiguredName(string keyName)
     {
         var couldParse = Enum.TryParse(typeof(Keys), keyName, true, out var key);

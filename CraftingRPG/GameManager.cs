@@ -1,4 +1,5 @@
-﻿using CraftingRPG.AssetManagement;
+﻿using System.Linq;
+using CraftingRPG.AssetManagement;
 using CraftingRPG.Entities;
 using CraftingRPG.GameStateManagement;
 using CraftingRPG.GameStateManagement.GameStates;
@@ -92,7 +93,7 @@ namespace CraftingRPG
             SpriteBatch.Begin(samplerState: SamplerState.PointClamp,
                 transformMatrix: Globals.Camera.GetViewMatrix());
             
-            foreach (var state in StateManager.States)
+            foreach (var state in StateManager.States.Reverse())
             {
                 state.DrawWorld();
             }
@@ -101,7 +102,7 @@ namespace CraftingRPG
             
             SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
             
-            foreach (var state in StateManager.States)
+            foreach (var state in StateManager.States.Reverse())
             {
                 state.DrawUI();
             }

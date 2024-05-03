@@ -11,5 +11,6 @@ public enum InputAction
     OpenQuestsMenu,
     OpenInventoryMenu,
     MenuSelect,
-    ExitMenu
+    ExitMenu,
+    OpenKeybindings
 }

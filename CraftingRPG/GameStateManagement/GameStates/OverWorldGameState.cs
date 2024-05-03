@@ -6,11 +6,14 @@ using CraftingRPG.Entities;
 using CraftingRPG.Enums;
 using CraftingRPG.Extensions;
 using CraftingRPG.Global;
+using CraftingRPG.Graphics;
 using CraftingRPG.InputManagement;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Lerpers;
 using CraftingRPG.MapManagement;
 using CraftingRPG.SoundManagement;
+using CraftingRPG.SourceRectangleProviders;
+using CraftingRPG.Timers;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
 
@@ -34,6 +37,12 @@ public class OverWorldGameState : BaseGameState
     // Game over
     private ILerper<float> GameOverFadeLerper;
 
+    // Keybinding display
+    private KeybindingDisplayState KeybindingState = KeybindingDisplayState.Displayed;
+    private readonly ITimer KeybindingDisplayTimer;
+    private readonly ITimer KeybindingSlideTimer;
+    private readonly ISourceRectangleProvider<InputAction> InputActionSourceRectangleProvider;
+
     public OverWorldGameState()
     {
         Player = Globals.Player;
@@ -43,6 +52,10 @@ public class OverWorldGameState : BaseGameState
         SoundManager.Instance.PlaySong(Assets.Instance.Field02, loop: true, volume: 0.5F);
 
         Label = new ItemLabel();
+
+        KeybindingDisplayTimer = new LinearTimer(3);
+        KeybindingSlideTimer = new EaseOutTimer(2);
+        InputActionSourceRectangleProvider = new InputActionKeySourceRectangleProvider();
     }
 
     public override void DrawWorld()
@@ -69,8 +82,35 @@ public class OverWorldGameState : BaseGameState
             new Vector2(windowBounds.Center.X - itemNameData.Dimensions.X / 2, 25 + position),
             Color.Black);
 
+        if (KeybindingState != KeybindingDisplayState.Gone)
+        {
+            var drawingData = new
+            {
+                TextDrawingData = Assets.Instance.Monogram24.GetDrawingData("Keybindings"),
+                KeyDrawingData = new SpriteDrawingData
+                {
+                    Texture = Assets.Instance.KeyIconSpriteSheet,
+                    SourceRectangle = InputActionSourceRectangleProvider.GetSourceRectangle(InputAction.OpenKeybindings)
+                }
+            };
+
+            var width = drawingData.KeyDrawingData.SourceRectangle.Width + 20 +
+                        drawingData.TextDrawingData.Dimensions.X;
+            var height = drawingData.KeyDrawingData.SourceRectangle.Height + 5;
+
+            var x = GameManager.WindowBounds.Right - width + width * (float)KeybindingSlideTimer.GetPercent();
+            var y = GameManager.WindowBounds.Bottom - height;
+            GameManager.SpriteBatch.Draw(drawingData.KeyDrawingData.Texture,
+                new Vector2(x, y),
+                drawingData.KeyDrawingData.SourceRectangle,
+                Color.White);
+            GameManager.SpriteBatch.DrawTextDrawingData(drawingData.TextDrawingData,
+                new Vector2(x + 10 + drawingData.KeyDrawingData.SourceRectangle.Width, y),
+                Color.FloralWhite);
+        }
+
         if (CurrentState != OverWorldState.PlayerDead) return;
-        
+
         var opacity = GameOverFadeLerper.GetLerpedValue();
         GameManager.SpriteBatch.Draw(GameManager.Pixel,
             GameManager.WindowBounds,
@@ -79,6 +119,29 @@ public class OverWorldGameState : BaseGameState
 
     public override void Update(GameTime gameTime)
     {
+        switch (KeybindingState)
+        {
+            case KeybindingDisplayState.Displayed:
+                KeybindingDisplayTimer.Update(gameTime);
+                if (KeybindingDisplayTimer.IsDone())
+                {
+                    KeybindingState = KeybindingDisplayState.Sliding;
+                }
+
+                break;
+            case KeybindingDisplayState.Sliding:
+                KeybindingSlideTimer.Update(gameTime);
+                if (KeybindingSlideTimer.IsDone())
+                {
+                    KeybindingState = KeybindingDisplayState.Gone;
+                }
+
+                break;
+            case KeybindingDisplayState.Gone:
+            default:
+                break;
+        }
+
         switch (CurrentState)
         {
             case OverWorldState.ControllingPlayer:
@@ -251,7 +314,7 @@ public class OverWorldGameState : BaseGameState
                 var knockBackAngle =
                     CustomMath.UnitVector(Vector2.Subtract(enemyCenter, playerCenter));
                 var knockBackPosition = Vector2.Add(enemy.GetPosition(), Vector2.Multiply(knockBackAngle, 25));
-                enemy.SetKnockBack(new Vector2Lerper(enemy.GetPosition(), knockBackPosition, 0.1));
+                enemy.SetKnockBack(new LinearVector2Lerper(enemy.GetPosition(), knockBackPosition, 0.1));
                 AttackedEnemies.Add(enemy);
             }
         }
@@ -289,7 +352,7 @@ public class OverWorldGameState : BaseGameState
             {
                 var knockBackAngle = enemy.GetAttackAngle();
                 var knockBackPosition = Vector2.Add(Player.Position, Vector2.Multiply(knockBackAngle, 25));
-                Player.KnockBackLerper = new Vector2Lerper(Player.Position, knockBackPosition, 0.1);
+                Player.KnockBackLerper = new LinearVector2Lerper(Player.Position, knockBackPosition, 0.1);
             }
             else
             {
@@ -393,6 +456,10 @@ public class OverWorldGameState : BaseGameState
         {
             GameStateManager.Instance.PushState<QuestMenuGameState>(true);
         }
+        else if (InputManager.Instance.IsKeyPressed(InputAction.OpenKeybindings))
+        {
+            GameStateManager.Instance.PushState<KeybindingsGameState>(true);
+        }
     }
 
     private static IEnumerable<IInstance> GetMovingInstances()
@@ -418,7 +485,7 @@ public class OverWorldGameState : BaseGameState
             case OverWorldState.PlayerDead:
                 CurrentState = OverWorldState.PlayerDead;
                 SoundManager.Instance.FadeOut(2.0);
-                GameOverFadeLerper = new FloatLerper(0F, 1F, 1.5);
+                GameOverFadeLerper = new LinearFloatLerper(0F, 1F, 1.5);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -429,6 +496,13 @@ public class OverWorldGameState : BaseGameState
     {
         ControllingPlayer,
         PlayerDead
+    }
+
+    private enum KeybindingDisplayState
+    {
+        Displayed,
+        Sliding,
+        Gone
     }
 
     private struct ItemLabel

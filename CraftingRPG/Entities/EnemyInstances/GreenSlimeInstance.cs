@@ -3,7 +3,7 @@ using CraftingRPG.AssetManagement;
 using CraftingRPG.Constants;
 using CraftingRPG.Enemies;
 using CraftingRPG.Graphics;
-using CraftingRPG.Lerpers;
+using CraftingRPG.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -68,7 +68,7 @@ public class GreenSlimeInstance : BaseEnemyInstance
 
     public override Vector2 GetAttackAngle() => Behavior.GetAttackAngle();
 
-    public override void SetKnockBack(Vector2Lerper knockBackPath)
+    public override void SetKnockBack(ILerper<Vector2> knockBackPath)
     {
         KnockBackPath = knockBackPath;
         Behavior.SetKnockBackPath(knockBackPath);
