@@ -6,12 +6,12 @@ namespace CraftingRPG.QuestManagement.Quests;
 
 public class HealingMushroomFetchQuestInfo : IFetchQuestInfo
 {
-    public string GetDescription() => "Sample Description. Collect 10 Healing Mushrooms!";
+    public string GetDescription() => "Sample Description. Collect 3 Healing Mushrooms!";
 
-    public string GetName() => "Obtain 10 Healing Mushrooms!";
+    public string GetName() => "Obtain 3 Healing Mushrooms!";
 
     public Dictionary<IItem, int> GetRequiredItems() => new()
     {
-        { HealingMushroomItem.Instance, 10 }
+        { HealingMushroomItem.Instance, 3 }
     };
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using CraftingRPG.AssetManagement;
 using CraftingRPG.Enums;
 using CraftingRPG.Extensions;
@@ -79,7 +77,7 @@ public class QuestMenuGameState : BaseGameState
             var questPosition = new Vector2(QuestNoteX + 220 * x, (float)MenuPosition + QuestNoteY + 200 * y);
 
             var questName = questInstance.GetQuestInfo().GetName();
-            var lines = BreakUpString(questName, maxCharsPerLine);
+            var lines = StringMethods.BreakUpString(questName, maxCharsPerLine);
             var questNameDimensions = Assets.Instance.Monogram24.MeasureString(questName);
             var noteSize = new Point(192, 192);
             var notePosition = questPosition.ToPoint();
@@ -128,7 +126,7 @@ public class QuestMenuGameState : BaseGameState
                 new Vector2(nameX, 80),
                 Color.Black);
 
-            var descLines = BreakUpString(selectedQuest.GetQuestInfo().GetDescription(), 50);
+            var descLines = StringMethods.BreakUpString(selectedQuest.GetQuestInfo().GetDescription(), 50);
             var descHeight = descLines.Sum(x => Assets.Instance.Monogram24.MeasureString(x).Y);
             var descLineHeight = descHeight / descLines.Length;
             var descX = 84;
@@ -187,7 +185,7 @@ public class QuestMenuGameState : BaseGameState
                         new Vector2(descX + 40, detailsY + i * 32),
                         Color.Black);
 
-                    var itemAmount = fetchQuestInstance.GetCollectedItems()[itemInfo];
+                    var itemAmount = fetchQuestInstance.GetCollectedItemQuantity(itemInfo);
                     var requiredAmount = qty;
                     var quantityString = $"{itemAmount}/{requiredAmount}";
                     var quantityColor = itemAmount >= requiredAmount ? Color.DarkGreen : Color.DarkRed;
@@ -286,29 +284,6 @@ public class QuestMenuGameState : BaseGameState
                 MenuState = QuestMenu;
             }
         }
-    }
-
-    private string[] BreakUpString(string s, int charsPerLine)
-    {
-        var list = new List<string>();
-        int currentIndex;
-        var lastWrap = 0;
-
-        do
-        {
-            currentIndex = lastWrap + charsPerLine > s.Length
-                ? s.Length
-                : (s.LastIndexOfAny(new[] { ' ', ',', '.', '?', '!', ':', ';', '-', '\n', '\r', '\t' },
-                    Math.Min(s.Length - 1, lastWrap + charsPerLine)) + 1);
-
-            if (currentIndex <= lastWrap)
-                currentIndex = Math.Min(lastWrap + charsPerLine, s.Length);
-
-            list.Add(s.Substring(lastWrap, currentIndex - lastWrap).Trim(' '));
-            lastWrap = currentIndex;
-        } while (currentIndex < s.Length);
-
-        return list.ToArray();
     }
 
     private Vector2 GetCursorCurrentPosition()

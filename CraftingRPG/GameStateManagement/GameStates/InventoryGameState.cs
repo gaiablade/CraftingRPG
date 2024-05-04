@@ -54,7 +54,7 @@ public class InventoryGameState : BaseGameState
         DrawItems();
         DrawSelectedItemName();
 
-        if (Globals.Player.GetInfo().Inventory.ItemQuantities.Count > 0)
+        if (Globals.Player.GetInfo().Inventory.GetItems().Count > 0)
         {
             DrawCursor();
         }
@@ -113,15 +113,15 @@ public class InventoryGameState : BaseGameState
         var inventory = Globals.Player.GetInfo().Inventory;
 
         var i = 0;
-        foreach (var (itemInfo, _) in inventory.ItemQuantities)
+        foreach (var (itemInfo, inventoryItem) in inventory.GetItems())
         {
             var gridX = i % 5;
             var gridY = i / 5;
 
-            GameManager.SpriteBatch.Draw(itemInfo.GetTileSet(),
+            GameManager.SpriteBatch.Draw(inventoryItem.Item.GetTileSet(),
                 new Rectangle(new Point(inventoryX + gridX * 64, (int)MenuPosition + inventoryY + gridY * 64),
                     new Point(32, 32)),
-                itemInfo.GetSourceRectangle(),
+                inventoryItem.Item.GetSourceRectangle(),
                 Color.White);
 
             i++;
@@ -143,8 +143,8 @@ public class InventoryGameState : BaseGameState
     private void DrawSelectedItemName()
     {
         var inventory = Globals.Player.GetInfo().Inventory;
-        var (itemInfo, _) = inventory.ItemQuantities.ElementAt(Cursor);
-        var itemName = itemInfo.GetName();
+        var (_, inventoryItem) = inventory.GetItems().ElementAt(Cursor);
+        var itemName = inventoryItem.Item.GetName();
         var nameData = Assets.Instance.Monogram24.GetDrawingData(itemName);
 
         GameManager.SpriteBatch.DrawTextDrawingData(nameData,
@@ -176,20 +176,20 @@ public class InventoryGameState : BaseGameState
         if (InputManager.Instance.IsKeyPressed(InputAction.MoveSouth))
         {
             Cursor = CustomMath.WrapAround(Cursor + NumberOfColumns, 0,
-                Globals.Player.GetInfo().Inventory.ItemQuantities.Count - 1);
+                Globals.Player.GetInfo().Inventory.GetItems().Count - 1);
         }
         else if (InputManager.Instance.IsKeyPressed(InputAction.MoveNorth))
         {
             Cursor = CustomMath.WrapAround(Cursor - NumberOfColumns, 0,
-                Globals.Player.GetInfo().Inventory.ItemQuantities.Count - 1);
+                Globals.Player.GetInfo().Inventory.GetItems().Count - 1);
         }
         else if (InputManager.Instance.IsKeyPressed(InputAction.MoveEast))
         {
-            Cursor = CustomMath.WrapAround(Cursor + 1, 0, Globals.Player.GetInfo().Inventory.ItemQuantities.Count - 1);
+            Cursor = CustomMath.WrapAround(Cursor + 1, 0, Globals.Player.GetInfo().Inventory.GetItems().Count - 1);
         }
         else if (InputManager.Instance.IsKeyPressed(InputAction.MoveWest))
         {
-            Cursor = CustomMath.WrapAround(Cursor - 1, 0, Globals.Player.GetInfo().Inventory.ItemQuantities.Count - 1);
+            Cursor = CustomMath.WrapAround(Cursor - 1, 0, Globals.Player.GetInfo().Inventory.GetItems().Count - 1);
         }
     }
 }

@@ -23,7 +23,6 @@ namespace CraftingRPG
         public static Point Resolution { get; private set; }
         public static Rectangle WindowBounds { get; private set; }
         public static Point ScreenCenter => Vector2.Divide(Resolution.ToVector2(), 2).ToPoint();
-        public static Point PlayerSpriteSize = new Point(48, 48);
 
         public static GameStateManager StateManager { get; private set; } = GameStateManager.Instance;
 
@@ -60,10 +59,10 @@ namespace CraftingRPG
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            MapManager.Instance.LoadMapsFromContents(this.Content);
-            Assets.Instance.LoadAssets(this.Content);
+            MapManager.Instance.LoadMapsFromContents(Content);
+            Assets.Instance.LoadAssets(Content);
 
-            StateManager.PushState<MainMenuGameState>(true);
+            StateManager.PushState<OverWorldGameState>(true);
         }
 
         protected override void Update(GameTime gameTime)

@@ -5,13 +5,13 @@
     <RollForward>Major</RollForward>
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
-    <Version>1.16.2</Version>
+    <Version>1.17.0</Version>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
-    <AssemblyVersion>1.16.2</AssemblyVersion>
-    <FileVersion>1.16.2</FileVersion>
+    <AssemblyVersion>1.17.0</AssemblyVersion>
+    <FileVersion>1.17.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Icon.ico" />
@@ -98,6 +98,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\textures\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Interfaces\ICollider.cs" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />

@@ -298,6 +298,18 @@
 /processorParam:TextureFormat=Color
 /build:textures/icons_full_32.png
 
+#begin textures/instructions_ui.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/instructions_ui.png
+
 #begin textures/inventory_menu.png
 /importer:TextureImporter
 /processor:TextureProcessor

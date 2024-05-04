@@ -1,45 +1,71 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 
 namespace CraftingRPG.Entities;
 
 public class Inventory
 {
-    public IDictionary<IItem, int> ItemQuantities = new SortedDictionary<IItem, int>(comparer: new ItemComparer());
+    private IDictionary<ItemId, InventoryItem> ItemQuantities = new SortedDictionary<ItemId, InventoryItem>();
     
     public int GetItemCount<T>() where T : IItem, new()
     {
         var item = new T();
-        var found = ItemQuantities.TryGetValue(item, out var qty);
-        return found ? qty : 0;
+        return GetItemCount(item);
     }
 
     public int GetItemCount(IItem item)
     {
-        var found = ItemQuantities.TryGetValue(item, out var qty);
-        return found ? qty : 0;
+        var id = item.GetId();
+        var found = ItemQuantities.TryGetValue(id, out var inventoryItem);
+        return found ? inventoryItem.Quantity : 0;
     }
 
     public void SetItemCount<T>(int quantity) where T : IItem, new()
     {
         var item = new T();
-        ItemQuantities[item] = quantity;
+        var id = item.GetId();
+        if (ItemQuantities.TryGetValue(id, out var inventoryItem))
+        {
+            inventoryItem.Quantity += quantity;
+        }
+        else
+        {
+            ItemQuantities.Add(id, new InventoryItem
+            {
+                Item = item,
+                Quantity = quantity
+            });
+        }
     }
     
     public void SetItemCount(IItem item, int quantity)
     {
-        ItemQuantities[item] = quantity;
+        var id = item.GetId();
+        if (ItemQuantities.TryGetValue(id, out var inventoryItem))
+        {
+            inventoryItem.Quantity = quantity;
+        }
+        else
+        {
+            ItemQuantities.Add(id, new InventoryItem
+            {
+                Item = item,
+                Quantity = quantity
+            });
+        }
     }
     
     public void AddQuantity<T>(int quantity) where T : IItem, new() => SetItemCount<T>(GetItemCount<T>() + quantity);
 
-    public void AddQuantity(IItem item, int quantity) => SetItemCount(item, quantity);
+    public void AddQuantity(IItem item, int quantity) => SetItemCount(item, GetItemCount(item) + quantity);
 
-    private class ItemComparer : IComparer<IItem>
+    public IDictionary<ItemId, InventoryItem> GetItems() => ItemQuantities;
+
+    public class InventoryItem
     {
-        public int Compare(IItem x, IItem y)
-        {
-            return x?.GetId().CompareTo(y?.GetId()) ?? 0;
-        }
+        public IItem Item;
+        public int Quantity;
     }
 }

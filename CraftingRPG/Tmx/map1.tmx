@@ -1135,8 +1135,8 @@
     <property name="map" value="Tmx/map3.tmx"/>
     <property name="moveIn" value="west"/>
     <property name="moveOut" value="west"/>
-    <property name="toX" type="float" value="210"/>
-    <property name="toY" type="float" value="80"/>
+    <property name="toX" type="float" value="290"/>
+    <property name="toY" type="float" value="115"/>
    </properties>
   </object>
  </objectgroup>
