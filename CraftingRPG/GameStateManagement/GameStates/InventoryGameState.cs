@@ -113,15 +113,23 @@ public class InventoryGameState : BaseGameState
         var inventory = Globals.Player.GetInfo().Inventory;
 
         var i = 0;
-        foreach (var (itemInfo, inventoryItem) in inventory.GetItems())
+        foreach (var (_, inventoryItem) in inventory.GetItems())
         {
             var gridX = i % 5;
             var gridY = i / 5;
 
+            var x = inventoryX + gridX * 64;
+            var y = (int)MenuPosition + inventoryY + gridY * 64;
+
             GameManager.SpriteBatch.Draw(inventoryItem.Item.GetTileSet(),
-                new Rectangle(new Point(inventoryX + gridX * 64, (int)MenuPosition + inventoryY + gridY * 64),
+                new Rectangle(new Point(x, y),
                     new Point(32, 32)),
                 inventoryItem.Item.GetSourceRectangle(),
+                Color.White);
+
+            var qtyDrawingData = Assets.Instance.Monogram24.GetDrawingData(inventoryItem.Quantity.ToString());
+            GameManager.SpriteBatch.DrawTextDrawingData(qtyDrawingData,
+                (d) => new Vector2(x + 32 - d.X, y + 32 - d.Y),
                 Color.White);
 
             i++;
