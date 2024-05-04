@@ -81,7 +81,7 @@ public class SlimeBehavior : BaseBehavior
         var player = Globals.Player;
         CurrentAnimation.Update(gameTime);
 
-        var isPlayerInLos = Vector2.Distance(player.Position, Position) <= LineOfSightLength;
+        var isPlayerInLos = Vector2.Distance(player.GetPosition(), Position) <= LineOfSightLength;
         MovementVector = Vector2.Zero;
 
         if (isPlayerInLos && !player.IsDead() && BehaviorState != SlimeActorBehaviorState.Dying &&
@@ -123,14 +123,14 @@ public class SlimeBehavior : BaseBehavior
         else if (BehaviorState == SlimeActorBehaviorState.MovingTowardsPlayer)
         {
             // If player is out of range, go back to idling
-            if (player.IsDead() || Vector2.Distance(player.Center, Center) > LineOfSightLength)
+            if (player.IsDead() || Vector2.Distance(player.GetCenter(), Center) > LineOfSightLength)
             {
                 SetState(SlimeActorBehaviorState.Idle);
                 return;
             }
 
             const float attackDistance = 50F;
-            var distance = Vector2.Distance(Position, Globals.Player.Center);
+            var distance = Vector2.Distance(Position, Globals.Player.GetCenter());
             if (distance <= attackDistance)
             {
                 SetState(SlimeActorBehaviorState.Attacking);
@@ -138,7 +138,7 @@ public class SlimeBehavior : BaseBehavior
             }
 
             const float speed = 30F;
-            var unitVector = CustomMath.UnitVector(Vector2.Subtract(Globals.Player.Center, Center));
+            var unitVector = CustomMath.UnitVector(Vector2.Subtract(Globals.Player.GetCenter(), Center));
             var movementVector = Vector2.Multiply(unitVector, speed * (float)Time.Delta);
             MovementVector = movementVector;
         }
@@ -165,7 +165,7 @@ public class SlimeBehavior : BaseBehavior
             }
             else
             {
-                AttackTarget = player.Center;
+                AttackTarget = player.GetCenter();
                 AttackPath = new BehaviorPath
                 {
                     Start = Center,
@@ -225,7 +225,7 @@ public class SlimeBehavior : BaseBehavior
                 IsKnockedBack = false;
                 AttackAnimation.Reset();
                 CurrentAnimation = AttackAnimation;
-                AttackTarget = Globals.Player.Center;
+                AttackTarget = Globals.Player.GetCenter();
                 AttackPath = new BehaviorPath
                 {
                     Start = Center,

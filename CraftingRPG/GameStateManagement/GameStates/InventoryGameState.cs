@@ -54,7 +54,7 @@ public class InventoryGameState : BaseGameState
         DrawItems();
         DrawSelectedItemName();
 
-        if (Globals.Player.Info.Inventory.ItemQuantities.Count > 0)
+        if (Globals.Player.GetInfo().Inventory.ItemQuantities.Count > 0)
         {
             DrawCursor();
         }
@@ -85,7 +85,7 @@ public class InventoryGameState : BaseGameState
         const int weaponNameX = 265;
         const int weaponNameY = 180;
 
-        var weapon = Globals.Player.Info.Equipment.Weapon;
+        var weapon = Globals.Player.GetInfo().Equipment.Weapon;
         var weaponName = weapon != null ? weapon.GetName() : "None";
         var weaponNameDimensions = Assets.Instance.Monogram24.MeasureString(weaponName);
 
@@ -110,7 +110,7 @@ public class InventoryGameState : BaseGameState
 
         const int inventoryX = 416;
         const int inventoryY = 128;
-        var inventory = Globals.Player.Info.Inventory;
+        var inventory = Globals.Player.GetInfo().Inventory;
 
         var i = 0;
         foreach (var (itemInfo, _) in inventory.ItemQuantities)
@@ -142,7 +142,7 @@ public class InventoryGameState : BaseGameState
 
     private void DrawSelectedItemName()
     {
-        var inventory = Globals.Player.Info.Inventory;
+        var inventory = Globals.Player.GetInfo().Inventory;
         var (itemInfo, _) = inventory.ItemQuantities.ElementAt(Cursor);
         var itemName = itemInfo.GetName();
         var nameData = Assets.Instance.Monogram24.GetDrawingData(itemName);
@@ -176,20 +176,20 @@ public class InventoryGameState : BaseGameState
         if (InputManager.Instance.IsKeyPressed(InputAction.MoveSouth))
         {
             Cursor = CustomMath.WrapAround(Cursor + NumberOfColumns, 0,
-                Globals.Player.Info.Inventory.ItemQuantities.Count - 1);
+                Globals.Player.GetInfo().Inventory.ItemQuantities.Count - 1);
         }
         else if (InputManager.Instance.IsKeyPressed(InputAction.MoveNorth))
         {
             Cursor = CustomMath.WrapAround(Cursor - NumberOfColumns, 0,
-                Globals.Player.Info.Inventory.ItemQuantities.Count - 1);
+                Globals.Player.GetInfo().Inventory.ItemQuantities.Count - 1);
         }
         else if (InputManager.Instance.IsKeyPressed(InputAction.MoveEast))
         {
-            Cursor = CustomMath.WrapAround(Cursor + 1, 0, Globals.Player.Info.Inventory.ItemQuantities.Count - 1);
+            Cursor = CustomMath.WrapAround(Cursor + 1, 0, Globals.Player.GetInfo().Inventory.ItemQuantities.Count - 1);
         }
         else if (InputManager.Instance.IsKeyPressed(InputAction.MoveWest))
         {
-            Cursor = CustomMath.WrapAround(Cursor - 1, 0, Globals.Player.Info.Inventory.ItemQuantities.Count - 1);
+            Cursor = CustomMath.WrapAround(Cursor - 1, 0, Globals.Player.GetInfo().Inventory.ItemQuantities.Count - 1);
         }
     }
 }

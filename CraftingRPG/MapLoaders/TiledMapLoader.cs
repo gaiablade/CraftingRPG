@@ -87,13 +87,8 @@ public class TiledMapLoader : IMapLoader
             {
                 var mapObject = new MapObject();
                 var idFound = tiledObject.Properties.TryGetValue("object_type", out var id);
-                if (!idFound)
-                {
-                    throw new Exception(
-                        $"Property \"object_type\" not found on object at X = {tiledObject.X}, Y = {tiledObject.Y} ");
-                }
-
-                mapObject.Id = GetMapObjectId(id);
+                mapObject.Id = idFound ? GetMapObjectId(id) : MapObjectId.None;
+                
                 var tileSetNo = GetTileSetForGid(tiledObject.Tile.Gid, firstGlobalIdentifiers, tiledTileSets);
                 mapObject.TileSet = gameTileSets[tileSetNo];
                 mapObject.Width = (int)tiledObject.Width;

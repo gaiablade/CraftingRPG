@@ -52,7 +52,7 @@ public abstract class BaseRecipeInstance : IDropInstance
     public virtual RectangleF GetCollisionBox() => new(Position, Size);
     public virtual Vector2 SetPosition(Vector2 position) => Position = position;
     public virtual Texture2D GetSpriteSheet() => Assets.Instance.IconSpriteSheet;
-    public virtual bool CanDrop() => !Globals.Player.Info.RecipeBook.Recipes.ContainsKey(Recipe.GetId());
+    public virtual bool CanDrop() => !Globals.Player.GetInfo().RecipeBook.Recipes.ContainsKey(Recipe.GetId());
 
     public virtual void OnObtain()
     {

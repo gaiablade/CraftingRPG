@@ -18,6 +18,9 @@ public class MapObjectAttributes
         
         switch (objectId)
         {
+            case MapObjectId.None:
+                attr.CollisionRectangle.Size = Point.Zero;
+                break;
             case MapObjectId.Bench01:
             case MapObjectId.Log01:
             case MapObjectId.Log02:

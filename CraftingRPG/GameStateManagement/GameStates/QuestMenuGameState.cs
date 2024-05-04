@@ -114,7 +114,7 @@ public class QuestMenuGameState : BaseGameState
 
         if (MenuState == QuestDetailsMenu)
         {
-            var selectedQuest = Globals.Player.Info.QuestBook.GetActiveQuests()[Cursor];
+            var selectedQuest = Globals.Player.GetInfo().QuestBook.GetActiveQuests()[Cursor];
 
             GameManager.SpriteBatch.Draw(Assets.Instance.QuestDetailsUi,
                 new Rectangle(new Point(-16, -16), GameManager.Resolution),

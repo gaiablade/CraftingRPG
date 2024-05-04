@@ -178,11 +178,11 @@ public class CraftingMenuGameState : BaseGameState
                     }
 
                     var itemInfo = recipe.Value.GetCraftedItem();
-                    Globals.Player.Info.Inventory.AddQuantity(itemInfo, 1);
-                    Globals.Player.Info.RecipeBook.NumberCrafted[recipe.Key]++;
+                    Globals.Player.GetInfo().Inventory.AddQuantity(itemInfo, 1);
+                    Globals.Player.GetInfo().RecipeBook.NumberCrafted[recipe.Key]++;
                     
                     // Check for crafting quests
-                    foreach (var questInstance in Globals.Player.Info.QuestBook.GetActiveQuests())
+                    foreach (var questInstance in Globals.Player.GetInfo().QuestBook.GetActiveQuests())
                     {
                         if (questInstance is CraftQuestInstance craftQuestInstance)
                         {

@@ -46,7 +46,7 @@ public class OverWorldGameState : BaseGameState
     public OverWorldGameState()
     {
         Player = Globals.Player;
-        Player.Position = new Vector2(100, 100);
+        Player.SetPosition(new Vector2(100, 100));
 
         MapManager.Instance.LoadDefaultMap();
         SoundManager.Instance.PlaySong(Assets.Instance.Field02, loop: true, volume: 0.5F);
@@ -196,19 +196,19 @@ public class OverWorldGameState : BaseGameState
         var movementVector = Vector2.Zero;
 
         // If player is attacking or getting knocked back, we should ignore movement
-        if (!Player.IsAttacking)
+        if (!Player.GetIsAttacking())
         {
             CalculateInputMovementVector(ref movementVector);
 
             if (movementVector != Vector2.Zero)
             {
-                Player.IsWalking = true;
+                Player.SetIsWalking();
                 movementVector = CustomMath.UnitVector(movementVector);
-                movementVector = Vector2.Multiply(movementVector, PlayerInstance.MovementSpeed * (float)Time.Delta);
+                movementVector = Vector2.Multiply(movementVector, Player.GetMovementSpeed() * (float)Time.Delta);
             }
             else
             {
-                Player.IsWalking = false;
+                Player.SetIsWalking(false);
             }
         }
 
@@ -277,12 +277,13 @@ public class OverWorldGameState : BaseGameState
 
     private void HandlePickup()
     {
-        if (!Player.IsAboveDrop || !InputManager.Instance.IsKeyPressed(InputAction.Attack)) return;
+        if (!Player.GetIsAboveDrop() || !InputManager.Instance.IsKeyPressed(InputAction.Attack)) return;
 
         InputManager.Instance.Debounce(InputAction.Attack);
-        var drop = Player.DropsBelowPlayer.First();
+        var dropsBelowPlayer = Player.GetDropsBelowPlayer();
+        var drop = dropsBelowPlayer.First();
         drop.OnObtain();
-        Player.DropsBelowPlayer.Remove(drop);
+        dropsBelowPlayer.Remove(drop);
         MapManager.Instance.RemoveDrop(drop);
     }
 
@@ -298,7 +299,7 @@ public class OverWorldGameState : BaseGameState
         var enemies = MapManager.Instance.GetEnemyInstances();
 
         // Is player attacking enemies?
-        if (Player.IsAttacking)
+        if (Player.GetIsAttacking())
         {
             foreach (var enemy in enemies)
             {
@@ -306,7 +307,7 @@ public class OverWorldGameState : BaseGameState
                     !enemy.GetCollisionBox().Intersects(Player.GetHitBox())) continue;
 
                 Assets.Instance.HitSfx01.Play(0.3F, 0F, 0F);
-                var damage = Player.Info.Equipment.Weapon.GetAttackStat();
+                var damage = Player.GetInfo().Equipment.Weapon.GetAttackStat();
                 enemy.IncurDamage(damage);
 
                 var enemyCenter = enemy.GetCollisionBox().Center;
@@ -322,7 +323,7 @@ public class OverWorldGameState : BaseGameState
         {
             AttackedEnemies.Clear();
             if (!InputManager.Instance.IsKeyPressed(InputAction.Attack)) return;
-            Player.IsAttacking = true;
+            Player.SetIsAttacking();
             Assets.Instance.SwingSfx01.Play(volume: 0.1F, 0F, 0F);
         }
     }
@@ -332,7 +333,7 @@ public class OverWorldGameState : BaseGameState
         var enemies = MapManager.Instance.GetEnemyInstances();
 
         // Are enemies attacking the player?
-        if (!Player.InvulnerabilityTimer.IsDone()) return;
+        if (Player.GetIsInvulnerable()) return;
 
         foreach (var enemy in enemies)
         {
@@ -343,16 +344,16 @@ public class OverWorldGameState : BaseGameState
 
             // Player is hit!
             var enemyInfo = enemy.GetEnemyInfo();
-            Player.HitPoints -= enemyInfo.GetAttackDamage();
+            Player.IncurDamage(enemyInfo.GetAttackDamage());
             Assets.Instance.Impact01.Play(0.4F, 0F, 0F);
 
-            Player.InvulnerabilityTimer.Reset();
+            Player.SetInvulnerable();
 
             if (!Player.IsDead())
             {
                 var knockBackAngle = enemy.GetAttackAngle();
-                var knockBackPosition = Vector2.Add(Player.Position, Vector2.Multiply(knockBackAngle, 25));
-                Player.KnockBackLerper = new LinearVector2Lerper(Player.Position, knockBackPosition, 0.1);
+                var knockBackPosition = Vector2.Add(Player.GetPosition(), Vector2.Multiply(knockBackAngle, 25));
+                Player.SetKnockBack(new LinearVector2Lerper(Player.GetPosition(), knockBackPosition, 0.1));
             }
             else
             {
@@ -372,7 +373,7 @@ public class OverWorldGameState : BaseGameState
 
             enemy.OnDeath();
 
-            foreach (var quest in Globals.Player.Info.QuestBook.GetDefeatEnemyQuests())
+            foreach (var quest in Globals.Player.GetInfo().QuestBook.GetDefeatEnemyQuests())
             {
                 quest.OnEnemyDefeated(enemyInfo);
             }
@@ -425,21 +426,21 @@ public class OverWorldGameState : BaseGameState
 
     private void HandleItemLabel()
     {
-        if (Player.IsAboveDrop)
+        if (Player.GetIsAboveDrop())
         {
-            Label.ItemName = Player.DropsBelowPlayer.First().GetDroppable().GetName();
+            Label.ItemName = Player.GetDropsBelowPlayer().First().GetDroppable().GetName();
         }
 
-        if (Player.IsAboveDrop && !Label.PreviousIsAboveDrop)
+        if (Player.GetIsAboveDrop() && !Label.PreviousIsAboveDrop)
         {
             Label.Lerper = new EaseOutDoubleLerper(Label.Lerper.GetLerpedValue(), 0, ItemLabel.DropTime);
         }
-        else if (!Player.IsAboveDrop && Label.PreviousIsAboveDrop)
+        else if (!Player.GetIsAboveDrop() && Label.PreviousIsAboveDrop)
         {
             Label.Lerper = new EaseOutDoubleLerper(Label.Lerper.GetLerpedValue(), -64, ItemLabel.DropTime);
         }
 
-        Label.PreviousIsAboveDrop = Player.IsAboveDrop;
+        Label.PreviousIsAboveDrop = Player.GetIsAboveDrop();
     }
 
     private static void CheckForMenuOpened()
