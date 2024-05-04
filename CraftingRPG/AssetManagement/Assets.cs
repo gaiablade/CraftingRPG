@@ -22,6 +22,7 @@ public class Assets
     public Texture2D PlayerSpriteSheet { get; set; }
     public Texture2D TitleUi { get; set; }
     public Texture2D KeyIconSpriteSheet { get; set; }
+    public Texture2D InstructionsUi { get; set; }
     
     // Fonts //
     public SpriteFont Toriko10 { get; private set; }
@@ -59,6 +60,7 @@ public class Assets
         PlayerSpriteSheet = contentManager.Load<Texture2D>("textures/player");
         TitleUi = contentManager.Load<Texture2D>("textures/title_background");
         KeyIconSpriteSheet = contentManager.Load<Texture2D>("textures/MV Icons Keyboard - ALL");
+        InstructionsUi = contentManager.Load<Texture2D>("textures/instructions_ui");
         
         // Fonts
         Toriko10 = contentManager.Load<SpriteFont>("fonts/toriko-10");
