@@ -162,7 +162,7 @@ public class MapManager
     {
         var stringData =
             Assets.Instance.Monogram24.GetDrawingData(
-                $"{Globals.Player.HitPoints}/{Globals.Player.Info.Stats.MaxHitPoints}");
+                $"{Globals.Player.GetHitPoints()}/{Globals.Player.GetInfo().Stats.MaxHitPoints}");
         GameManager.SpriteBatch.DrawTextDrawingData(stringData,
             new Vector2(10, 10),
             Color.Red);
@@ -194,8 +194,8 @@ public class MapManager
             CalculateCameraPosition();
 
             UpdateDrops();
-            Globals.Player.IsAboveDrop = IsPlayerAboveDropInstance(out var dropsBelowPlayer);
-            Globals.Player.DropsBelowPlayer = dropsBelowPlayer;
+            Globals.Player.SetIsAboveDrop(IsPlayerAboveDropInstance(out var dropsBelowPlayer));
+            Globals.Player.SetDropsBelowPlayer(dropsBelowPlayer);
 
             for (var i = 0; i < Drops.Count - 1; i++)
             {
@@ -274,9 +274,9 @@ public class MapManager
 
     private void DrawPlayer(PlayerInstance player)
     {
-        var flip = player.FacingDirection == Direction.Left;
+        var flip = player.GetFacingDirection() == Direction.Left;
         GameManager.SpriteBatch.Draw(player.GetSpriteSheet(),
-            new Rectangle(Vector2.Round(player.Position).ToPoint(), PlayerInstance.SpriteSize),
+            new Rectangle(Vector2.Round(player.GetPosition()).ToPoint(), player.GetSize()),
             player.GetTextureRectangle(),
             Color.White,
             0F,
@@ -310,8 +310,8 @@ public class MapManager
 
         var cameraPos = Vector2.Zero;
         // Center the player
-        cameraPos.X = player.Position.X + player.GetSize().X / 2F;
-        cameraPos.Y = player.Position.Y + player.GetSize().Y / 2F;
+        cameraPos.X = player.GetPosition().X + player.GetSize().X / 2F;
+        cameraPos.Y = player.GetPosition().Y + player.GetSize().Y / 2F;
 
         if (cameraPos.X - x.Width / 2 < 0)
         {

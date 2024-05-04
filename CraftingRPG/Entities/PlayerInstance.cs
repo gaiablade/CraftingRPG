@@ -18,44 +18,42 @@ namespace CraftingRPG.Entities;
 
 public class PlayerInstance : IInstance
 {
-    public PlayerInfo Info { get; set; }
+    // Constants
+    private const float MovementSpeed = 100F;
+    private const int AttackFrameLength = 5;
+    private static readonly Point SpriteSize = new(48, 48);
+    private static readonly Point Size = new(48, 48);
 
-    #region Constants
-    public const float MovementSpeed = 100F;
-    public const int AttackFrameLength = 5;
-    public static readonly Point SpriteSize = new Point(48, 48);
-    public Point Size = new(48, 48);
-    #endregion
-    
-    #region Public Getters/Setters
-    public Vector2 Position;
-    public Vector2 Center => Vector2.Add(Position, new Vector2(24, 36));
+    // Player Info (Stats, Inventory, Quests, etc.)
+    private PlayerInfo Info;
 
-    public int FacingDirection { get; set; } = Direction.Down;
-    public bool IsAttacking { get; set; }
-    public bool IsWalking { get; set; }
-    public List<IDropInstance> DropsBelowPlayer { get; set; } = new();
+    // Movement related
+    private Vector2 Position;
+    private Vector2 MovementVector;
 
-    public ITimer InvulnerabilityTimer { get; private set; }
-    public int HitPoints { get; set; }
-
-    public ILerper<Vector2> KnockBackLerper { get; set; } = new LinearVector2Lerper(Vector2.Zero, Vector2.Zero, 0);
-    #endregion
-    
-    public Vector2 MovementVector;
-    public bool IsAboveDrop = false;
-    public RectangleF HitBox;
-    
-    #region Animation
+    //private Vector2 Center => Vector2.Add(Position, new Vector2(24, 36));
+    private int FacingDirection = Direction.Down;
     private int PreviousFacingDirection;
     private int CurrentFacingDirection = Direction.Down;
-    
+    private bool IsAttacking;
     private bool PreviousIsAttacking;
     private bool CurrentIsAttacking;
-    
+    private bool IsWalking;
     private bool PreviousIsWalking;
     private bool CurrentIsWalking;
+    private ILerper<Vector2> KnockBackLerper = new LinearVector2Lerper(Vector2.Zero, Vector2.Zero, 0);
+
+    // HP and IFrames
+    private ITimer InvulnerabilityTimer;
+    private int HitPoints;
+
+    // Map drops
+    private IList<IDropInstance> DropsBelowPlayer { get; set; } = new List<IDropInstance>();
+    private bool IsAboveDrop = false;
     
+    // Attack hitbox
+    private RectangleF HitBox;
+
     private Animation IdleSouthAnimation;
     private Animation IdleNorthAnimation;
     private Animation IdleSideAnimation;
@@ -68,14 +66,13 @@ public class PlayerInstance : IInstance
     private PlayerDeathAnimation DeathAnimation;
 
     private Animation CurrentAnimation;
-    #endregion
 
     public PlayerInstance(PlayerInfo info)
     {
         const double idleInterval = 0.1;
         const double walkInterval = 0.1;
         const double attackInterval = 0.1;
-        
+
         Info = info;
         IdleSouthAnimation = new Animation(6, idleInterval, SpriteSize);
         IdleSideAnimation = new Animation(6, idleInterval, SpriteSize, true, 0, 48);
@@ -91,7 +88,7 @@ public class PlayerInstance : IInstance
         InvulnerabilityTimer = new LinearTimer(1.0);
         InvulnerabilityTimer.Set(1.0);
         HitPoints = Info.Stats.MaxHitPoints;
-        
+
         Info.RecipeBook.AddRecipe(RecipeId.IronSword, new IronSwordRecipe());
         Info.RecipeBook.AddRecipe(RecipeId.MageBracelet, new MageBraceletRecipe());
 
@@ -99,32 +96,22 @@ public class PlayerInstance : IInstance
         Info.Inventory.AddQuantity<EmptyBottleItem>(5);
     }
 
+    // IInstance methods
     public Vector2 GetPosition() => Position;
-
+    public Vector2 SetPosition(Vector2 position) => Position = position;
+    public Vector2 Move(Vector2 movementVector) => SetPosition(Vector2.Add(GetPosition(), movementVector));
+    public double GetDepth() => Position.Y + GetSize().Y;
     public Point GetSize() => Size;
     public Rectangle GetBounds() => new Rectangle((int)Position.X, (int)Position.Y, GetSize().X, GetSize().Y);
-
     public RectangleF GetCollisionBox() => new(new Point2(Position.X + 18, Position.Y + 22), new Size2(13, 19));
-    public SpriteDrawingData GetDrawingData()
+    public SpriteDrawingData GetDrawingData() => new()
     {
-        return new SpriteDrawingData
-        {
-            Texture = GetSpriteSheet(),
-            SourceRectangle = GetSourceRectangle(),
-            Flip = FacingDirection == Direction.Left
-        };
-    }
-
-    public Texture2D GetSpriteSheet()
-    {
-        return Assets.Instance.PlayerSpriteSheet;
-    }
-
-    public Rectangle GetTextureRectangle()
-    {
-        return CurrentAnimation.GetSourceRectangle();
-    }
-
+        Texture = GetSpriteSheet(),
+        SourceRectangle = GetSourceRectangle(),
+        Flip = FacingDirection == Direction.Left
+    };
+    public Texture2D GetSpriteSheet() => Assets.Instance.PlayerSpriteSheet;
+    public Rectangle GetTextureRectangle() => CurrentAnimation.GetSourceRectangle();
     public Vector2 GetMovementVector()
     {
         if (!KnockBackLerper.IsDone())
@@ -133,10 +120,28 @@ public class PlayerInstance : IInstance
             var knockBackMovementVector = Vector2.Subtract(lerpPosition, Position);
             return knockBackMovementVector;
         }
-
+    
         return MovementVector;
     }
 
+    // Custom methods
+    public PlayerInfo GetInfo() => Info;
+    public Vector2 GetCenter() => GetPosition() + new Vector2(24, 36);
+    public int GetHitPoints() => HitPoints;
+    public bool GetIsAttacking() => IsAttacking;
+    public bool GetIsWalking() => IsWalking;
+    public void SetIsAttacking(bool isAttacking = true) => IsAttacking = isAttacking;
+    public void SetIsWalking(bool isWalking = true) => IsWalking = isWalking;
+    public float GetMovementSpeed() => MovementSpeed;
+    public bool GetIsAboveDrop() => IsAboveDrop;
+    public void SetIsAboveDrop(bool isAboveDrop) => IsAboveDrop = isAboveDrop;
+    public IList<IDropInstance> GetDropsBelowPlayer() => DropsBelowPlayer;
+    public void SetDropsBelowPlayer(IList<IDropInstance> drops) => DropsBelowPlayer = drops;
+    public bool GetIsInvulnerable() => !InvulnerabilityTimer.IsDone();
+    public void SetInvulnerable() => InvulnerabilityTimer.Reset();
+    public void IncurDamage(int damage) => HitPoints -= damage;
+    public void SetKnockBack(ILerper<Vector2> lerper) => KnockBackLerper = lerper;
+    public int GetFacingDirection() => FacingDirection; 
     public void SetMovementVector(Vector2 movementVector)
     {
         MovementVector = movementVector;
@@ -162,8 +167,6 @@ public class PlayerInstance : IInstance
         }
     }
 
-    public Vector2 SetPosition(Vector2 position) => Position = position;
-    public Vector2 Move(Vector2 movementVector) => SetPosition(Vector2.Add(GetPosition(), movementVector));
 
     public void Update(GameTime gameTime)
     {
@@ -172,18 +175,18 @@ public class PlayerInstance : IInstance
         KnockBackLerper.Update(gameTime);
     }
 
-    public void UpdateAnimation(GameTime gameTime)
+    private void UpdateAnimation(GameTime gameTime)
     {
         if (HitPoints <= 0)
         {
             CurrentAnimation = DeathAnimation;
         }
-        
+
         if (IsAttacking && CurrentAnimation.IsAnimationOver())
         {
             IsAttacking = false;
         }
-        
+
         PreviousFacingDirection = CurrentFacingDirection;
         CurrentFacingDirection = FacingDirection;
 
@@ -192,16 +195,16 @@ public class PlayerInstance : IInstance
 
         PreviousIsWalking = CurrentIsWalking;
         CurrentIsWalking = IsWalking;
-        
+
         var attackChanged = CurrentIsAttacking != PreviousIsAttacking;
         var walkChanged = CurrentIsWalking != PreviousIsWalking;
         var directionChanged = CurrentFacingDirection != PreviousFacingDirection;
-        
+
         if (attackChanged || walkChanged || directionChanged)
         {
             SetAnimation();
         }
-        
+
         CurrentAnimation.Update(gameTime);
 
         if (IsAttacking)
@@ -246,7 +249,7 @@ public class PlayerInstance : IInstance
     {
         var animFrame = CurrentAnimation.GetCurrentFrame();
         var pPos = Position.ToPoint();
-        
+
         if (FacingDirection == Direction.Left)
         {
             HitBox = animFrame switch
@@ -297,12 +300,7 @@ public class PlayerInstance : IInstance
     {
         return CurrentAnimation.GetSourceRectangle();
     }
-
-    public double GetDepth()
-    {
-        return Position.Y + GetSize().Y;
-    }
-
+    
     public bool IsDead() => HitPoints <= 0;
     public bool IsDeathAnimationOver() => DeathAnimation.IsAnimationOver();
 
