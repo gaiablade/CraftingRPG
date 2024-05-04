@@ -1,21 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 
 namespace CraftingRPG.QuestManagement;
 
 public class FetchQuestInstance : BaseQuestInstance
 {
-    private Dictionary<IItem, int> CollectedItems;
+    private IDictionary<ItemId, ItemData> CollectedItems;
 
     public FetchQuestInstance(IFetchQuestInfo fetchQuestInfo)
     {
         QuestInfo = fetchQuestInfo;
-        CollectedItems = new();
+        CollectedItems = new Dictionary<ItemId, ItemData>();
 
-        foreach (var (itemId, _) in fetchQuestInfo.GetRequiredItems())
+        foreach (var (itemInfo, _) in fetchQuestInfo.GetRequiredItems())
         {
-            CollectedItems.Add(itemId, 0);
+            var id = itemInfo.GetId();
+            CollectedItems.Add(id, new ItemData
+            {
+                ItemInfo = itemInfo,
+                Quantity = 0
+            });
         }
     }
 
@@ -23,14 +29,24 @@ public class FetchQuestInstance : BaseQuestInstance
 
     public void AddCollectedItem(IItem itemInfo, int qty)
     {
-        if (CollectedItems.ContainsKey(itemInfo))
+        var id = itemInfo.GetId();
+        if (CollectedItems.ContainsKey(id))
         {
-            CollectedItems[itemInfo] += qty;
+            CollectedItems[id].Quantity += qty;
         }
     }
 
-    public override bool IsComplete() => CollectedItems
-        .All(x => GetFetchQuestInfo().GetRequiredItems()[x.Key] <= x.Value);   
+    public override bool IsComplete()
+    {
+        var requiredItems = GetFetchQuestInfo().GetRequiredItems();
+        return requiredItems.All(x => CollectedItems[x.Key.GetId()].Quantity >= x.Value);
+    }
 
-    public Dictionary<IItem, int> GetCollectedItems() => CollectedItems;
+    public int GetCollectedItemQuantity(IItem item) => CollectedItems[item.GetId()].Quantity;
+
+    private class ItemData
+    {
+        public IItem ItemInfo;
+        public int Quantity;
+    }
 }
