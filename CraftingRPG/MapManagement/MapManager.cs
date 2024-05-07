@@ -163,19 +163,6 @@ public class MapManager
 
     public void DrawUi()
     {
-        var stringData =
-            Assets.Instance.Monogram24.GetDrawingData(
-                $"{Globals.Player.GetHitPoints()}/{Globals.Player.GetInfo().Stats.MaxHitPoints}");
-        GameManager.SpriteBatch.DrawTextDrawingData(stringData,
-            new Vector2(10, 10),
-            Color.Red);
-
-        var position = Globals.Player.GetPosition().ToPoint();
-        stringData = Assets.Instance.Monogram24.GetDrawingData($"({position.X}, {position.Y})");
-        GameManager.SpriteBatch.DrawTextDrawingData(stringData,
-            new Vector2(10, 30),
-            Color.White);
-
         if (State == MapManagerState.TransitioningOut)
         {
             GameManager.SpriteBatch.Draw(GameManager.Pixel,

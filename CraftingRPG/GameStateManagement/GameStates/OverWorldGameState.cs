@@ -93,16 +93,19 @@ public class OverWorldGameState : BaseGameState
 
         var position = (int)Label.Lerper.GetLerpedValue();
 
+        // Draw Pick-up item label
         GameManager.SpriteBatch.Draw(woodUi,
             new Rectangle(new Point(windowBounds.Center.X - Label.Bounds.Center.X, position), Label.Size),
             Label.SourceRectangle,
             Color.White);
 
+        // Draw Pick-up item name
         var itemNameData = Assets.Instance.Monogram24.GetDrawingData(Label.ItemName);
         GameManager.SpriteBatch.DrawTextDrawingData(itemNameData,
             new Vector2(windowBounds.Center.X - itemNameData.Dimensions.X / 2, 25 + position),
             Color.Black);
 
+        // Draw keybinding menu key
         if (KeybindingState != KeybindingDisplayState.Gone)
         {
             var drawingData = new
@@ -129,6 +132,25 @@ public class OverWorldGameState : BaseGameState
                 new Vector2(x + 10 + drawingData.KeyDrawingData.SourceRectangle.Width, y),
                 Color.FloralWhite);
         }
+
+        // Draw health bar background
+        var healthBarPosition = new Point(5, -5);
+        var healthPercent = (float)Player.GetHitPoints() / Player.GetInfo().Stats.MaxHitPoints;
+        var healthWidth = (int)(32F * healthPercent);
+        GameManager.SpriteBatch.Draw(Assets.Instance.HealthBarUi,
+            new Rectangle(healthBarPosition, new Point(64)),
+            new Rectangle(new Point(32, 0), new Point(32, 32)),
+            Color.White);
+        // Draw health bar
+        GameManager.SpriteBatch.Draw(Assets.Instance.HealthBarUi,
+            new Rectangle(healthBarPosition, new Point(healthWidth * 2, 64)),
+            new Rectangle(new Point(64, 0), new Point(healthWidth, 32)),
+            Color.White);
+        // Draw health bar frame
+        GameManager.SpriteBatch.Draw(Assets.Instance.HealthBarUi,
+            new Rectangle(healthBarPosition, new Point(64)),
+            new Rectangle(new Point(0, 0), new Point(32, 32)),
+            Color.White);
 
         if (CurrentState != OverWorldState.PlayerDead) return;
 
