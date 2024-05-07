@@ -10,4 +10,5 @@ public static class Globals
     public static PlayerInstance Player { get; set; }
     public static  bool ActionKeyPressed { get; set; } = false;
     public static  OrthographicCamera Camera { get; set; }
+    public static string Version { get; set; }
 }

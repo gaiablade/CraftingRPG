@@ -5,13 +5,13 @@
     <RollForward>Major</RollForward>
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
-    <Version>1.19.0</Version>
+    <Version>1.20.0</Version>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
-    <AssemblyVersion>1.19.0</AssemblyVersion>
-    <FileVersion>1.19.0</FileVersion>
+    <AssemblyVersion>1.20.0</AssemblyVersion>
+    <FileVersion>1.20.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Icon.ico" />
@@ -83,6 +83,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Tmx\map3.tmx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Tmx\map4.tmx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

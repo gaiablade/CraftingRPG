@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="106">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="107">
  <tileset firstgid="1" source="grass.tsx"/>
  <tileset firstgid="2" source="objects_48x64.tsx"/>
  <tileset firstgid="6" source="objects.tsx"/>
  <tileset firstgid="214" source="fences.tsx"/>
+ <tileset firstgid="230" source="decor_16x16.tsx"/>
+ <tileset firstgid="250" source="chest_01.tsx"/>
  <layer id="1" name="Tile Layer 1" width="20" height="20">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -26,6 +28,30 @@
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+</data>
+ </layer>
+ <layer id="4" name="Tile Layer 2" width="20" height="20">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,247,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,230,0,0,0,0,0,0,0,0,232,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,247,0,0,240,0,0,243,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,238,0,0,0,249,0,0,0,0,0,
+0,0,0,0,0,0,0,0,245,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,248,0,0,0,0,0,0,0,233,0,0,
+0,0,0,0,0,0,0,241,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,249,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
  <objectgroup id="2" name="Object Layer 1">
@@ -462,6 +488,12 @@
   <object id="105" gid="2" x="256" y="336" width="48" height="64">
    <properties>
     <property name="object_type" value="tree01"/>
+   </properties>
+  </object>
+  <object id="106" gid="250" x="96" y="224" width="16" height="16">
+   <properties>
+    <property name="chest_id" type="int" value="3"/>
+    <property name="object_type" value="chest01"/>
    </properties>
   </object>
  </objectgroup>

@@ -53,6 +53,10 @@ namespace CraftingRPG
             
             InputManager.Instance.LoadKeybindingConfiguration();
 
+            var version = typeof(GameManager).Assembly.GetName().Version;
+            if (version != null)
+                Globals.Version = version.ToString();
+
             base.Initialize();
         }
 

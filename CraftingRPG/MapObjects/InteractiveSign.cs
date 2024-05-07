@@ -13,6 +13,10 @@ public class InteractiveSign : BaseMapObject
         {
             1,
             "Look for hidden paths between the trees."
+        },
+        {
+            2,
+            "Coming soon..."
         }
     };
 

@@ -1,6 +1,7 @@
 ﻿using CraftingRPG.AssetManagement;
 using CraftingRPG.Enums;
 using CraftingRPG.Extensions;
+using CraftingRPG.Global;
 using CraftingRPG.InputManagement;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Lerpers;
@@ -13,7 +14,7 @@ public class MainMenuGameState : BaseGameState
 {
     private ISourceRectangleProvider<InputAction> SourceRectangleProvider;
     private MainMenuState State = MainMenuState.Normal;
-    
+
     // Fade out
     private ILerper<float> FadeOutLerper;
 
@@ -22,7 +23,7 @@ public class MainMenuGameState : BaseGameState
         SourceRectangleProvider = new InputActionKeySourceRectangleProvider();
         FadeOutLerper = new LinearFloatLerper(0F, 1F, 1);
     }
-    
+
     public override void DrawWorld()
     {
     }
@@ -32,13 +33,13 @@ public class MainMenuGameState : BaseGameState
         GameManager.SpriteBatch.Draw(Assets.Instance.TitleUi,
             GameManager.WindowBounds,
             Color.White);
-        
+
         // Get key
         var sourceRectangle = SourceRectangleProvider.GetSourceRectangle(InputAction.MenuSelect);
         var startTextData = Assets.Instance.Monogram24.GetDrawingData(" START");
         var totalWidth = sourceRectangle.Width + startTextData.Dimensions.X;
         var x = GameManager.WindowBounds.Center.X - totalWidth / 2;
-        
+
         GameManager.SpriteBatch.Draw(Assets.Instance.KeyIconSpriteSheet,
             new Vector2(x, 400),
             sourceRectangle,
@@ -46,7 +47,16 @@ public class MainMenuGameState : BaseGameState
         GameManager.SpriteBatch.DrawTextDrawingData(startTextData,
             new Vector2(x + sourceRectangle.Width, 400),
             Color.Black);
-        
+
+        // Draw version number
+        var versionDrawingData = Assets.Instance.Monogram24.GetDrawingData("v" + Globals.Version);
+        GameManager.SpriteBatch.DrawTextDrawingData(versionDrawingData,
+            (d) => new Vector2(GameManager.WindowBounds.Right - d.X - 4, GameManager.WindowBounds.Bottom - d.Y - 4),
+            Color.Black);
+        GameManager.SpriteBatch.DrawTextDrawingData(versionDrawingData,
+            (d) => new Vector2(GameManager.WindowBounds.Right - d.X - 5, GameManager.WindowBounds.Bottom - d.Y - 5),
+            Color.DarkCyan);
+
         GameManager.SpriteBatch.Draw(GameManager.Pixel,
             GameManager.WindowBounds,
             Color.Black * FadeOutLerper.GetLerpedValue());

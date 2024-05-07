@@ -11,7 +11,9 @@ public class Chest : BaseMapObject
 {
     private static readonly IDictionary<int, IItem> ChestContents = new Dictionary<int, IItem>
     {
-        { 1, EmptyBottleItem.Instance }
+        { 1, EmptyBottleItem.Instance },
+        { 2, IronHelmetItem.Instance },
+        { 3, MageBraceletItem.Instance }
     };
 
     private readonly int ChestId;

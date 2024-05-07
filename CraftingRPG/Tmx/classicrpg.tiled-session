@@ -30,14 +30,13 @@
         "map1.tmx": {
             "expandedObjectLayers": [
                 2,
-                3,
                 4
             ],
-            "scale": 3,
+            "scale": 1.5,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 158,
-                "y": 159.33333333333334
+                "x": 333.33333333333326,
+                "y": 542
             }
         },
         "map2.tmx": {
@@ -48,8 +47,8 @@
             "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 319,
-                "y": 320
+                "x": 362,
+                "y": 248
             }
         },
         "map3.tmx": {
@@ -58,10 +57,22 @@
                 3
             ],
             "scale": 2,
-            "selectedLayer": 1,
+            "selectedLayer": 2,
             "viewCenter": {
                 "x": 159,
                 "y": 159.5
+            }
+        },
+        "map4.tmx": {
+            "expandedObjectLayers": [
+                2,
+                3
+            ],
+            "scale": 3,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 130.33333333333334,
+                "y": 114.66666666666664
             }
         },
         "objects.tsx": {
@@ -87,18 +98,18 @@
     },
     "last.imagePath": "C:/Users/cgand/OneDrive/Documents/Game Dev/Assets/mystic_woods_2.1/sprites/tilesets",
     "last.objectTemplatePath": "C:/Users/cgand/OneDrive/Documents/Crafting RPG Tiled Project",
-    "map.height": 15,
+    "map.height": 20,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
-    "map.width": 15,
+    "map.width": 20,
     "openFiles": [
         "map1.tmx",
         "map2.tmx",
         "map3.tmx"
     ],
     "project": "classicrpg.tiled-project",
-    "property.type": "string",
+    "property.type": "int",
     "recentFiles": [
         "chest_01.tsx",
         "map3.tmx",

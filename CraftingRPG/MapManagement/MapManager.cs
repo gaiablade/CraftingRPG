@@ -29,7 +29,8 @@ public class MapManager
     {
         "Tmx/map1.tmx",
         "Tmx/map2.tmx",
-        "Tmx/map3.tmx"
+        "Tmx/map3.tmx",
+        "Tmx/map4.tmx"
     };
 
     #endregion
