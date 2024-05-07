@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="321">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="322">
  <tileset firstgid="1" source="grass.tsx"/>
  <tileset firstgid="2" source="objects_48x64.tsx"/>
  <tileset firstgid="6" source="plains.tsx"/>
@@ -1240,6 +1240,15 @@
     <property name="moveOut" value="west"/>
     <property name="toX" type="float" value="290"/>
     <property name="toY" type="float" value="115"/>
+   </properties>
+  </object>
+  <object id="321" x="160" y="638.333" width="96" height="1.66667">
+   <properties>
+    <property name="map" value="Tmx/map4.tmx"/>
+    <property name="moveIn" value="south"/>
+    <property name="moveOut" value="south"/>
+    <property name="toX" type="float" value="100"/>
+    <property name="toY" type="float" value="-11"/>
    </properties>
   </object>
  </objectgroup>
