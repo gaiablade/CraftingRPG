@@ -1,4 +1,4 @@
-namespace CraftingRPG.PlayerStatistics;
+namespace CraftingRPG.Player;
 
 public class Statistics
 {

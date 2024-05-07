@@ -77,6 +77,13 @@
 /processorParam:TextureFormat=Compressed
 /build:fonts/monogram-24.spritefont
 
+#begin fonts/monogram-6.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fonts/monogram-6.spritefont
+
 #begin fonts/rainyhearts-12.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -165,6 +172,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sfx/70_Enemy_death_02.wav
+
+#begin sfx/Bag_Open.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sfx/Bag_Open.wav
 
 #begin sfx/Leather.wav
 /importer:WavImporter
@@ -262,6 +275,18 @@
 /processorParam:TextureFormat=Color
 /build:textures/decor_8x8.png
 
+#begin textures/dialogue_ui.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/dialogue_ui.png
+
 #begin textures/fences.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -285,6 +310,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/grass.png
+
+#begin textures/health_bar.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/health_bar.png
 
 #begin textures/icons_full_32.png
 /importer:TextureImporter
@@ -441,6 +478,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/Spritesheet_UI_Wood_Animation_Select_01.png
+
+#begin textures/thanks_for_playing.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/thanks_for_playing.png
 
 #begin textures/title_background.png
 /importer:TextureImporter

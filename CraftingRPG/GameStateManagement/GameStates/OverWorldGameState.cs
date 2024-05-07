@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using CraftingRPG.AssetManagement;
-using CraftingRPG.Entities;
 using CraftingRPG.Enums;
 using CraftingRPG.Extensions;
 using CraftingRPG.Global;
@@ -11,11 +11,13 @@ using CraftingRPG.InputManagement;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Lerpers;
 using CraftingRPG.MapManagement;
+using CraftingRPG.Player;
 using CraftingRPG.SoundManagement;
 using CraftingRPG.SourceRectangleProviders;
 using CraftingRPG.Timers;
 using CraftingRPG.Utility;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 // I love you
 
@@ -43,13 +45,21 @@ public class OverWorldGameState : BaseGameState
     private readonly ITimer KeybindingSlideTimer;
     private readonly ISourceRectangleProvider<InputAction> InputActionSourceRectangleProvider;
 
+    // Paused
+    private bool IsPaused => Flags.IsPaused;
+
+    // Get Item
+    private IList<GetItemLabel> GetItemLabels = new List<GetItemLabel>();
+
     public OverWorldGameState()
     {
         Player = Globals.Player;
-        Player.SetPosition(new Vector2(100, 100));
 
         MapManager.Instance.LoadDefaultMap();
         SoundManager.Instance.PlaySong(Assets.Instance.Field02, loop: true, volume: 0.5F);
+
+        var spawn = MapManager.Instance.GetCurrentMap().Spawn;
+        Player.SetPosition(spawn.ToVector2());
 
         Label = new ItemLabel();
 
@@ -61,6 +71,17 @@ public class OverWorldGameState : BaseGameState
     public override void DrawWorld()
     {
         DrawMap();
+
+        foreach (var label in GetItemLabels)
+        {
+            var drawingData = Assets.Instance.Monogram12.GetDrawingData(label.Name);
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append(label.Name);
+            var color = Color.Lerp(Color.Red, Color.Blue, (float)label.Timer.GetPercent());
+            GameManager.SpriteBatch.DrawString(Assets.Instance.Monogram12, stringBuilder,
+                label.Position - new Vector2(-8 + drawingData.Dimensions.X / 4, 10), color, 0F, Vector2.Zero,
+                new Vector2(0.5F), SpriteEffects.None, 0F);
+        }
     }
 
     public override void DrawUi()
@@ -156,11 +177,19 @@ public class OverWorldGameState : BaseGameState
                     return;
                 }
 
+                if (IsPaused)
+                {
+                    Player.UpdatePaused(gameTime);
+                    return;
+                }
+
                 CalculateMovement();
                 DetectCollisionsAndPerformMovement();
                 HandlePickup();
+                HandleInteractions();
                 HandleAttacks();
                 HandleInstanceUpdates(gameTime);
+                HandleGetItemLabelUpdates(gameTime);
 
                 MapManager.Instance.Update(gameTime);
 
@@ -252,7 +281,7 @@ public class OverWorldGameState : BaseGameState
             {
                 foreach (var mapObject in objectLayer.Objects)
                 {
-                    var isSolid = mapObject.Attributes.IsSolid;
+                    var isSolid = mapObject.GetAttributes().IsSolid;
                     var objectCollider = mapObject.GetCollisionBox();
 
                     if (!isSolid || !projectedCollider.Intersects(objectCollider)) continue;
@@ -285,6 +314,36 @@ public class OverWorldGameState : BaseGameState
         drop.OnObtain();
         dropsBelowPlayer.Remove(drop);
         MapManager.Instance.RemoveDrop(drop);
+    }
+
+    private void HandleInteractions()
+    {
+        if (!InputManager.Instance.IsKeyPressed(InputAction.Interact)) return;
+
+        var interactionBox = Player.GetInteractionBox();
+
+        // Is interactive object in front of player
+        foreach (var objectLayer in MapManager.Instance.GetObjectLayers())
+        {
+            foreach (var mapObject in objectLayer.Objects)
+            {
+                if (!mapObject.GetAttributes().IsInteractive) continue;
+                var objectCollisionBox = mapObject.GetCollisionBox();
+
+                if (interactionBox.Intersects(objectCollisionBox))
+                {
+                    InputManager.Instance.Debounce(InputAction.Interact);
+                    var result = mapObject.OnInteract();
+                    if (result is IItem item)
+                    {
+                        Player.GetInfo().Inventory.AddQuantity(item, 1);
+                        GetItemLabels.Add(new GetItemLabel(item.GetName(),
+                            mapObject.GetPosition(),
+                            new LinearTimer(5)));
+                    }
+                }
+            }
+        }
     }
 
     private void HandleAttacks()
@@ -416,6 +475,16 @@ public class OverWorldGameState : BaseGameState
         }
     }
 
+    private void HandleGetItemLabelUpdates(GameTime gameTime)
+    {
+        foreach (var label in GetItemLabels)
+        {
+            label.Timer.Update(gameTime);
+        }
+
+        GetItemLabels = GetItemLabels.Where(x => !x.Timer.IsDone()).ToList();
+    }
+
     private void HandleGameOverCondition()
     {
         if (!Player.IsDead() || !Player.IsDeathAnimationOver() || !GameOverFadeLerper.IsDone()) return;
@@ -461,6 +530,12 @@ public class OverWorldGameState : BaseGameState
         {
             GameStateManager.Instance.PushState<KeybindingsGameState>(true);
         }
+        else
+        {
+            return;
+        }
+
+        Flags.IsPaused = true;
     }
 
     private static IEnumerable<IInstance> GetMovingInstances()
@@ -523,6 +598,20 @@ public class OverWorldGameState : BaseGameState
             PreviousIsAboveDrop = false;
             Lerper = new EaseOutDoubleLerper(0, -64, DropTime);
             Lerper.SetTime(0.4);
+        }
+    }
+
+    private struct GetItemLabel
+    {
+        public string Name;
+        public Vector2 Position;
+        public ITimer Timer;
+
+        public GetItemLabel(string name, Vector2 position, ITimer timer)
+        {
+            Name = name;
+            Position = position;
+            Timer = timer;
         }
     }
 }

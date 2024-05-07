@@ -1,7 +1,8 @@
 ﻿using CraftingRPG.Interfaces;
-namespace CraftingRPG.Entities;
 
-public class PlayerEquipment
+namespace CraftingRPG.Player;
+
+public class Equipment
 {
     public IWeapon Weapon { get; set; } = null;
     public IItem Helmet { get; set; } = null;

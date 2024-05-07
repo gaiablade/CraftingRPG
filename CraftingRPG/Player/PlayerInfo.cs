@@ -1,18 +1,19 @@
-﻿using CraftingRPG.Interfaces;
+﻿using CraftingRPG.Entities;
+using CraftingRPG.Enums;
+using CraftingRPG.Interfaces;
 using CraftingRPG.Items;
-using CraftingRPG.PlayerStatistics;
 using CraftingRPG.QuestManagement;
 using CraftingRPG.QuestManagement.Quests;
 using CraftingRPG.RecipeManagement;
 using CraftingRPG.RecipeManagement.Recipes;
 
-namespace CraftingRPG.Entities;
+namespace CraftingRPG.Player;
 
 public class PlayerInfo : IPlayerInfo
 {
     public RecipeBook RecipeBook { get; } = new();
     public Inventory Inventory { get; private set; } = new();
-    public PlayerEquipment Equipment { get; } = new();
+    public Equipment Equipment { get; } = new();
     public QuestBook QuestBook { get; } = new();
     public Statistics Stats { get; private set; } = new();
 
@@ -27,6 +28,9 @@ public class PlayerInfo : IPlayerInfo
         QuestBook.AddQuest(mushroomQuest);
         QuestBook.AddQuest(potionQuest);
         QuestBook.AddQuest(slimeQuest);
+        
+        RecipeBook.AddRecipe(RecipeId.IronSword, new IronSwordRecipe());
+        RecipeBook.AddRecipe(RecipeId.MageBracelet, new MageBraceletRecipe());
 
         RecipeBook.AddRecipe(new SmallHealthPotionRecipe());
     }

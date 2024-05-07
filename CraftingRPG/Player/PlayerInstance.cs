@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
-namespace CraftingRPG.Entities;
+namespace CraftingRPG.Player;
 
 public class PlayerInstance : IInstance
 {
@@ -50,7 +50,7 @@ public class PlayerInstance : IInstance
     // Map drops
     private IList<IDropInstance> DropsBelowPlayer { get; set; } = new List<IDropInstance>();
     private bool IsAboveDrop = false;
-    
+
     // Attack hitbox
     private RectangleF HitBox;
 
@@ -88,12 +88,6 @@ public class PlayerInstance : IInstance
         InvulnerabilityTimer = new LinearTimer(1.0);
         InvulnerabilityTimer.Set(1.0);
         HitPoints = Info.Stats.MaxHitPoints;
-
-        Info.RecipeBook.AddRecipe(RecipeId.IronSword, new IronSwordRecipe());
-        Info.RecipeBook.AddRecipe(RecipeId.MageBracelet, new MageBraceletRecipe());
-
-        Info.Inventory.AddQuantity<HealingMushroomItem>(5);
-        Info.Inventory.AddQuantity<EmptyBottleItem>(5);
     }
 
     // IInstance methods
@@ -103,15 +97,18 @@ public class PlayerInstance : IInstance
     public double GetDepth() => Position.Y + GetSize().Y;
     public Point GetSize() => Size;
     public Rectangle GetBounds() => new Rectangle((int)Position.X, (int)Position.Y, GetSize().X, GetSize().Y);
-    public RectangleF GetCollisionBox() => new(new Point2(Position.X + 18, Position.Y + 22), new Size2(13, 19));
+    public RectangleF GetCollisionBox() => new(new Point2(Position.X + 19, Position.Y + 32), new Size2(11, 9));
+
     public SpriteDrawingData GetDrawingData() => new()
     {
         Texture = GetSpriteSheet(),
         SourceRectangle = GetSourceRectangle(),
         Flip = FacingDirection == Direction.Left
     };
+
     public Texture2D GetSpriteSheet() => Assets.Instance.PlayerSpriteSheet;
     public Rectangle GetTextureRectangle() => CurrentAnimation.GetSourceRectangle();
+
     public Vector2 GetMovementVector()
     {
         if (!KnockBackLerper.IsDone())
@@ -120,7 +117,7 @@ public class PlayerInstance : IInstance
             var knockBackMovementVector = Vector2.Subtract(lerpPosition, Position);
             return knockBackMovementVector;
         }
-    
+
         return MovementVector;
     }
 
@@ -141,7 +138,8 @@ public class PlayerInstance : IInstance
     public void SetInvulnerable() => InvulnerabilityTimer.Reset();
     public void IncurDamage(int damage) => HitPoints -= damage;
     public void SetKnockBack(ILerper<Vector2> lerper) => KnockBackLerper = lerper;
-    public int GetFacingDirection() => FacingDirection; 
+    public int GetFacingDirection() => FacingDirection;
+
     public void SetMovementVector(Vector2 movementVector)
     {
         MovementVector = movementVector;
@@ -167,12 +165,37 @@ public class PlayerInstance : IInstance
         }
     }
 
+    public RectangleF GetInteractionBox()
+    {
+        var collisionBox = GetCollisionBox();
+        var interactionSize = new Size2(collisionBox.Width, 5F);
+
+        var direction = GetFacingDirection();
+        var interactionBox = direction switch
+        {
+            Direction.Up => new RectangleF(new Point2(collisionBox.X, collisionBox.Y - interactionSize.Height),
+                interactionSize),
+            Direction.Down => new RectangleF(new Point2(collisionBox.X, collisionBox.Bottom), interactionSize),
+            Direction.Left => new RectangleF(new Point2(collisionBox.X - interactionSize.Width, collisionBox.Y),
+                interactionSize),
+            _ => new RectangleF(new Point2(collisionBox.Right, collisionBox.Y),
+                interactionSize)
+        };
+
+        return interactionBox;
+    }
+
 
     public void Update(GameTime gameTime)
     {
         UpdateAnimation(gameTime);
         InvulnerabilityTimer.Update(gameTime);
         KnockBackLerper.Update(gameTime);
+    }
+
+    public void UpdatePaused(GameTime gameTime)
+    {
+        UpdateAnimation(gameTime);
     }
 
     private void UpdateAnimation(GameTime gameTime)
@@ -300,7 +323,7 @@ public class PlayerInstance : IInstance
     {
         return CurrentAnimation.GetSourceRectangle();
     }
-    
+
     public bool IsDead() => HitPoints <= 0;
     public bool IsDeathAnimationOver() => DeathAnimation.IsAnimationOver();
 

@@ -33,4 +33,7 @@
     <Action Name="OpenKeybindings">
         <Key>K</Key>
     </Action>
+    <Action Name="Interact">
+        <Key>Z</Key>
+    </Action>
 </KeyConfig>

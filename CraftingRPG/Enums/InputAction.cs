@@ -12,5 +12,6 @@ public enum InputAction
     OpenInventoryMenu,
     MenuSelect,
     ExitMenu,
-    OpenKeybindings
+    OpenKeybindings,
+    Interact
 }

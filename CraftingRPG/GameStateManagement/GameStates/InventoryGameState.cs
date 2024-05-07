@@ -151,6 +151,9 @@ public class InventoryGameState : BaseGameState
     private void DrawSelectedItemName()
     {
         var inventory = Globals.Player.GetInfo().Inventory;
+
+        if (inventory.GetItems().Count == 0) return;
+        
         var (_, inventoryItem) = inventory.GetItems().ElementAt(Cursor);
         var itemName = inventoryItem.Item.GetName();
         var nameData = Assets.Instance.Monogram24.GetDrawingData(itemName);
@@ -170,6 +173,7 @@ public class InventoryGameState : BaseGameState
             if (TransitionTimer.IsDone())
             {
                 GameManager.StateManager.PopState();
+                Flags.IsPaused = false;
             }
 
             return;

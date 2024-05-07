@@ -6,6 +6,7 @@ using CraftingRPG.GameStateManagement.GameStates;
 using CraftingRPG.Global;
 using CraftingRPG.InputManagement;
 using CraftingRPG.MapManagement;
+using CraftingRPG.Player;
 using CraftingRPG.SoundManagement;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -62,7 +63,7 @@ namespace CraftingRPG
             MapManager.Instance.LoadMapsFromContents(Content);
             Assets.Instance.LoadAssets(Content);
 
-            StateManager.PushState<OverWorldGameState>(true);
+            StateManager.PushState<MainMenuGameState>(true);
         }
 
         protected override void Update(GameTime gameTime)
@@ -79,7 +80,10 @@ namespace CraftingRPG
             InputManager.Instance.Update(KeyboardState, gameTime);
 
             StateManager.ProcessStateRequests();
-            StateManager.CurrentGameState.Update(gameTime);
+            foreach (var state in StateManager.States.Reverse())
+            {
+                state.Update(gameTime);
+            }
 
             base.Update(gameTime);
         }

@@ -6,6 +6,7 @@ namespace CraftingRPG.MapManagement;
 public class MapObjectAttributes
 {
     public bool IsSolid;
+    public bool IsInteractive;
     public Rectangle CollisionRectangle;
 
     public static MapObjectAttributes GetObjectAttributes(MapObjectId objectId)
@@ -13,9 +14,10 @@ public class MapObjectAttributes
         var attr = new MapObjectAttributes()
         {
             IsSolid = true,
-            CollisionRectangle = new(Point.Zero, new Point(16, 16))
+            IsInteractive = false,
+            CollisionRectangle = new Rectangle(Point.Zero, new Point(16, 16))
         };
-        
+
         switch (objectId)
         {
             case MapObjectId.None:
@@ -29,6 +31,15 @@ public class MapObjectAttributes
             case MapObjectId.Tree01:
             case MapObjectId.Tree02:
                 attr.CollisionRectangle = new Rectangle(new Point(12, 43), new Point(24, 15));
+                break;
+            case MapObjectId.Sign01:
+            case MapObjectId.Sign02:
+            case MapObjectId.Chest01:
+                attr.IsInteractive = true;
+                break;
+            case MapObjectId.Spawn:
+                attr.IsSolid = false;
+                attr.CollisionRectangle = Rectangle.Empty;
                 break;
         }
 

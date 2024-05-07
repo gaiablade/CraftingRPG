@@ -246,6 +246,7 @@ public class QuestMenuGameState : BaseGameState
             if (MenuTransitionTimer.IsDone())
             {
                 GameManager.StateManager.PopState();
+                Flags.IsPaused = false;
             }
 
             return;
