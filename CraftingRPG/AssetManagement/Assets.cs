@@ -25,6 +25,7 @@ public class Assets
     public Texture2D InstructionsUi { get; set; }
     public Texture2D DialogueUi { get; set; }
     public Texture2D ThanksForPlaying { get; set; }
+    public Texture2D HealthBarUi { get; set; }
     
     // Fonts //
     public SpriteFont Toriko10 { get; private set; }
@@ -67,6 +68,7 @@ public class Assets
         InstructionsUi = contentManager.Load<Texture2D>("textures/instructions_ui");
         DialogueUi = contentManager.Load<Texture2D>("textures/dialogue_ui");
         ThanksForPlaying = contentManager.Load<Texture2D>("textures/thanks_for_playing");
+        HealthBarUi = contentManager.Load<Texture2D>("textures/health_bar");
         
         // Fonts
         Toriko10 = contentManager.Load<SpriteFont>("fonts/toriko-10");
