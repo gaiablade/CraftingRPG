@@ -1,6 +1,7 @@
 using CraftingRPG.AssetManagement;
 using CraftingRPG.Enums;
 using CraftingRPG.Extensions;
+using CraftingRPG.Global;
 using CraftingRPG.InputManagement;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Lerpers;
@@ -126,6 +127,7 @@ public class KeybindingsGameState : BaseGameState
         else if (lerpersDone && State == KeybindingState.SlidingOut)
         {
             GameStateManager.Instance.PopState();
+            Flags.IsPaused = false;
         }
 
         if (State == KeybindingState.Normal && InputManager.Instance.IsKeyPressed(InputAction.ExitMenu))

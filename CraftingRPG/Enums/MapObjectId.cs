@@ -10,9 +10,13 @@ public enum MapObjectId
     Log02,
     Grave01,
     Sign01,
+    Sign02,
     Bench01,
     Stone01,
     Stone02,
     Pot01,
-    Fence01
+    Fence01,
+    Chest01,
+    Collision,
+    Spawn
 }

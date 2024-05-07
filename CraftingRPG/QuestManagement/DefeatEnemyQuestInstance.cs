@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 
@@ -29,4 +30,10 @@ public class DefeatEnemyQuestInstance : BaseQuestInstance
     }
 
     public int GetDefeatedEnemyCount(EnemyId enemyId) => DefeatedEnemies[enemyId];
+
+    public override bool IsComplete()
+    {
+        var requiredEnemiesToDefeat = GetDefeatEnemyQuestInfo().GetRequiredEnemiesToDefeat();
+        return requiredEnemiesToDefeat.All(x => DefeatedEnemies[x.Key] >= x.Value);
+    }
 }

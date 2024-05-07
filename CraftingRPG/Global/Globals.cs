@@ -1,4 +1,5 @@
 using CraftingRPG.Entities;
+using CraftingRPG.Player;
 using MonoGame.Extended;
 
 namespace CraftingRPG.Global;

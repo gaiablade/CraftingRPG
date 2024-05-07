@@ -7,7 +7,17 @@ public static class CustomMath
 {
     public static int WrapAround(int x, int floor, int ceil)
     {
-        return floor + (x - floor + ceil - floor + 1) % (ceil - floor + 1);
+        // e.g. WrapAround(-5, 0, 2) = 2
+        if (x < floor)
+        {
+            return ceil;
+        }
+        else if (x > ceil)
+        {
+            return floor;
+        }
+
+        return x;
     }
 
     public static Vector2 UnitVector(Vector2 v)

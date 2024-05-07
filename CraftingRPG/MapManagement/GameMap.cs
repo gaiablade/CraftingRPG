@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using CraftingRPG.Interfaces;
+using Microsoft.Xna.Framework;
 
 namespace CraftingRPG.MapManagement;
 
@@ -10,6 +11,7 @@ public class GameMap
     public int Height { get; set; }
     public int TileWidth { get; set; }
     public int TileHeight { get; set; }
+    public Point Spawn { get; set; }
     public IDictionary<string, string> Properties { get; set; }
     
     public IList<TileLayer> TileLayers { get; set; }

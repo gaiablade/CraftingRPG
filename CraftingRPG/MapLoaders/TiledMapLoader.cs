@@ -7,6 +7,7 @@ using CraftingRPG.Entities.EnemyInstances;
 using CraftingRPG.Enums;
 using CraftingRPG.Interfaces;
 using CraftingRPG.MapManagement;
+using CraftingRPG.MapObjects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -82,27 +83,41 @@ public class TiledMapLoader : IMapLoader
         var objectLayers = new List<ObjectLayer>();
         foreach (var tiledObjectLayer in tiledObjectLayers)
         {
-            var mapObjects = new List<MapObject>();
+            var mapObjects = new List<IMapObject>();
             foreach (var tiledObject in tiledObjectLayer.Objects)
             {
-                var mapObject = new MapObject();
-                var idFound = tiledObject.Properties.TryGetValue("object_type", out var id);
-                mapObject.Id = idFound ? GetMapObjectId(id) : MapObjectId.None;
-                
-                var tileSetNo = GetTileSetForGid(tiledObject.Tile.Gid, firstGlobalIdentifiers, tiledTileSets);
-                mapObject.TileSet = gameTileSets[tileSetNo];
-                mapObject.Width = (int)tiledObject.Width;
-                mapObject.Height = (int)tiledObject.Height;
-                mapObject.X = tiledObject.X;
-                mapObject.Y = tiledObject.Y - mapObject.Height;
-                mapObject.SourceRectangle =
-                    GetTileSourceRectangle(mapObject.TileSet, tiledObject.Tile.Gid - tiledTileSets[tileSetNo].FirstGid);
-                mapObject.Attributes = MapObjectAttributes.GetObjectAttributes(mapObject.Id);
+                var idFound = tiledObject.Properties.TryGetValue("object_type", out var idString);
+                if (!idFound) continue;
+
+                var id = GetMapObjectId(idString);
+                IMapObject mapObject = id switch
+                {
+                    MapObjectId.Sign01 => new InteractiveSign(int.Parse(tiledObject.Properties["message_id"])),
+                    MapObjectId.Sign02 => new DemoSign(),
+                    MapObjectId.Chest01 => new Chest(int.Parse(tiledObject.Properties["chest_id"])),
+                    _ => new MapObject()
+                };
+                mapObject.SetId(id);
+
+                if (mapObject.GetId() == MapObjectId.Spawn)
+                {
+                    gameMap.Spawn = new Point((int)tiledObject.X, (int)tiledObject.Y);
+                }
+
+                var tileSetNo = tiledObject.Tile != null
+                    ? GetTileSetForGid(tiledObject.Tile.Gid, firstGlobalIdentifiers, tiledTileSets)
+                    : 0;
+                mapObject.SetTileSet(tileSetNo != 0 ? gameTileSets[tileSetNo] : null);
+                mapObject.SetSize(new Point((int)tiledObject.Width, (int)tiledObject.Height));
+                mapObject.SetPosition(new Vector2((float)tiledObject.X, (float)tiledObject.Y - mapObject.GetSize().Y));
+                mapObject.SetTextureRectangle(tileSetNo != 0 ? GetTileSourceRectangle(mapObject.GetTileSet(),
+                    tiledObject.Tile.Gid - tiledTileSets[tileSetNo].FirstGid) : Rectangle.Empty);
+                mapObject.SetAttributes(MapObjectAttributes.GetObjectAttributes(mapObject.GetId()));
                 mapObjects.Add(mapObject);
             }
 
             mapObjects = mapObjects
-                .OrderBy(x => x.Y)
+                .OrderBy(x => x.GetPosition().Y)
                 .ToList();
 
             var objectLayer = new ObjectLayer();
@@ -155,6 +170,7 @@ public class TiledMapLoader : IMapLoader
                         _ => Direction.Up
                     };
                 }
+
                 if (moveInFound)
                 {
                     loadingZone.MoveIn = moveIn switch
@@ -166,7 +182,7 @@ public class TiledMapLoader : IMapLoader
                         _ => Direction.Up
                     };
                 }
-                
+
                 loadingZones.Add(loadingZone);
             }
         }
@@ -212,6 +228,8 @@ public class TiledMapLoader : IMapLoader
                 return MapObjectId.Bench01;
             case "sign01":
                 return MapObjectId.Sign01;
+            case "sign02":
+                return MapObjectId.Sign02;
             case "grave01":
                 return MapObjectId.Grave01;
             case "stone01":
@@ -222,6 +240,12 @@ public class TiledMapLoader : IMapLoader
                 return MapObjectId.Pot01;
             case "fence01":
                 return MapObjectId.Fence01;
+            case "spawn":
+                return MapObjectId.Spawn;
+            case "chest01":
+                return MapObjectId.Chest01;
+            case "collision":
+                return MapObjectId.Collision;
         }
 
         return MapObjectId.Bench01;

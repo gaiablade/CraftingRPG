@@ -23,9 +23,12 @@ public class Assets
     public Texture2D TitleUi { get; set; }
     public Texture2D KeyIconSpriteSheet { get; set; }
     public Texture2D InstructionsUi { get; set; }
+    public Texture2D DialogueUi { get; set; }
+    public Texture2D ThanksForPlaying { get; set; }
     
     // Fonts //
     public SpriteFont Toriko10 { get; private set; }
+    public SpriteFont Monogram6 { get; private set; }
     public SpriteFont Monogram12 { get; private set; }
     public SpriteFont Monogram18 { get; private set; }
     public SpriteFont Monogram24 { get; private set; }
@@ -40,6 +43,7 @@ public class Assets
     public SoundEffect Swoosh02 { get; private set; }
     public SoundEffect Impact01 { get; private set; }
     public SoundEffect EnemyDeath02 { get; private set; }
+    public SoundEffect BagOpen { get; private set; }
     
     // Music
     public Song Field02 { get; private set; }
@@ -61,9 +65,12 @@ public class Assets
         TitleUi = contentManager.Load<Texture2D>("textures/title_background");
         KeyIconSpriteSheet = contentManager.Load<Texture2D>("textures/MV Icons Keyboard - ALL");
         InstructionsUi = contentManager.Load<Texture2D>("textures/instructions_ui");
+        DialogueUi = contentManager.Load<Texture2D>("textures/dialogue_ui");
+        ThanksForPlaying = contentManager.Load<Texture2D>("textures/thanks_for_playing");
         
         // Fonts
         Toriko10 = contentManager.Load<SpriteFont>("fonts/toriko-10");
+        Monogram6 = contentManager.Load<SpriteFont>("fonts/monogram-6");
         Monogram12 = contentManager.Load<SpriteFont>("fonts/monogram-12");
         Monogram18 = contentManager.Load<SpriteFont>("fonts/monogram-18");
         Monogram24 = contentManager.Load<SpriteFont>("fonts/monogram-24");
@@ -78,6 +85,7 @@ public class Assets
         Swoosh02 = contentManager.Load<SoundEffect>("sfx/30_swoosh_03");
         Impact01 = contentManager.Load<SoundEffect>("sfx/09_Impact_01");
         EnemyDeath02 = contentManager.Load<SoundEffect>("sfx/70_Enemy_death_02");
+        BagOpen = contentManager.Load<SoundEffect>("sfx/Bag_Open");
         
         // Music
         Field02 = contentManager.Load<Song>("music/field_theme_2");

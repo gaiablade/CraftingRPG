@@ -9,6 +9,8 @@ using CraftingRPG.Global;
 using CraftingRPG.Interfaces;
 using CraftingRPG.Lerpers;
 using CraftingRPG.MapLoaders;
+using CraftingRPG.MapObjects;
+using CraftingRPG.Player;
 using CraftingRPG.Timers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -125,22 +127,23 @@ public class MapManager
                     spriteData.Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
                     0F);
 
-                #pragma warning disable CS0162 // Unreachable code detected
+#pragma warning disable CS0162 // Unreachable code detected
                 if (Flags.DebugShowEnemyHitBoxes && enemyInstance.IsAttacking())
                 {
                     GameManager.SpriteBatch.Draw(GameManager.Pixel,
                         enemyInstance.GetAttackHitBox(),
                         Color.Red);
                 }
-                #pragma warning restore CS0162 // Unreachable code detected
+#pragma warning restore CS0162 // Unreachable code detected
             }
-            
-            else if (instance is MapObject mapObject)
+
+            else if (instance is IMapObject mapObject)
             {
-                GameManager.SpriteBatch.Draw(mapObject.TileSet.SpriteSheetTexture,
-                    new Rectangle(new Point((int)mapObject.X, (int)mapObject.Y),
-                        new Point(mapObject.Width, mapObject.Height)),
-                    mapObject.SourceRectangle,
+                if (mapObject.GetTileSet() == null) continue;
+                GameManager.SpriteBatch.Draw(mapObject.GetTileSet().SpriteSheetTexture,
+                    new Rectangle(new Point((int)mapObject.GetPosition().X, (int)mapObject.GetPosition().Y),
+                        new Point(mapObject.GetSize().X, mapObject.GetSize().Y)),
+                    mapObject.GetTextureRectangle(),
                     Color.White);
             }
             else if (instance is IDropInstance dropInstance)

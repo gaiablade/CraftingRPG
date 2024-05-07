@@ -205,6 +205,7 @@ public class CraftingMenuGameState : BaseGameState
             if (TransitionTimer.IsDone())
             {
                 GameStateManager.Instance.PopState();
+                Flags.IsPaused = false;
             }
         }
     }
